@@ -1,0 +1,5 @@
+@import './fonts/stylesheet.css';
+
+* {
+    font-family: 'Inter 28pt', sans-serif;
+}
