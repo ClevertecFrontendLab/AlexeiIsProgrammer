@@ -1,3 +1,4 @@
+import { ChevronRightIcon } from '@chakra-ui/icons';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
 import { useLocation } from 'react-router';
 
@@ -13,12 +14,15 @@ const Breadcrumbs = () => {
     const buildPath = (index: number) => `#/${pathnames.slice(0, index + 1).join('/')}`;
 
     return (
-        <Breadcrumb>
-            <BreadcrumbItem>
+        <Breadcrumb separator={<ChevronRightIcon color='gray.800' />}>
+            <BreadcrumbItem color={pathnames.length > 0 ? 'blackAlpha.700' : 'black'}>
                 <BreadcrumbLink href='#/'>Главная</BreadcrumbLink>
             </BreadcrumbItem>
-            {pathnames.map((name, index) => (
-                <BreadcrumbItem key={index}>
+            {pathnames.map((name, index, arr) => (
+                <BreadcrumbItem
+                    color={index !== arr.length - 1 ? 'blackAlpha.700' : 'black'}
+                    key={name}
+                >
                     <BreadcrumbLink href={buildPath(index)}>
                         {BREADCRUMB_LABELS[name as keyof typeof BREADCRUMB_LABELS] || name}
                     </BreadcrumbLink>

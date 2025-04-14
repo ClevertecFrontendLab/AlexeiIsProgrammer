@@ -1,8 +1,12 @@
 import { Avatar, Box, Flex, Text } from '@chakra-ui/react';
 
-function CardAvatar() {
+type CardAvatarProps = {
+    className?: string;
+};
+
+function CardAvatar({ className }: CardAvatarProps) {
     return (
-        <Flex gap='4' alignItems='center' flexWrap='wrap'>
+        <Flex gap='4' alignItems='center' flexWrap='wrap' className={className}>
             <Avatar name='Segun Adebayo' src='https://bit.ly/sage-adebayo' />
 
             <Box>

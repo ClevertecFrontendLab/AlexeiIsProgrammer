@@ -7,8 +7,14 @@ const theme = extendTheme({
         white: '#fff',
         lime: {
             50: '#FFFFD3',
+            100: '#EAFFC7',
+            300: '#C4FF61',
+            600: '#2DB100',
         },
         blackAlpha: {
+            50: '#0000000A',
+            300: '#00000029',
+            400: '#0000003D',
             700: '#000000A3',
         },
     },

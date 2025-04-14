@@ -1,0 +1,10 @@
+.sidebar::-webkit-scrollbar {
+    width: 8px; /* ширина scrollbar */
+}
+.sidebar::-webkit-scrollbar-track {
+    background: #0000000a; /* цвет дорожки */
+}
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #00000029; /* цвет плашки */
+    border-radius: 20px; /* закругления плашки */
+}

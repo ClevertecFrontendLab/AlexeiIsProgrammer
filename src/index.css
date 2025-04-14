@@ -1,5 +1,6 @@
 @import './fonts/stylesheet.css';
 
 * {
+    box-sizing: border-box;
     font-family: 'Inter 28pt', sans-serif;
 }

@@ -9,6 +9,11 @@ import { createHashRouter, RouterProvider } from 'react-router';
 import App from '~/app/App.tsx';
 import { store } from '~/store/configure-store.ts';
 
+import CategoryPage from './pages/Category';
+import FavoritesPage from './pages/Favorites';
+import HomePage from './pages/Home';
+import PopularPage from './pages/Popular';
+import RecipePage from './pages/Recipe';
 import theme from './theme';
 
 const router = createHashRouter([
@@ -16,9 +21,11 @@ const router = createHashRouter([
         path: '/',
         element: <App />,
         children: [
-            { index: true, element: <div>Main</div> },
-            { path: 'vegan', element: <div>Веганская кухня</div> },
-            { path: 'juice', element: <div>Самое сочное</div> },
+            { index: true, element: <HomePage /> },
+            { path: 'recipe/:id', element: <RecipePage /> },
+            { path: 'zakuski', element: <CategoryPage /> },
+            { path: 'popular', element: <PopularPage /> },
+            { path: 'favorites', element: <FavoritesPage /> },
         ],
     },
 ]);
