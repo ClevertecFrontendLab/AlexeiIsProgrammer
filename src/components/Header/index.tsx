@@ -23,7 +23,15 @@ function Header() {
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
 
     return (
-        <Box h={isMobile ? '64px' : '80px'} bg='lime.50' p={4}>
+        <Box
+            as='header'
+            position='fixed'
+            w='100%'
+            zIndex='1'
+            h={isMobile ? '64px' : '80px'}
+            bg='lime.50'
+            p={4}
+        >
             <Flex align='center' gap={isSmallMobile ? '14px' : isMobile ? '18px' : '10px'}>
                 <Box marginRight={isMobile ? 'auto' : {}} w={!isMobile ? '256px' : {}}>
                     <Img src={isSmallMobile ? logoCup : logo} />

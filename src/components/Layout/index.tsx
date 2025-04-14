@@ -1,3 +1,4 @@
+import { EditIcon } from '@chakra-ui/icons';
 import {
     Box,
     Drawer,
@@ -8,11 +9,15 @@ import {
     Flex,
     useBreakpointValue,
     useDisclosure,
+    useMediaQuery,
 } from '@chakra-ui/react';
 import type React from 'react';
 
+import Footer from '../Footer';
+import FooterButton from '../FooterButton';
 import Header from '../Header';
 import Sidebar from '../Sidebar';
+import SideIcons from '../SideIcons';
 import styles from './Layout.module.scss';
 
 interface LayoutProps {
@@ -21,6 +26,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
+    const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
     const { isOpen, onClose } = useDisclosure();
 
     return (
@@ -59,11 +65,33 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     as='main'
                     flex='1'
                     p={{ base: 4, md: 6 }}
-                    mt={{ base: 4, md: 0 }}
+                    mt={isMobile ? '64px' : '80px'}
                     marginLeft={!isMobile ? '256px' : {}}
+                    marginRight={!isMobile ? '280px' : {}}
                 >
                     {children}
                 </Box>
+
+                {isSmallMobile && <Footer />}
+                {!isMobile && (
+                    <Flex
+                        h='100%'
+                        justifyContent='space-between'
+                        py='76px'
+                        position='fixed'
+                        right='15px'
+                        direction='column'
+                    >
+                        <SideIcons fixed />
+                        <FooterButton
+                            className={styles['footer-button']}
+                            icon={EditIcon}
+                            name='Записать рецепт'
+                            active
+                            main
+                        />
+                    </Flex>
+                )}
             </Flex>
         </Flex>
     );
