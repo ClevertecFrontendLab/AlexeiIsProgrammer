@@ -1,0 +1,21 @@
+.sub {
+    position: relative;
+    &:before {
+        top: 0;
+        position: absolute;
+        right: 195px;
+        height: 100%;
+        content: '';
+        background-color: #c4ff61;
+    }
+    &:hover:before {
+        width: 1px;
+    }
+
+    &.active {
+        font-weight: 700;
+        &:before {
+            width: 8px;
+        }
+    }
+}

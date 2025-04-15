@@ -1,0 +1,12 @@
+.list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.footer {
+    display: none;
+
+    @media (max-width: 500px) {
+        display: block;
+    }
+}

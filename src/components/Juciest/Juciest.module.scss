@@ -1,0 +1,15 @@
+.arrow {
+    position: absolute !important;
+    z-index: 1;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: black !important;
+
+    &-left {
+        left: -10px;
+    }
+
+    &-right {
+        right: -10px;
+    }
+}
