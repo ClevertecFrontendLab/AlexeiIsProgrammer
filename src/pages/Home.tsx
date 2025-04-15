@@ -2,24 +2,35 @@ import { Box } from '@chakra-ui/react';
 import type React from 'react';
 import { useLocation } from 'react-router';
 
+import Blogs from '~/components/Blogs';
+import Facts from '~/components/Facts';
 import FilterComponent from '~/components/FilterComponent';
 import Juciest from '~/components/Juciest';
 import Slider from '~/components/Slider';
-import { routes } from '~/main';
+import Tabbed from '~/components/Tabbed';
+import getCurrentRoute from '~/utils/getCurrentRoute';
 
 const HomePage: React.FC = () => {
     const { pathname } = useLocation();
-    console.log('pathname', pathname, routes);
 
-    const currentRoute = routes[0].children?.find((route) => route.path === pathname.substring(1));
+    console.log('currentRoute', pathname);
+    const currentRoute = getCurrentRoute(pathname.substring(pathname.lastIndexOf('/') + 1));
 
     return (
         <Box>
             <FilterComponent title={currentRoute?.label || 'Приятного аппетита!'} />
 
-            <Slider title='Новые рецепты' slides={[]} />
+            {!currentRoute && <Slider title='Новые рецепты' />}
 
-            <Juciest />
+            {currentRoute?.children ? (
+                <Tabbed parent={currentRoute?.path || ''} tabs={currentRoute.children} />
+            ) : (
+                <Juciest />
+            )}
+
+            {!currentRoute && <Blogs />}
+
+            <Facts />
         </Box>
     );
 };

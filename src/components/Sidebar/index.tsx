@@ -111,7 +111,7 @@ const SidebarItem = ({ category: { label, icon, sub, value } }: SidebarItemProps
                                 lineHeight='24px'
                                 color='black'
                             >
-                                <Link to={`/${category.value}`}>{category.label}</Link>
+                                <Link to={`${value}/${category.value}`}>{category.label}</Link>
                             </Text>
                         ))}
                     </Box>

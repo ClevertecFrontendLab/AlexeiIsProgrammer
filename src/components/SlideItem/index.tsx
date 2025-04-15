@@ -14,9 +14,12 @@ import CustomBadge from '../CustomBadge';
 import SideIcon from '../SideIcon';
 import styles from './SlideItem.module.scss';
 
-export type Slide = null;
+export type SlideProps = {
+    image?: string;
+    isFact?: boolean;
+};
 
-const SlideItem = () => {
+const SlideItem = ({ isFact, image }: SlideProps) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
 
     return (
@@ -27,16 +30,12 @@ const SlideItem = () => {
             position='relative'
             maxW='md'
         >
-            <Image
-                objectFit='cover'
-                src='https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80'
-                alt='Chakra UI'
-            />
+            {image && <Image objectFit='cover' src={image} alt='Chakra UI' />}
             <CardBody>
                 <Heading fontSize='20px' lineHeight='28px' fontWeight='500'>
                     Солянка с грибами
                 </Heading>
-                {!isMobile && (
+                {(!isMobile || isFact) && (
                     <Text fontSize='14px' lineHeight='20px'>
                         Как раз после праздников, когда мясные продукты еще остались, но никто их
                         уже не хочет, время варить солянку.

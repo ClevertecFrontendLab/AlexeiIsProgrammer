@@ -20,7 +20,7 @@ const Juciest = () => {
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
 
     return (
-        <Box>
+        <Box mt='40px'>
             <Flex mb='24px' justifyContent='space-between' alignItems='flex-end'>
                 <Text
                     color='black'

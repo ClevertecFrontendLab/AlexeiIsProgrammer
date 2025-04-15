@@ -59,7 +59,12 @@ function Header() {
                         <Box flex={1}>
                             <Breadcrumbs />
                         </Box>
-                        <CardAvatar className={styles.avatar} />
+                        <CardAvatar
+                            tag='@bake_and_pie UI'
+                            name='Екатерина Константинопольская'
+                            image='https://bit.ly/sage-adebayo'
+                            className={styles.avatar}
+                        />
                     </>
                 )}
             </Flex>

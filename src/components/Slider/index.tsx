@@ -3,19 +3,18 @@ import { Box, Flex, IconButton, Image, Text, useBreakpointValue } from '@chakra-
 import arrowLeft from '~/assets/arrow-left.svg';
 import arrowRight from '~/assets/arrow-right.svg';
 
-import SlideItem, { Slide } from '../SlideItem';
+import SlideItem from '../SlideItem';
 import styles from './Slider.module.scss';
 
 type SliderProps = {
     title?: string;
-    slides?: Slide[];
 };
 
 const Slider = ({ title }: SliderProps) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
 
     return (
-        <Box>
+        <Box mt='24px'>
             {title && (
                 <Text
                     color='black'
@@ -36,10 +35,10 @@ const Slider = ({ title }: SliderProps) => {
                     className={`${styles.arrow} ${styles['arrow-left']}`}
                 />
                 <Flex gap='24px' overflowX='auto'>
-                    <SlideItem />
-                    <SlideItem />
-                    <SlideItem />
-                    <SlideItem />
+                    <SlideItem image='https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80' />
+                    <SlideItem image='https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80' />
+                    <SlideItem image='https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80' />
+                    <SlideItem image='https://images.unsplash.com/photo-1531403009284-440f080d1e12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80' />
                 </Flex>
                 <IconButton
                     aria-label='arrow-right'
