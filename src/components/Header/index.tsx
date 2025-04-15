@@ -24,10 +24,11 @@ function Header() {
 
     return (
         <Box
+            data-test-id='header'
             as='header'
             position='fixed'
             w='100%'
-            zIndex='1'
+            zIndex='10'
             h={isMobile ? '64px' : '80px'}
             bg='lime.50'
             p={4}

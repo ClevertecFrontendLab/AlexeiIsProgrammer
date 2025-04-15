@@ -7,7 +7,16 @@ import FooterButton from '../FooterButton';
 import styles from './Footer.module.scss';
 
 const Footer = () => (
-    <Box position='fixed' bottom='0' left='0' w='100%' as='footer' bg='lime.50'>
+    <Box
+        className={styles.footer}
+        data-test-id='footer'
+        position='fixed'
+        bottom='0'
+        left='0'
+        w='100%'
+        as='footer'
+        bg='lime.50'
+    >
         <Flex className={styles.list}>
             <FooterButton isIcon name='Главная' icon={home} active />
             <FooterButton name='Поиск' icon={SearchIcon} />

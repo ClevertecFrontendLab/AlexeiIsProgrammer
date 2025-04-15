@@ -2,21 +2,21 @@ import { ChevronRightIcon } from '@chakra-ui/icons';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
 import { useLocation } from 'react-router';
 
-const BREADCRUMB_LABELS = {
-    vegan: 'Веганская кухня',
-    juice: 'Самое сочное',
-};
+import { routes } from '~/main';
 
 const Breadcrumbs = () => {
     const { pathname } = useLocation();
     const pathnames = pathname.split('/').filter(Boolean);
 
-    const buildPath = (index: number) => `#/${pathnames.slice(0, index + 1).join('/')}`;
+    const buildPath = (index: number) => `/${pathnames.slice(0, index + 1).join('/')}`;
+
+    const getCurrentRoute = (searchRoute: string) =>
+        routes[0].children?.find((route) => route.path === searchRoute);
 
     return (
         <Breadcrumb separator={<ChevronRightIcon color='gray.800' />}>
             <BreadcrumbItem color={pathnames.length > 0 ? 'blackAlpha.700' : 'black'}>
-                <BreadcrumbLink href='#/'>Главная</BreadcrumbLink>
+                <BreadcrumbLink href='/'>Главная</BreadcrumbLink>
             </BreadcrumbItem>
             {pathnames.map((name, index, arr) => (
                 <BreadcrumbItem
@@ -24,7 +24,7 @@ const Breadcrumbs = () => {
                     key={name}
                 >
                     <BreadcrumbLink href={buildPath(index)}>
-                        {BREADCRUMB_LABELS[name as keyof typeof BREADCRUMB_LABELS] || name}
+                        {getCurrentRoute(name)?.label || name}
                     </BreadcrumbLink>
                 </BreadcrumbItem>
             ))}

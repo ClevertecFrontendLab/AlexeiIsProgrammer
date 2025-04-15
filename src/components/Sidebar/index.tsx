@@ -25,6 +25,7 @@ type Sub = { label: string; value: string };
 type Category = {
     label: string;
     icon: string;
+    value?: string;
     sub?: Sub[];
 };
 
@@ -37,6 +38,7 @@ const categories: Category[] = [
     { label: 'Блюда на гриле', icon: van },
     {
         label: 'Веганская кухня',
+        value: 'vegan-cuisine',
         icon: green,
         sub: [
             { label: 'Закуски', value: 'zakuski' },
@@ -61,36 +63,38 @@ type SidebarItemProps = {
     category: Category;
 };
 
-const SidebarItem = ({ category: { label, icon, sub } }: SidebarItemProps) => {
+const SidebarItem = ({ category: { label, icon, sub, value } }: SidebarItemProps) => {
     const { isOpen, onToggle } = useDisclosure();
 
     const { pathname } = useLocation();
 
     return (
         <Box w='100%'>
-            <Flex
-                cursor='pointer'
-                alignItems='center'
-                justify='space-between'
-                _hover={{ bg: 'lime.50' }}
-                bg={isOpen ? 'lime.100' : {}}
-                onClick={onToggle}
-                px='22px'
-                py='12px'
-            >
-                <Flex alignItems='center' gap='12px'>
-                    <Image src={icon} />
-                    <Text
-                        letterSpacing='0.4px'
-                        lineHeight='24px'
-                        fontWeight={isOpen ? '700' : '500'}
-                        fontSize='16px'
-                    >
-                        {label}
-                    </Text>
+            <Link data-test-id={value} to={`/${value}`}>
+                <Flex
+                    cursor='pointer'
+                    alignItems='center'
+                    justify='space-between'
+                    _hover={{ bg: 'lime.50' }}
+                    bg={isOpen ? 'lime.100' : {}}
+                    onClick={onToggle}
+                    px='22px'
+                    py='12px'
+                >
+                    <Flex alignItems='center' gap='12px'>
+                        <Image src={icon} />
+                        <Text
+                            letterSpacing='0.4px'
+                            lineHeight='24px'
+                            fontWeight={isOpen ? '700' : '500'}
+                            fontSize='16px'
+                        >
+                            {label}
+                        </Text>
+                    </Flex>
+                    <Image src={!isOpen ? ArrowDown : ArrowUp} />
                 </Flex>
-                <Image src={!isOpen ? ArrowDown : ArrowUp} />
-            </Flex>
+            </Link>
             <Collapse in={isOpen}>
                 {sub && (
                     <Box>

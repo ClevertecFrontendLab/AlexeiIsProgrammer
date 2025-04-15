@@ -1,44 +1,27 @@
-import { Box, Heading } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import type React from 'react';
+import { useLocation } from 'react-router';
 
-import CommentCard from '../components/CommentCard';
-import RecipeGrid from '../components/RecipeGrid';
-import RecipeListItem from '../components/RecipeListItem';
-import { comments, newRecipes, popularRecipes } from '../data';
+import FilterComponent from '~/components/FilterComponent';
+import Juciest from '~/components/Juciest';
+import Slider from '~/components/Slider';
+import { routes } from '~/main';
 
-const HomePage: React.FC = () => (
-    <Box maxW='1200px' mx='auto'>
-        <Heading as='h1' size='lg' mb={6}>
-            Приятного аппетита!
-        </Heading>
+const HomePage: React.FC = () => {
+    const { pathname } = useLocation();
+    console.log('pathname', pathname, routes);
 
-        {/* New Recipes Section */}
-        <RecipeGrid title='Новые рецепты' recipes={newRecipes} viewAllLink='/category/new' />
+    const currentRoute = routes[0].children?.find((route) => route.path === pathname.substring(1));
 
-        {/* Most Popular Section */}
-        <Box mb={8}>
-            <Heading as='h2' size='md' mb={4}>
-                Самое сочное
-            </Heading>
+    return (
+        <Box>
+            <FilterComponent title={currentRoute?.label || 'Приятного аппетита!'} />
 
-            {popularRecipes.slice(0, 3).map((recipe) => (
-                <RecipeListItem key={recipe.id} {...recipe} comments={recipe.comments} />
-            ))}
+            <Slider title='Новые рецепты' slides={[]} />
+
+            <Juciest />
         </Box>
-
-        {/* Comments Section */}
-        <Box mb={8}>
-            <Heading as='h2' size='md' mb={4}>
-                Комментарии блюд
-            </Heading>
-
-            <Box display='grid' gridTemplateColumns={{ base: '1fr', md: 'repeat(3, 1fr)' }} gap={4}>
-                {comments.map((comment) => (
-                    <CommentCard key={comment.id} {...comment} />
-                ))}
-            </Box>
-        </Box>
-    </Box>
-);
+    );
+};
 
 export default HomePage;

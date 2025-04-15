@@ -1,0 +1,7 @@
+.badge {
+    @media (max-width: 768px) {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+    }
+}

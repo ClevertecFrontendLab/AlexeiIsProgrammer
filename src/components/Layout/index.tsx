@@ -9,7 +9,6 @@ import {
     Flex,
     useBreakpointValue,
     useDisclosure,
-    useMediaQuery,
 } from '@chakra-ui/react';
 import type React from 'react';
 
@@ -26,7 +25,6 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
-    const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
     const { isOpen, onClose } = useDisclosure();
 
     return (
@@ -36,6 +34,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Flex flex='1'>
                 {!isMobile && (
                     <Box
+                        zIndex='10'
                         as='aside'
                         w='260px'
                         bg='white'
@@ -67,12 +66,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     p={{ base: 4, md: 6 }}
                     mt={isMobile ? '64px' : '80px'}
                     marginLeft={!isMobile ? '256px' : {}}
-                    marginRight={!isMobile ? '280px' : {}}
+                    paddingRight={!isMobile ? '280px !important' : {}}
                 >
                     {children}
                 </Box>
 
-                {isSmallMobile && <Footer />}
+                <Footer />
                 {!isMobile && (
                     <Flex
                         h='100%'
