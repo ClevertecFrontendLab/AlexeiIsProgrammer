@@ -67,6 +67,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     flex='1'
                     p={{ base: 4, md: 6 }}
                     mt={isMobile ? '64px' : '80px'}
+                    width={!isMobile ? 'calc(100% - 256px - 280px)' : '100%'}
                     marginLeft={!isMobile ? '256px' : {}}
                     paddingRight={!isMobile ? '280px !important' : {}}
                     paddingBottom={isSmallMobile ? '100px' : {}}

@@ -34,9 +34,20 @@ const Tabbed = ({ parent, tabs }: TabbedProps) => {
     return (
         <Box>
             <Tabs isLazy defaultValue={pathname.substring(pathname.lastIndexOf('/') + 1)}>
-                <TabList justifyContent='center'>
+                <TabList
+                    // sx={{
+                    //     scrollbarWidth: 'none', // Firefox
+                    //     '&::-webkit-scrollbar': {
+                    //         display: 'none', // Chrome/Safari
+                    //     },
+                    // }}
+                    pb='5px'
+                    overflowX='auto'
+                    whiteSpace='nowrap'
+                >
                     {tabs.map((tab) => (
                         <Tab
+                            flexShrink={0}
                             color='lime.800'
                             _selected={{ borderColor: 'lime.700', color: 'lime.700' }}
                             value={tab.path}
