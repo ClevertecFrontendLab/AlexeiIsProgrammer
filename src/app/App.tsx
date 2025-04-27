@@ -1,6 +1,5 @@
-import { Outlet } from 'react-router';
-
 import Layout from '~/components/Layout';
+import HomePage from '~/pages/Home';
 import { useGetPostsQuery } from '~/query/services/posts.ts';
 
 function App() {
@@ -9,7 +8,7 @@ function App() {
 
     return (
         <Layout>
-            <Outlet />
+            <HomePage />
         </Layout>
     );
 }

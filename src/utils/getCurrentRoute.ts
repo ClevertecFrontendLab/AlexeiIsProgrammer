@@ -1,4 +1,4 @@
-import { flattenRoutes } from '~/main';
+import { flattenRoutes } from '~/routes';
 
 const getCurrentRoute = (searchRoute: string) =>
     flattenRoutes.find((route) => route.path === searchRoute);

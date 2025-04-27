@@ -1,49 +1,39 @@
-import { ArrowForwardIcon } from '@chakra-ui/icons';
-import {
-    Box,
-    Button,
-    Flex,
-    SimpleGrid,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
-    Tabs,
-    useBreakpointValue,
-    useMediaQuery,
-} from '@chakra-ui/react';
-import { useLocation, useNavigate } from 'react-router';
+import { Box, Tab, TabList, TabPanel, TabPanels, Tabs, useBreakpointValue } from '@chakra-ui/react';
+import { Outlet, useLocation, useNavigate } from 'react-router';
 
-import { AppRoute } from '~/main';
+import { AppRoute } from '~/routes';
+import getCurrentCategory from '~/utils/getCurrentCategory';
+import getCurrentRoute from '~/utils/getCurrentRoute';
+import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
 
-import Item from '../Item';
-
-type TabbedProps = {
-    parent: string;
-    tabs: AppRoute[];
-};
-
-const Tabbed = ({ parent, tabs }: TabbedProps) => {
-    const navigate = useNavigate();
+const Tabbed = () => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
-    const [isLargeMobile] = useMediaQuery('(max-width: 1440px)');
-    const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
+
+    const navigate = useNavigate();
 
     const { pathname } = useLocation();
 
+    const currentCategory = getCurrentCategory(pathname);
+    const currentSubcategory = getCurrentSubcategory(pathname);
+
+    const currentRoute = getCurrentRoute(currentCategory);
+
+    const parent = currentRoute?.path;
+
+    const tabs: AppRoute[] = currentRoute?.children || [];
+
+    const currentIndex = tabs.findIndex((tab) => tab.path === currentSubcategory);
+
+    console.log('currentIndex', currentIndex, tabs);
+
     return (
         <Box>
-            <Tabs isLazy defaultValue={pathname.substring(pathname.lastIndexOf('/') + 1)}>
+            <Tabs index={currentIndex} isLazy>
                 <TabList
-                    // sx={{
-                    //     scrollbarWidth: 'none', // Firefox
-                    //     '&::-webkit-scrollbar': {
-                    //         display: 'none', // Chrome/Safari
-                    //     },
-                    // }}
+                    justifyContent={isMobile ? 'flex-start' : 'center'}
                     pb='5px'
                     overflowX='auto'
-                    whiteSpace='nowrap'
+                    flexWrap={isMobile ? 'nowrap' : 'wrap'}
                 >
                     {tabs.map((tab) => (
                         <Tab
@@ -62,24 +52,7 @@ const Tabbed = ({ parent, tabs }: TabbedProps) => {
                 <TabPanels>
                     {tabs.map((tab) => (
                         <TabPanel key={tab.path}>
-                            <Flex direction='column' alignItems='center'>
-                                <SimpleGrid
-                                    spacing='24px'
-                                    columns={(isLargeMobile && !isMobile) || isSmallMobile ? 1 : 2}
-                                >
-                                    <Item />
-                                    <Item />
-                                    <Item />
-                                    <Item />
-                                    <Item />
-                                    <Item />
-                                    <Item />
-                                    <Item />
-                                </SimpleGrid>
-                                <Button rightIcon={<ArrowForwardIcon />} bg='lime.400'>
-                                    Загрузить ещё
-                                </Button>
-                            </Flex>
+                            <Outlet />
                         </TabPanel>
                     ))}
                 </TabPanels>

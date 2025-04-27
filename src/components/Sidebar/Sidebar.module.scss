@@ -7,9 +7,10 @@
         height: 100%;
         content: '';
         background-color: #c4ff61;
+        width: 1px;
     }
     &:hover:before {
-        width: 1px;
+        width: 0;
     }
 
     &.active {

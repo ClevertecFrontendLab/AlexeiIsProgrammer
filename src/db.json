@@ -337,34 +337,5 @@
                 "image": "url"
             }
         ]
-    },
-    {
-        "id": "9",
-        "title": "Сосиска в тесте",
-        "description": "Очень вкусная и классна сосисочка.",
-        "category": ["snacks"],
-        "subcategory": ["poultry-dish"],
-        "image": "/public/db/kotleta.png",
-        "bookmarks": 15,
-        "likes": 99,
-        "date": "2024-03-20T00:00:00Z",
-        "time": "10 минут",
-        "nutritionValue": { "calories": 150, "proteins": 4, "fats": 6, "carbohydrates": 20 },
-        "ingredients": [
-            { "title": "тесто", "count": "1", "measureUnit": "шт." },
-            { "title": "сосиска", "count": "1", "measureUnit": "шт." }
-        ],
-        "steps": [
-            {
-                "stepNumber": 1,
-                "description": "Обжарить овощи на гриле.",
-                "image": "url"
-            },
-            {
-                "stepNumber": 2,
-                "description": "Смешать с заправкой и подавать.",
-                "image": "url"
-            }
-        ]
     }
 ]
