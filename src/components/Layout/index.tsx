@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import type React from 'react';
 
+import Breadcrumbs from '../Breadcrumbs';
 import Footer from '../Footer';
 import FooterButton from '../FooterButton';
 import Header from '../Header';
@@ -27,11 +28,12 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
-    const { isOpen, onClose } = useDisclosure();
+    const { isOpen, onClose, onOpen } = useDisclosure();
+    console.log('isOpen', isOpen);
 
     return (
         <Flex direction='column' minH='100vh'>
-            <Header />
+            <Header onOpen={onOpen} isOpen={isOpen} />
 
             <Flex flex='1'>
                 {!isMobile && (
@@ -52,11 +54,30 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </Box>
                 )}
 
-                <Drawer isOpen={isOpen} placement='left' onClose={onClose}>
-                    <DrawerOverlay />
-                    <DrawerContent>
-                        <DrawerCloseButton />
-                        <DrawerBody p={0}>
+                <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
+                    <DrawerOverlay
+                        display={isMobile && isOpen ? 'block' : 'none'}
+                        backdropFilter='blur(4px)'
+                    />
+                    <DrawerContent
+                        data-test-id='nav'
+                        borderBottomRadius='12px'
+                        boxShadow='xl'
+                        height='calc(100vh - 60px)'
+                        maxHeight='90vh'
+                    >
+                        <DrawerCloseButton data-test-id='close-icon' />
+                        <DrawerBody
+                            display='flex'
+                            flexDirection='column'
+                            borderBottomRadius='12px'
+                            boxShadow='xl'
+                            p={0}
+                        >
+                            <Box mt='70px' px='24px'>
+                                <Breadcrumbs />
+                            </Box>
+
                             <Sidebar />
                         </DrawerBody>
                     </DrawerContent>

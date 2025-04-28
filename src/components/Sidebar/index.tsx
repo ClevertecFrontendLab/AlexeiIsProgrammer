@@ -23,7 +23,10 @@ const SidebarItem = ({ category: { label, icon, children, path } }: SidebarItemP
 
     return (
         <Box w='100%'>
-            <Link data-test-id={path} to={`/${path}/${children?.[0].path || ''}`}>
+            <Link
+                data-test-id={path === 'vegan' ? 'vegan-cuisine' : path}
+                to={`/${path}/${children?.[0].path || ''}`}
+            >
                 <Flex
                     cursor='pointer'
                     alignItems='center'
@@ -52,6 +55,11 @@ const SidebarItem = ({ category: { label, icon, children, path } }: SidebarItemP
                     <Box>
                         {children.map((category: AppRoute) => (
                             <Text
+                                data-test-id={
+                                    getCurrentSubcategory(pathname) === category.path
+                                        ? `${category.path}-active`
+                                        : null
+                                }
                                 className={`${styles.sub} ${getCurrentSubcategory(pathname) === category.path ? styles.active : ''}`}
                                 px='18px'
                                 py='6px'
@@ -63,7 +71,7 @@ const SidebarItem = ({ category: { label, icon, children, path } }: SidebarItemP
                                 lineHeight='24px'
                                 color='black'
                             >
-                                <Link to={`${path}/${category.path}`}>{category.label}</Link>
+                                <Link to={`/${path}/${category.path}`}>{category.label}</Link>
                             </Text>
                         ))}
                     </Box>

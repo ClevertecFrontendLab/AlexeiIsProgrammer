@@ -9,18 +9,19 @@ import {
 } from '@chakra-ui/react';
 
 import loveMark from '~/assets/love-mark.svg';
+import { RecipeType } from '~/types';
 
 import CustomBadge from '../CustomBadge';
 import SideIcon from '../SideIcon';
 import styles from './SlideItem.module.scss';
 
 export type SlideProps = {
-    image?: string;
+    slide?: RecipeType;
     isFact?: boolean;
 };
 
-const SlideItem = ({ isFact, image }: SlideProps) => {
-    const isMobile = useBreakpointValue({ base: true, lg: false });
+const SlideItem = ({ isFact, slide }: SlideProps) => {
+    const isMobile = useBreakpointValue({ base: true, md: false });
 
     return (
         <Card
@@ -30,21 +31,43 @@ const SlideItem = ({ isFact, image }: SlideProps) => {
             position='relative'
             maxW='md'
         >
-            {image && <Image objectFit='cover' src={image} alt='Chakra UI' />}
-            <CardBody>
-                <Heading fontSize='20px' lineHeight='28px' fontWeight='500'>
-                    Солянка с грибами
+            {slide?.image && !isFact && (
+                <Image
+                    h={isMobile ? '128px' : '230px'}
+                    objectFit='cover'
+                    src={slide.image}
+                    alt='Chakra UI'
+                />
+            )}
+            <CardBody p={isMobile ? '8px' : '12px'}>
+                <Heading
+                    title={slide?.title}
+                    overflow='hidden'
+                    whiteSpace='nowrap'
+                    textOverflow='ellipsis'
+                    fontSize='20px'
+                    lineHeight='28px'
+                    fontWeight='500'
+                >
+                    {slide?.title}
                 </Heading>
                 {(!isMobile || isFact) && (
-                    <Text fontSize='14px' lineHeight='20px'>
-                        Как раз после праздников, когда мясные продукты еще остались, но никто их
-                        уже не хочет, время варить солянку.
+                    <Text
+                        title={slide?.description}
+                        className={styles.description}
+                        fontSize='14px'
+                        lineHeight='20px'
+                    >
+                        {slide?.description}
                     </Text>
                 )}
             </CardBody>
-
-            <CardFooter justify='space-between' flexWrap='wrap'>
-                <CustomBadge text='Первые блюда' className={styles.badge} />
+            <CardFooter p={isMobile ? '8px' : '12px'} justify='space-between' flexWrap='wrap'>
+                <CustomBadge
+                    color='lime.150'
+                    className={styles.badge}
+                    category={slide?.category[0]}
+                />
 
                 <SideIcon text='1' icon={loveMark} />
             </CardFooter>

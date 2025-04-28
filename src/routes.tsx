@@ -19,6 +19,7 @@ import Tabbed from '~/components/Tabbed';
 
 import Juciest from './components/Juciest';
 import Subcategory from './components/Subcategory';
+import Recipe from './pages/Recipe';
 import flatten from './utils/flatten';
 
 export type AppRoute = RouteObject & {
@@ -36,7 +37,7 @@ export const routes: AppRoute[] = [
         path: '/',
         element: <App />,
         children: [
-            { noMenu: true, path: 'juciest', label: 'Самое сочное', element: <Juciest /> },
+            { noMenu: true, path: 'the-juciest', label: 'Самое сочное', element: <Juciest /> },
             // Салаты
             {
                 path: 'salads',
@@ -71,7 +72,7 @@ export const routes: AppRoute[] = [
             },
             // Первые блюда
             {
-                path: 'first-courses',
+                path: 'first-dish',
                 label: 'Первые блюда',
                 icon: kastrulya,
                 element: <Tabbed />,
@@ -85,7 +86,7 @@ export const routes: AppRoute[] = [
             },
             // Вторые блюда
             {
-                path: 'main-courses',
+                path: 'second-dish',
                 label: 'Вторые блюда',
                 icon: pan,
                 element: <Tabbed />,
@@ -155,14 +156,14 @@ export const routes: AppRoute[] = [
             },
             // Веганская кухня
             {
-                path: 'vegan-cuisine',
+                path: 'vegan',
                 label: 'Веганская кухня',
                 icon: green,
                 element: <Tabbed />,
                 children: [
-                    { label: 'Закуски', path: 'zakuski', element: <Subcategory /> },
-                    { label: 'Первые блюда', path: 'pervye-blyuda', element: <Subcategory /> },
-                    { label: 'Вторые блюда', path: 'vtorye-blyuda', element: <Subcategory /> },
+                    { label: 'Закуски', path: 'snacks', element: <Subcategory /> },
+                    { label: 'Первые блюда', path: 'first-dish', element: <Subcategory /> },
+                    { label: 'Вторые блюда', path: 'second-dish', element: <Subcategory /> },
                     { label: 'Гарниры', path: 'garniry', element: <Subcategory /> },
                     { label: 'Десерты', path: 'deserty', element: <Subcategory /> },
                     { label: 'Выпечка', path: 'vypechka', element: <Subcategory /> },
@@ -181,8 +182,8 @@ export const routes: AppRoute[] = [
                 icon: baby,
                 element: <Tabbed />,
                 children: [
-                    { label: 'Первые блюда', path: 'kids-first-courses', element: <Subcategory /> },
-                    { label: 'Вторые блюда', path: 'kids-main-courses', element: <Subcategory /> },
+                    { label: 'Первые блюда', path: 'kids-first-dish', element: <Subcategory /> },
+                    { label: 'Вторые блюда', path: 'kids-second-dish', element: <Subcategory /> },
                     { label: 'Гарниры', path: 'kids-side-dishes', element: <Subcategory /> },
                     { label: 'Выпечка', path: 'kids-bakery', element: <Subcategory /> },
                     { label: 'Без глютена', path: 'kids-gluten-free', element: <Subcategory /> },
@@ -300,6 +301,10 @@ export const routes: AppRoute[] = [
                 ],
             },
         ],
+    },
+    {
+        path: '/:category/:subcategory/:id',
+        element: <Recipe />,
     },
 ];
 

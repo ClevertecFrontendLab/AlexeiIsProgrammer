@@ -1,5 +1,6 @@
-import { Box, IconButton, Image, Text, useBreakpointValue } from '@chakra-ui/react';
+import { Box, IconButton, Image, Text, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
 import { useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 import { NavigationOptions } from 'swiper/types';
@@ -10,20 +11,27 @@ import slides from '~/db.json';
 
 import SlideItem from '../SlideItem';
 import styles from './Slider.module.scss';
-console.log('slides', slides);
 
 type SliderProps = {
     title?: string;
 };
 
 const Slider = ({ title }: SliderProps) => {
+    const navigate = useNavigate();
+
     const isMobile = useBreakpointValue({ base: true, lg: false });
+    const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
+    const [isMedium] = useMediaQuery('(max-width: 1200px)');
+    const [isLarge] = useMediaQuery('(max-width: 1440px)');
 
     const prevRef = useRef(null);
     const nextRef = useRef(null);
 
     const sortedSlides = useMemo(
-        () => slides.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+        () =>
+            slides
+                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                .slice(0, 10),
         [],
     );
 
@@ -47,10 +55,11 @@ const Slider = ({ title }: SliderProps) => {
             <Box position='relative'>
                 <Swiper
                     data-test-id='carousel'
-                    className={styles.slider}
                     modules={[Navigation]}
                     spaceBetween={24}
-                    slidesPerView={isMobile ? 4.2 : 4}
+                    slidesPerView={
+                        isSmallMobile ? 1.2 : isMobile ? 3.2 : isMedium ? 2 : isLarge ? 3 : 4
+                    }
                     navigation={{
                         prevEl: prevRef.current,
                         nextEl: nextRef.current,
@@ -64,8 +73,16 @@ const Slider = ({ title }: SliderProps) => {
                     }}
                 >
                     {sortedSlides.map((slide, i) => (
-                        <SwiperSlide data-test-id={`carousel-card-${i}`} key={slide.id}>
-                            <SlideItem image={slide.image} />
+                        <SwiperSlide
+                            data-test-id={`carousel-card-${i}`}
+                            onClick={() =>
+                                navigate(
+                                    `/${slide.category[0]}/${slide.subcategory[0]}/${slide.id}`,
+                                )
+                            }
+                            key={slide.id}
+                        >
+                            <SlideItem slide={slide} />
                         </SwiperSlide>
                     ))}
                 </Swiper>
@@ -83,8 +100,6 @@ const Slider = ({ title }: SliderProps) => {
                     icon={<Image src={arrowRight} />}
                     className={`${styles.arrow} ${styles['arrow-right']}`}
                 />
-                {/* </>
-                )} */}
             </Box>
         </Box>
     );

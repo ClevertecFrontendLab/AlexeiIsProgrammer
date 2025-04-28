@@ -1,10 +1,11 @@
 .sub {
     position: relative;
     &:before {
-        top: 0;
+        top: 50%;
+        transform: translateY(-50%);
         position: absolute;
-        right: 195px;
-        height: 100%;
+        left: 61px;
+        height: 80%;
         content: '';
         background-color: #c4ff61;
         width: 1px;
@@ -16,6 +17,7 @@
     &.active {
         font-weight: 700;
         &:before {
+            left: 54px;
             width: 8px;
         }
     }

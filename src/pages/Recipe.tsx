@@ -1,54 +1,48 @@
-import { CheckIcon, ChevronLeftIcon, StarIcon, TimeIcon } from '@chakra-ui/icons';
 import {
-    Avatar,
     Box,
     Button,
     Flex,
-    Grid,
-    GridItem,
     Heading,
-    HStack,
-    Icon,
     Image,
-    List,
-    ListIcon,
-    ListItem,
-    Tag,
+    SimpleGrid,
     Text,
     useBreakpointValue,
-    VStack,
 } from '@chakra-ui/react';
 import type React from 'react';
-import { Link, useParams } from 'react-router';
+import { useParams } from 'react-router';
 
-import { recipes } from '../data';
+import loveMark from '~/assets/love-mark.svg';
+import loveSmile from '~/assets/love-smile.svg';
+import Calculate from '~/components/Calculate';
+import CustomBadge from '~/components/CustomBadge';
+import Layout from '~/components/Layout';
+import RecipeInfo from '~/components/RecipeInfo';
+import SideIcon from '~/components/SideIcon';
+import Slider from '~/components/Slider';
+import Steps from '~/components/Steps';
+import { RecipeType } from '~/types';
+import getRecipeById from '~/utils/getRecipeById';
+
+import alarm from '../assets/alarm.svg';
 
 type RecipeParams = {
     id: string;
 };
 
-const RecipePage: React.FC = () => {
+const Recipe: React.FC = () => {
     const { id } = useParams<RecipeParams>();
-    const recipe = recipes.find((r) => r.id === id) || recipes[0];
+    const recipe: RecipeType | undefined = getRecipeById(id);
+    console.log('recipe', recipe);
 
     const isMobile = useBreakpointValue({ base: true, md: false });
 
-    return (
-        <Box maxW='1200px' mx='auto'>
-            <Link to='/'>
-                <Button
-                    variant='ghost'
-                    leftIcon={<ChevronLeftIcon />}
-                    size='sm'
-                    mb={4}
-                    color='gray.600'
-                >
-                    Назад к рецептам
-                </Button>
-            </Link>
+    if (!recipe) return null;
+    console.log('recipe', recipe);
 
-            <Grid templateColumns={{ base: '1fr', md: '2fr 1fr' }} gap={6}>
-                <GridItem>
+    return (
+        <Layout>
+            <Box maxW='1200px' mx='auto'>
+                <SimpleGrid spacing='24px' columns={isMobile ? 1 : 2} mb='40px'>
                     <Image
                         src={recipe.image || 'https://via.placeholder.com/400x300'}
                         alt={recipe.title}
@@ -56,199 +50,84 @@ const RecipePage: React.FC = () => {
                         w='100%'
                         h={{ base: '200px', md: '400px' }}
                         objectFit='cover'
-                        mb={4}
                     />
 
-                    <Heading as='h1' size='xl' mb={3}>
-                        {recipe.title}
-                    </Heading>
+                    <Flex direction='column'>
+                        <Flex justifyContent='space-between' gap='10px'>
+                            <Flex>
+                                {recipe.category.map((category) => (
+                                    <CustomBadge color='lime.50' category={category} />
+                                ))}
+                            </Flex>
+                            <Flex gap='8px'>
+                                <SideIcon icon={loveMark} text={recipe.bookmarks.toString()} />
+                                <SideIcon icon={loveSmile} text={recipe.likes.toString()} />
+                            </Flex>
+                        </Flex>
 
-                    <Text fontSize='md' color='gray.700' mb={6}>
-                        {recipe.description}
-                    </Text>
+                        <Heading as='h1' size='xl' mb={3}>
+                            {recipe.title}
+                        </Heading>
 
-                    <Flex
-                        wrap='wrap'
-                        gap={4}
-                        mb={6}
-                        p={4}
-                        bg='gray.50'
-                        borderRadius='md'
-                        justify='space-between'
-                    >
-                        <HStack>
-                            <TimeIcon color='gray.500' />
-                            <VStack spacing={0} align='start'>
-                                <Text fontSize='sm' fontWeight='bold'>
-                                    Время
-                                </Text>
-                                <Text fontSize='sm'>{recipe.time}</Text>
-                            </VStack>
-                        </HStack>
+                        <Text fontSize='md' color='gray.700' mb={6}>
+                            {recipe.description}
+                        </Text>
 
-                        <HStack>
-                            <Icon as={StarIcon} color='gray.500' />
-                            <VStack spacing={0} align='start'>
-                                <Text fontSize='sm' fontWeight='bold'>
-                                    Порции
-                                </Text>
-                                <Text fontSize='sm'>{recipe.servings}</Text>
-                            </VStack>
-                        </HStack>
+                        <Flex flexWrap='wrap' mt='auto' justifyContent='space-between' gap='10px'>
+                            <CustomBadge color='blackAlpha.100' icon={alarm} text={recipe.time} />
 
-                        <HStack>
-                            <Icon as={StarIcon} color='gray.500' />
-                            <VStack spacing={0} align='start'>
-                                <Text fontSize='sm' fontWeight='bold'>
-                                    Сложность
-                                </Text>
-                                <Text fontSize='sm'>{recipe.difficulty}</Text>
-                            </VStack>
-                        </HStack>
-
-                        <HStack>
-                            <StarIcon color='brand.300' />
-                            <VStack spacing={0} align='start'>
-                                <Text fontSize='sm' fontWeight='bold'>
-                                    Рейтинг
-                                </Text>
-                                <Text fontSize='sm'>{recipe.rating}</Text>
-                            </VStack>
-                        </HStack>
+                            <Flex gap='8px' flexWrap='wrap'>
+                                <Button
+                                    leftIcon={<Image src={loveSmile} />}
+                                    variant='outline'
+                                    colorScheme='dark'
+                                >
+                                    Оценить рецепт
+                                </Button>
+                                <Button leftIcon={<Image src={loveMark} />} bg='lime.400'>
+                                    Сохранить в закладки
+                                </Button>
+                            </Flex>
+                        </Flex>
                     </Flex>
+                </SimpleGrid>
 
-                    <Flex gap={2} mb={6}>
-                        {recipe.tags &&
-                            recipe.tags.map((tag) => (
-                                <Tag key={tag} colorScheme='green' size='md'>
-                                    {tag}
-                                </Tag>
-                            ))}
-                    </Flex>
-
-                    <Heading as='h2' size='md' mb={4}>
-                        Ингредиенты
-                    </Heading>
-                    <List spacing={2} mb={8}>
-                        {recipe.ingredients &&
-                            recipe.ingredients.map((ingredient, index) => (
-                                <ListItem key={index} display='flex' alignItems='center'>
-                                    <ListIcon as={CheckIcon} color='green.500' />
-                                    <Text>{ingredient}</Text>
-                                </ListItem>
-                            ))}
-                    </List>
-
-                    <Heading as='h2' size='md' mb={4}>
-                        Приготовление
-                    </Heading>
-                    <List spacing={4} mb={8}>
-                        {recipe.steps &&
-                            recipe.steps.map((step, index) => (
-                                <ListItem key={index} display='flex'>
-                                    <Text
-                                        fontWeight='bold'
-                                        fontSize='lg'
-                                        color='green.500'
-                                        mr={3}
-                                        lineHeight='1.5'
-                                    >
-                                        {index + 1}.
-                                    </Text>
-                                    <Text>{step}</Text>
-                                </ListItem>
-                            ))}
-                    </List>
-                </GridItem>
-
-                <GridItem display={{ base: 'none', md: 'block' }}>
-                    <Box position='sticky' top='80px'>
-                        <VStack spacing={4} align='stretch'>
-                            <Box p={4} borderWidth='1px' borderRadius='md'>
-                                <Heading as='h3' size='sm' mb={4}>
-                                    Автор рецепта
-                                </Heading>
-                                <Flex align='center'>
-                                    <Avatar
-                                        name={recipe.author}
-                                        src={recipe.authorAvatar}
-                                        size='md'
-                                        mr={3}
-                                    />
-                                    <Text fontWeight='medium'>{recipe.author}</Text>
-                                </Flex>
-                            </Box>
-
-                            <Box p={4} borderWidth='1px' borderRadius='md'>
-                                <Heading as='h3' size='sm' mb={4}>
-                                    Действия
-                                </Heading>
-                                <VStack spacing={2} align='stretch'>
-                                    <Button
-                                        leftIcon={<Icon as={StarIcon} />}
-                                        colorScheme='red'
-                                        variant='outline'
-                                    >
-                                        В избранное
-                                    </Button>
-                                    <Button
-                                        leftIcon={<Icon as={StarIcon} />}
-                                        colorScheme='blue'
-                                        variant='outline'
-                                    >
-                                        Сохранить
-                                    </Button>
-                                    <Button
-                                        leftIcon={<Icon as={StarIcon} />}
-                                        colorScheme='green'
-                                        variant='outline'
-                                    >
-                                        Поделиться
-                                    </Button>
-                                    <Button
-                                        leftIcon={<Icon as={StarIcon} />}
-                                        colorScheme='gray'
-                                        variant='outline'
-                                    >
-                                        Распечатать
-                                    </Button>
-                                </VStack>
-                            </Box>
-                        </VStack>
+                <Box maxW='670px' mx='auto'>
+                    <Box mb='40px'>
+                        <Text mb='20px'>* Калорийность на одну порцию</Text>
+                        <SimpleGrid columns={isMobile ? 1 : 4} gap='24px' mb='40px'>
+                            <RecipeInfo
+                                label='калорийность'
+                                value={recipe.nutritionValue.calories}
+                                measure='ккал'
+                            />
+                            <RecipeInfo
+                                label='белки'
+                                value={recipe.nutritionValue.proteins}
+                                measure='грамм'
+                            />
+                            <RecipeInfo
+                                label='жиры'
+                                value={recipe.nutritionValue.fats}
+                                measure='грамм'
+                            />
+                            <RecipeInfo
+                                label='углеводы'
+                                value={recipe.nutritionValue.carbohydrates}
+                                measure='грамм'
+                            />
+                        </SimpleGrid>
                     </Box>
-                </GridItem>
-            </Grid>
 
-            {isMobile && (
-                <Flex mt={8} mb={4} gap={2} justify='space-between'>
-                    <Button
-                        leftIcon={<Icon as={StarIcon} />}
-                        colorScheme='red'
-                        variant='outline'
-                        flex='1'
-                    >
-                        В избранное
-                    </Button>
-                    <Button
-                        leftIcon={<Icon as={StarIcon} />}
-                        colorScheme='blue'
-                        variant='outline'
-                        flex='1'
-                    >
-                        Сохранить
-                    </Button>
-                    <Button
-                        leftIcon={<Icon as={StarIcon} />}
-                        colorScheme='green'
-                        variant='outline'
-                        flex='1'
-                    >
-                        Поделиться
-                    </Button>
-                </Flex>
-            )}
-        </Box>
+                    <Calculate portions={recipe.portions} ingredients={recipe.ingredients} />
+
+                    <Steps steps={recipe.steps} />
+                </Box>
+
+                <Slider title='Новые рецепты' />
+            </Box>
+        </Layout>
     );
 };
 
-export default RecipePage;
+export default Recipe;

@@ -5,6 +5,7 @@ import { Outlet, useLocation } from 'react-router';
 import Blogs from '~/components/Blogs';
 import Facts from '~/components/Facts';
 import FilterComponent from '~/components/FilterComponent';
+import Juciest from '~/components/Juciest';
 import Slider from '~/components/Slider';
 import getCurrentRoute from '~/utils/getCurrentRoute';
 
@@ -21,6 +22,8 @@ const HomePage: React.FC = () => {
             {!currentRoute && <Slider title='Новые рецепты' />}
 
             <Outlet />
+
+            {pathname === '/' && <Juciest />}
 
             {!currentRoute && <Blogs />}
 

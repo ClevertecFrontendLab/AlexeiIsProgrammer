@@ -35,8 +35,9 @@ const Tabbed = () => {
                     overflowX='auto'
                     flexWrap={isMobile ? 'nowrap' : 'wrap'}
                 >
-                    {tabs.map((tab) => (
+                    {tabs.map((tab, i) => (
                         <Tab
+                            data-test-id={`tab-${tab.path}-${i}`}
                             flexShrink={0}
                             color='lime.800'
                             _selected={{ borderColor: 'lime.700', color: 'lime.700' }}

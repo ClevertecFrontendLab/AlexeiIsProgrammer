@@ -1,7 +1,7 @@
-import type { Comment, Recipe } from './types';
+import type { Comment, RecipeType } from './types';
 
 // Sample recipe data
-export const recipes: Recipe[] = [
+export const recipes: RecipeType[] = [
     {
         id: '1',
         title: 'Домашняя пицца с грибами и сыром',
@@ -130,7 +130,7 @@ export const recipes: Recipe[] = [
 ];
 
 // New recipes for homepage
-export const newRecipes: Recipe[] = [
+export const newRecipes = [
     {
         id: '1',
         title: 'Домашняя пицца с грибами и сыром',
@@ -174,7 +174,7 @@ export const newRecipes: Recipe[] = [
 ];
 
 // Popular recipes for homepage
-export const popularRecipes: Recipe[] = [
+export const popularRecipes = [
     {
         id: '5',
         title: 'Борщ украинский',
