@@ -1,83 +1,41 @@
-import { Box, Collapse, Flex, Image, Text, useDisclosure, VStack } from '@chakra-ui/react';
-import { Link, useLocation } from 'react-router';
+import { Box, Collapse, Flex, Image, Text, VStack } from '@chakra-ui/react';
+import { Link, RouteObject, useLocation } from 'react-router';
 
 import ArrowDown from '~/assets/arrow-down.svg';
 import ArrowUp from '~/assets/arrow-up.svg';
 import exit from '~/assets/exit.svg';
-import apple from '~/assets/sidebar/apple.svg';
-import baby from '~/assets/sidebar/baby.svg';
-import bread from '~/assets/sidebar/bread.svg';
-import browser from '~/assets/sidebar/browser.svg';
-import carrot from '~/assets/sidebar/carrot.svg';
-import cup from '~/assets/sidebar/cup.svg';
-import fish from '~/assets/sidebar/fish.svg';
-import green from '~/assets/sidebar/green.svg';
-import heal from '~/assets/sidebar/heal.svg';
-import kastrulya from '~/assets/sidebar/kastrulya.svg';
-import pan from '~/assets/sidebar/pan.svg';
-import van from '~/assets/sidebar/van.svg';
-import violet from '~/assets/sidebar/violet.svg';
+import { AppRoute, routes } from '~/routes';
+import getCurrentCategory from '~/utils/getCurrentCategory';
+import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
 
 import styles from './Sidebar.module.scss';
 
-type Sub = { label: string; value: string };
-
-type Category = {
-    label: string;
-    icon: string;
-    value?: string;
-    sub?: Sub[];
-};
-
-const categories: Category[] = [
-    { label: 'Салаты', icon: violet },
-    { label: 'Закуски', icon: apple },
-    { label: 'Первые блюда', icon: kastrulya },
-    { label: 'Вторые блюда', icon: pan },
-    { label: 'Десерты, выпечка', icon: bread },
-    { label: 'Блюда на гриле', icon: van },
-    {
-        label: 'Веганская кухня',
-        value: 'vegan-cuisine',
-        icon: green,
-        sub: [
-            { label: 'Закуски', value: 'zakuski' },
-            { label: 'Первые блюда', value: 'pervye-blyuda' },
-            { label: 'Вторые блюда', value: 'vtorye-blyuda' },
-            { label: 'Гарниры', value: 'garniry' },
-            { label: 'Десерты', value: 'deserty' },
-            { label: 'Выпечка', value: 'vypechka' },
-            { label: 'Сыроедческие блюда', value: 'syroedcheskie-blyuda' },
-            { label: 'Напитки', value: 'napitki' },
-        ],
-    },
-    { label: 'Детские блюда', icon: baby },
-    { label: 'Лечебное питание', icon: heal },
-    { label: 'Национальные', icon: browser },
-    { label: 'Соусы', icon: fish },
-    { label: 'Напитки', icon: cup },
-    { label: 'Заготовки', icon: carrot },
-];
-
 type SidebarItemProps = {
-    category: Category;
+    category: RouteObject & AppRoute;
 };
 
-const SidebarItem = ({ category: { label, icon, sub, value } }: SidebarItemProps) => {
-    const { isOpen, onToggle } = useDisclosure();
-
+const SidebarItem = ({ category: { label, icon, children, path } }: SidebarItemProps) => {
     const { pathname } = useLocation();
+
+    const currentCategory = getCurrentCategory(pathname);
+
+    const isCategoryActive = currentCategory === path;
 
     return (
         <Box w='100%'>
-            <Link data-test-id={value} to={`/${value}`}>
+            <Link
+                to={`/${path}/${children?.[0].path || ''}`}
+                data-test-id={path === 'vegan' ? 'vegan-cuisine' : path}
+                // onClick={() =>
+                //     navigate(isCategoryActive ? '/' : `/${path}/${children?.[0].path || ''}`)
+                // }
+            >
                 <Flex
                     cursor='pointer'
                     alignItems='center'
                     justify='space-between'
                     _hover={{ bg: 'lime.50' }}
-                    bg={isOpen ? 'lime.100' : {}}
-                    onClick={onToggle}
+                    bg={isCategoryActive ? 'lime.100' : {}}
                     px='22px'
                     py='12px'
                 >
@@ -86,32 +44,37 @@ const SidebarItem = ({ category: { label, icon, sub, value } }: SidebarItemProps
                         <Text
                             letterSpacing='0.4px'
                             lineHeight='24px'
-                            fontWeight={isOpen ? '700' : '500'}
+                            fontWeight={isCategoryActive ? '700' : '500'}
                             fontSize='16px'
                         >
                             {label}
                         </Text>
                     </Flex>
-                    <Image src={!isOpen ? ArrowDown : ArrowUp} />
+                    <Image src={!isCategoryActive ? ArrowDown : ArrowUp} />
                 </Flex>
             </Link>
-            <Collapse in={isOpen}>
-                {sub && (
+            <Collapse in={isCategoryActive}>
+                {children && (
                     <Box>
-                        {sub.map((category: Sub) => (
+                        {children.map((category: AppRoute) => (
                             <Text
-                                className={`${styles.sub} ${pathname.substring(1) === category.value ? styles.active : ''}`}
+                                data-test-id={
+                                    getCurrentSubcategory(pathname) === category.path
+                                        ? `${category.path}-active`
+                                        : null
+                                }
+                                className={`${styles.sub} ${getCurrentSubcategory(pathname) === category.path ? styles.active : ''}`}
                                 px='18px'
                                 py='6px'
                                 pl='66px'
                                 _hover={{ bg: 'lime.50' }}
-                                key={category.value}
+                                key={category.path}
                                 fontSize='16px'
                                 fontWeight='500'
                                 lineHeight='24px'
                                 color='black'
                             >
-                                <Link to={`${value}/${category.value}`}>{category.label}</Link>
+                                <Link to={`/${path}/${category.path}`}>{category.label}</Link>
                             </Text>
                         ))}
                     </Box>
@@ -121,40 +84,46 @@ const SidebarItem = ({ category: { label, icon, sub, value } }: SidebarItemProps
     );
 };
 
-const Sidebar = () => (
-    <Box
-        display='flex'
-        flexDirection='column'
-        justifyContent='space-between'
-        h='100%'
-        bg='white'
-        borderRight='1px solid'
-        borderColor='gray.200'
-        py='10px'
-        pt='24px'
-    >
-        <VStack py='10px' spacing={0} align='stretch'>
-            {categories.map((category, index) => (
-                <SidebarItem key={index} category={category} />
-            ))}
-        </VStack>
+const Sidebar = () => {
+    const menu = routes[0]?.children || [];
 
-        <Flex direction='column' gap='16px' px='24px' mb='20px'>
-            <Text fontWeight='500' fontSize='12px' color='blackAlpha.300'>
-                Версия программы 03.25
-            </Text>
-            <Text color='blackAlpha.700' fontSize='12px' lineHeight='16px'>
-                Все права защищены,
-                <br /> ученический файл, ©Клевер Технолоджи, 2025
-            </Text>
-            <Flex gap='6px'>
-                <Image src={exit} />
-                <Text color='black' fontSize='12px' fontWeight='600'>
-                    Выход
+    return (
+        <Box
+            display='flex'
+            flexDirection='column'
+            justifyContent='space-between'
+            h='100%'
+            bg='white'
+            borderRight='1px solid'
+            borderColor='gray.200'
+            py='10px'
+            pt='24px'
+        >
+            <VStack py='10px' spacing={0} align='stretch'>
+                {menu
+                    .filter((category: AppRoute) => !category?.noMenu)
+                    .map((category) => (
+                        <SidebarItem key={category.path} category={category} />
+                    ))}
+            </VStack>
+
+            <Flex direction='column' gap='16px' px='24px' mb='20px'>
+                <Text fontWeight='500' fontSize='12px' color='blackAlpha.300'>
+                    Версия программы 03.25
                 </Text>
+                <Text color='blackAlpha.700' fontSize='12px' lineHeight='16px'>
+                    Все права защищены,
+                    <br /> ученический файл, ©Клевер Технолоджи, 2025
+                </Text>
+                <Flex gap='6px'>
+                    <Image src={exit} />
+                    <Text color='black' fontSize='12px' fontWeight='600'>
+                        Выход
+                    </Text>
+                </Flex>
             </Flex>
-        </Flex>
-    </Box>
-);
+        </Box>
+    );
+};
 
 export default Sidebar;

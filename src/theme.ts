@@ -8,6 +8,7 @@ const theme = extendTheme({
         lime: {
             50: '#FFFFD3',
             100: '#EAFFC7',
+            150: '#D7FF94',
             300: '#C4FF61',
             400: '#B1FF2E',
             600: '#2DB100',
@@ -16,6 +17,7 @@ const theme = extendTheme({
         },
         blackAlpha: {
             50: '#0000000A',
+            100: '#0000000F',
             200: '#00000014',
             300: '#00000029',
             400: '#0000003D',

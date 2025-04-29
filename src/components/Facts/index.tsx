@@ -2,6 +2,7 @@ import { Box, Flex, SimpleGrid, Text, useBreakpointValue, useMediaQuery } from '
 
 import kastrulya from '~/assets/sidebar/kastrulya.svg';
 import pan from '~/assets/sidebar/pan.svg';
+import getRecipeById from '~/utils/getRecipeById';
 
 import SlideItem from '../SlideItem';
 import Fact from './Fact';
@@ -47,8 +48,8 @@ const Facts = () => {
                     spacing='16px'
                     columns={isSmallMobile ? 1 : 3}
                 >
-                    <SlideItem isFact />
-                    <SlideItem isFact />
+                    <SlideItem slide={getRecipeById('0')} isFact />
+                    <SlideItem slide={getRecipeById('1')} isFact />
                     <Flex direction='column' gap='12px' alignItems='flex-start'>
                         <Fact icon={pan} text='Стейк для вегетарианцев' />
                         <Fact icon={pan} text='Котлеты из гречки и фасоли' />

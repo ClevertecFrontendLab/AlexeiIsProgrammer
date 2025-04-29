@@ -16,6 +16,7 @@ const Footer = () => (
         w='100%'
         as='footer'
         bg='lime.50'
+        zIndex={1}
     >
         <Flex className={styles.list}>
             <FooterButton isIcon name='Главная' icon={home} active />

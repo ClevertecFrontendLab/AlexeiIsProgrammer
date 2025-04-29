@@ -1,7 +1,7 @@
 .arrow {
     position: absolute !important;
     z-index: 1;
-    top: 50%;
+    top: 40%;
     transform: translateY(-50%);
     background-color: black !important;
 
@@ -11,5 +11,9 @@
 
     &-right {
         right: -10px;
+    }
+
+    @media (max-width: 991px) {
+        display: none !important;
     }
 }
