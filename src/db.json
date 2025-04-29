@@ -1,5 +1,43 @@
 [
     {
+        "id": "7",
+        "title": "Лапша с курицей и шафраном",
+        "description": "Ароматная лапша с курицей и шафраном, идеальное сочетание для сытного обеда.",
+        "category": ["second-dish"],
+        "subcategory": ["poultry-dish"],
+        "image": "/public/db/kotleta.png.png",
+        "bookmarks": 258,
+        "likes": 1342,
+        "date": "2024-03-08T00:00:00Z",
+        "time": "40 минут",
+        "portions": 4,
+        "nutritionValue": { "calories": 400, "proteins": 30, "fats": 15, "carbohydrates": 50 },
+        "ingredients": [
+            { "title": "лапша", "count": "200", "measureUnit": "г" },
+            { "title": "курица", "count": "300", "measureUnit": "г" },
+            { "title": "шафран", "count": "1", "measureUnit": "ч. л." },
+            { "title": "лук", "count": "1", "measureUnit": "шт." }
+        ],
+        "steps": [
+            {
+                "stepNumber": 1,
+                "description": "Отварить лапшу.",
+                "image": "https://images.pexels.com/photos/6646947/pexels-photo-6646947.jpeg"
+            },
+            {
+                "stepNumber": 2,
+                "description": "Обжарить курицу с луком и шафраном.",
+                "image": "https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg"
+            },
+            {
+                "stepNumber": 3,
+                "description": "Смешать лапшу с курицей и подавать.",
+                "image": "https://images.pexels.com/photos/905847/pexels-photo-905847.jpeg"
+            }
+        ]
+    },
+
+    {
         "id": "0",
         "title": "Картошка, тушенная с болгарским перцем и фасолью в томатном соусе",
         "description": "Картошка, тушенная с болгарским перцем, фасолью, морковью и луком, - вариант сытного блюда на каждый день. Фасоль в данном случае заменяет мясо, делая рагу сытным и питательным. Чтобы сократить время приготовления, возьмём консервированную фасоль. Блюдо хоть и простое, но в полной мере наполнено ароматами и имеет выразительный вкус за счёт добавления томатной пасты.",
@@ -45,6 +83,7 @@
         "meat": "",
         "side": "potatoes"
     },
+
     {
         "id": "1",
         "title": "Картофельные рулетики с грибами",
@@ -269,43 +308,7 @@
             }
         ]
     },
-    {
-        "id": "7",
-        "title": "Лапша с курицей и шафраном",
-        "description": "Ароматная лапша с курицей и шафраном, идеальное сочетание для сытного обеда.",
-        "category": ["second-dish"],
-        "subcategory": ["poultry-dish"],
-        "image": "/public/db/kotleta.png.png",
-        "bookmarks": 258,
-        "likes": 1342,
-        "date": "2024-03-08T00:00:00Z",
-        "time": "40 минут",
-        "portions": 4,
-        "nutritionValue": { "calories": 400, "proteins": 30, "fats": 15, "carbohydrates": 50 },
-        "ingredients": [
-            { "title": "лапша", "count": "200", "measureUnit": "г" },
-            { "title": "курица", "count": "300", "measureUnit": "г" },
-            { "title": "шафран", "count": "1", "measureUnit": "ч. л." },
-            { "title": "лук", "count": "1", "measureUnit": "шт." }
-        ],
-        "steps": [
-            {
-                "stepNumber": 1,
-                "description": "Отварить лапшу.",
-                "image": "https://images.pexels.com/photos/6646947/pexels-photo-6646947.jpeg"
-            },
-            {
-                "stepNumber": 2,
-                "description": "Обжарить курицу с луком и шафраном.",
-                "image": "https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg"
-            },
-            {
-                "stepNumber": 3,
-                "description": "Смешать лапшу с курицей и подавать.",
-                "image": "https://images.pexels.com/photos/905847/pexels-photo-905847.jpeg"
-            }
-        ]
-    },
+
     {
         "id": "8",
         "title": "Гриль-салат с овощами",
@@ -646,28 +649,6 @@
         "steps": [
             { "stepNumber": 1, "description": "Приготовить соус", "image": "url" },
             { "stepNumber": 2, "description": "Собрать лазанью", "image": "url" }
-        ]
-    },
-    {
-        "id": "32",
-        "title": "Фалафель с хумусом",
-        "description": "Вегетарианские шарики из нута с кунжутной пастой.",
-        "category": ["vegan"],
-        "subcategory": ["zakuski"],
-        "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2",
-        "bookmarks": 432,
-        "likes": 987,
-        "date": "2024-02-25T00:00:00Z",
-        "time": "40 минут",
-        "portions": 4,
-        "nutritionValue": { "calories": 220, "proteins": 9, "fats": 10, "carbohydrates": 25 },
-        "ingredients": [
-            { "title": "нут", "count": "200", "measureUnit": "г" },
-            { "title": "кунжутная паста", "count": "50", "measureUnit": "г" }
-        ],
-        "steps": [
-            { "stepNumber": 1, "description": "Приготовить фалафель", "image": "url" },
-            { "stepNumber": 2, "description": "Подавать с хумусом", "image": "url" }
         ]
     }
 ]

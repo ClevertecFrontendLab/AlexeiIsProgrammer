@@ -48,13 +48,8 @@ const Subcategory = () => {
         categories,
         authors,
         search,
-    )(recipes);
-
-    const juciest = (
-        currentCategory === 'the-juiciest' || pathname === '/'
-            ? structuredClone(items).sort((a, b) => b.likes - a.likes)
-            : items
-    ).slice(0, 8);
+    )(recipes).slice(0, 8);
+    console.log('items', items);
 
     return (
         <Flex direction='column' alignItems='center'>
@@ -62,7 +57,7 @@ const Subcategory = () => {
                 spacing='24px'
                 columns={(isLargeMobile && !isMobile) || isSmallMobile ? 1 : 2}
             >
-                {juciest.map((item, i) => (
+                {items.map((item, i) => (
                     <Item
                         index={i}
                         key={item.id}
@@ -72,7 +67,7 @@ const Subcategory = () => {
                     />
                 ))}
             </SimpleGrid>
-            {juciest.length === 8 && (
+            {items.length === 8 && (
                 <Button mt='12px' rightIcon={<ArrowForwardIcon />} bg='lime.400'>
                     Загрузить ещё
                 </Button>

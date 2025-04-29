@@ -1,8 +1,11 @@
+import { SmallAddIcon } from '@chakra-ui/icons';
 import {
+    Avatar,
     Box,
     Button,
     Flex,
     Heading,
+    Icon,
     Image,
     SimpleGrid,
     Text,
@@ -11,6 +14,7 @@ import {
 import type React from 'react';
 import { useParams } from 'react-router';
 
+import group from '~/assets/group.svg';
 import loveMark from '~/assets/love-mark.svg';
 import loveSmile from '~/assets/love-smile.svg';
 import Calculate from '~/components/Calculate';
@@ -120,6 +124,39 @@ const Recipe: React.FC = () => {
                     <Calculate portions={recipe.portions} ingredients={recipe.ingredients} />
 
                     <Steps steps={recipe.steps} />
+
+                    <Box mt='40px' bg='lime.300' p={4} borderRadius='lg' width='100%'>
+                        <Flex justifyContent='space-between' alignItems='center'>
+                            <Flex alignItems='center' gap={4}>
+                                <Avatar size='xl' src='https://bit.ly/sage-adebayo' />
+
+                                <Box>
+                                    <Text fontSize='2xl' fontWeight='bold'>
+                                        Сергей Разумов
+                                    </Text>
+                                    <Text color='gray.700'>@serge25</Text>
+
+                                    <Button
+                                        mt={2}
+                                        size='sm'
+                                        colorScheme='blackAlpha'
+                                        bg='black'
+                                        color='white'
+                                        borderRadius='md'
+                                        leftIcon={<Icon as={SmallAddIcon} />}
+                                    >
+                                        Подписаться
+                                    </Button>
+                                </Box>
+                            </Flex>
+
+                            <Flex h='100%' direction='column' alignItems='flex-end'>
+                                <Text fontWeight='medium'>Автор рецепта</Text>
+
+                                <SideIcon icon={group} text='125' />
+                            </Flex>
+                        </Flex>
+                    </Box>
                 </Box>
 
                 <Slider title='Новые рецепты' />

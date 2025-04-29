@@ -36,6 +36,7 @@ const Juciest = () => {
             <Subcategory />
 
             <Button
+                mt='20px'
                 onClick={() => navigate('/the-juiciest')}
                 rightIcon={<ArrowForwardIcon />}
                 bg='lime.400'

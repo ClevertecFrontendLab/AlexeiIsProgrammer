@@ -6,6 +6,7 @@ import { OptionType } from '~/types';
 type CustomTagProps = {
     item: OptionType;
     removeItem: (item: OptionType, e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+    className?: string;
 };
 
 const CustomTag = ({ item, removeItem, ...props }: CustomTagProps) => (

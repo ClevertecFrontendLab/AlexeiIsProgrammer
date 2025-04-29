@@ -93,7 +93,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                             onChange={(e) => setInput(e.target.value)}
                             data-test-id='search-input'
                             placeholder='Название или ингредиент...'
-                            onKeyDown={(e) => {
+                            onKeyPress={(e) => {
                                 if (e.key === 'Enter') {
                                     onSearchHandle();
                                 }
@@ -126,7 +126,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                             </FormLabel>
                             <Switch
                                 data-test-id='allergens-switcher'
-                                checked={areAllergensActive}
+                                isChecked={areAllergensActive}
                                 onChange={(e) => {
                                     const isChecked = e.target.checked;
 
@@ -142,7 +142,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                             />
                         </FormControl>
                         <CustomSelect
-                            placeholder='Выберите из списка...'
+                            placeholder='Выберите из списка'
                             value={activeAllergens}
                             options={allergens}
                             onChange={(allergens) => dispatch(selectAlergens(allergens))}

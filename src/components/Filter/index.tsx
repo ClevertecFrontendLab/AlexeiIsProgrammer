@@ -15,7 +15,7 @@ import {
     Switch,
     Text,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { routes } from '~/routes';
 import {
@@ -75,8 +75,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
 
     const dispatch = useAppDispatch();
 
-    const { activeAllergens, allergens, meats, sides, authors, categories, areAllergensActive } =
-        useAppSelector(userFilterSelector);
+    const { allergens, areAllergensActive } = useAppSelector(userFilterSelector);
 
     const handleItemSelect = (
         options: OptionType[],
@@ -96,16 +95,29 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
     const [localSides, setSides] = useState<OptionType[]>([]);
     const [localAllergens, setAllergens] = useState<OptionType[]>([]);
 
-    useEffect(() => {
-        if (isOpen) {
-            setCategories(categories);
-            setAuthors(authors);
-            setMeats(meats);
-            setSides(sides);
-            setAllergens(activeAllergens);
-        }
-    }, [isOpen, activeAllergens, meats, sides, authors, categories]);
+    const isFindRecipeDisabled =
+        localMeats.length === 0 &&
+        localSides.length === 0 &&
+        localAuthors.length === 0 &&
+        localCategories.length === 0 &&
+        localAllergens.length === 0;
 
+    // useEffect(() => {
+    //     if (isOpen) {
+    //         setCategories(categories);
+    //         setAuthors(authors);
+    //         setMeats(meats);
+    //         setSides(sides);
+    //         setAllergens(activeAllergens);
+    //     }
+    // }, [isOpen, activeAllergens, meats, sides, authors, categories]);
+    const clearLocals = () => {
+        setCategories([]);
+        setAuthors([]);
+        setMeats([]);
+        setSides([]);
+        setAllergens([]);
+    };
     return (
         <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
             <DrawerOverlay />
@@ -261,13 +273,13 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         <Button
                             data-test-id='clear-filter-button'
                             onClick={() => {
-                                dispatch(selectMeats([]));
-                                dispatch(selectSides([]));
-                                dispatch(selectAuthors([]));
-                                dispatch(selectCategories([]));
-                                dispatch(selectAlergens([]));
-
-                                onClose();
+                                dispatch(selectMeats(localMeats));
+                                dispatch(selectSides(localSides));
+                                dispatch(selectAuthors(localAuthors));
+                                dispatch(selectCategories(localCategories));
+                                dispatch(selectAlergens(localAllergens));
+                                clearLocals();
+                                // onClose();
                             }}
                             variant='outline'
                             colorScheme='dark'
@@ -276,21 +288,16 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         </Button>
                         <Button
                             data-test-id='find-recipe-button'
-                            pointerEvents={
-                                localMeats.length === 0 &&
-                                localSides.length === 0 &&
-                                localAuthors.length === 0 &&
-                                localCategories.length === 0 &&
-                                localAllergens.length === 0
-                                    ? 'none'
-                                    : 'auto'
-                            }
+                            isDisabled={isFindRecipeDisabled}
+                            pointerEvents={isFindRecipeDisabled ? 'none' : 'auto'}
                             onClick={() => {
                                 dispatch(selectMeats(localMeats));
                                 dispatch(selectSides(localSides));
                                 dispatch(selectAuthors(localAuthors));
                                 dispatch(selectCategories(localCategories));
                                 dispatch(selectAlergens(localAllergens));
+
+                                clearLocals();
 
                                 onClose();
                             }}
