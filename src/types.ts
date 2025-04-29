@@ -49,4 +49,7 @@ export type RecipeType = {
     steps: RecipeStep[];
     meat?: string;
     side?: string;
+    author?: string;
 };
+
+export type OptionType = { label: string; value: string; isCustom?: boolean };

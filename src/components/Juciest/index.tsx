@@ -23,7 +23,7 @@ const Juciest = () => {
                 </Text>
 
                 <Button
-                    onClick={() => navigate('/the-juciest')}
+                    onClick={() => navigate('/the-juiciest')}
                     rightIcon={<ArrowForwardIcon />}
                     bg='lime.400'
                     data-test-id='juiciest-link'
@@ -34,6 +34,16 @@ const Juciest = () => {
             </Flex>
 
             <Subcategory />
+
+            <Button
+                onClick={() => navigate('/the-juiciest')}
+                rightIcon={<ArrowForwardIcon />}
+                bg='lime.400'
+                data-test-id='juiciest-link-mobile'
+                display={isMobile ? 'block' : 'none'}
+            >
+                Вся подборка
+            </Button>
         </Box>
     );
 };

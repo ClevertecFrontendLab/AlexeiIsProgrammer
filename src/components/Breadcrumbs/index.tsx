@@ -11,7 +11,7 @@ const Breadcrumbs = () => {
     const { pathname } = useLocation();
     const pathnames = pathname.split('/').filter(Boolean);
 
-    const buildPath = (index: number) => `#/${pathnames.slice(0, index + 1).join('/')}`;
+    const buildPath = (index: number) => `/${pathnames.slice(0, index + 1).join('/')}`;
 
     return (
         <Breadcrumb
@@ -32,7 +32,7 @@ const Breadcrumbs = () => {
                 className={styles.breadcrumb}
                 color={pathnames.length > 0 ? 'blackAlpha.700' : 'black'}
             >
-                <BreadcrumbLink className={styles.link} href='#/'>
+                <BreadcrumbLink className={styles.link} href='/'>
                     Главная
                 </BreadcrumbLink>
             </BreadcrumbItem>

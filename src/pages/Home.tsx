@@ -12,7 +12,6 @@ import getCurrentRoute from '~/utils/getCurrentRoute';
 const HomePage: React.FC = () => {
     const { pathname } = useLocation();
 
-    console.log('currentRoute', pathname);
     const currentRoute = getCurrentRoute(pathname.substring(pathname.lastIndexOf('/') + 1));
 
     return (

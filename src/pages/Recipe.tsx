@@ -32,12 +32,10 @@ type RecipeParams = {
 const Recipe: React.FC = () => {
     const { id } = useParams<RecipeParams>();
     const recipe: RecipeType | undefined = getRecipeById(id);
-    console.log('recipe', recipe);
 
     const isMobile = useBreakpointValue({ base: true, md: false });
 
     if (!recipe) return null;
-    console.log('recipe', recipe);
 
     return (
         <Layout>

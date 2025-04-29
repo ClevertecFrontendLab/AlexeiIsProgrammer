@@ -1,4 +1,5 @@
 import {
+    Box,
     Button,
     Card,
     CardBody,
@@ -11,67 +12,122 @@ import {
     Text,
     useBreakpointValue,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router';
 
-import pasta from '~/assets/img/pasta.jpg';
+// import pasta from '~/assets/img/pasta.jpg';
 import loveMark from '~/assets/love-mark.svg';
 import loveSmile from '~/assets/love-smile.svg';
-import pan from '~/assets/sidebar/pan.svg';
+import { userFilterSelector } from '~/store/app-slice';
+import { useAppSelector } from '~/store/hooks';
+// import pan from '~/assets/sidebar/pan.svg';
+import { RecipeType } from '~/types';
 
 import CustomBadge from '../CustomBadge';
+import HighlightedText from '../HighlightText';
 import SideIcon from '../SideIcon';
 import styles from './Item.module.scss';
 
-const Item = () => {
+type ItemProps = {
+    item: RecipeType;
+    index: number;
+    currentCategory: string;
+    currentSubcategory: string;
+};
+
+const Item = ({ item, index, currentCategory, currentSubcategory }: ItemProps) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
+    const isSmallMobile = useBreakpointValue({ base: true, md: false });
+
+    const { search } = useAppSelector(userFilterSelector);
+
+    const navigate = useNavigate();
 
     return (
         <Card
+            data-test-id={`food-card-${index}`}
+            maxH='244px'
             _hover={{ shadow: 'md' }}
             direction={{ base: 'column', sm: 'row' }}
             overflow='hidden'
             position='relative'
             variant='outline'
         >
-            {!isMobile && (
+            {/* {!isMobile && (
                 <CustomBadge
                     className={styles.recommendation}
                     icon='https://bit.ly/sage-adebayo'
                     text='Alex Cook рекомендует'
                     color='lime.150'
                 />
-            )}
-            <Image objectFit='cover' maxW={{ base: '100%', sm: '50%' }} src={pasta} />
+            )} */}
+            <Image objectFit='cover' w={{ base: '100%', sm: '50%' }} src={item?.image} />
 
-            <Stack>
-                <CardHeader>
+            <Stack
+                py={isSmallMobile ? '8px' : '20px'}
+                px={isSmallMobile ? '8px' : '24px'}
+                gap={isSmallMobile ? '8px' : '24px'}
+                w={{ base: '100%', sm: '50%' }}
+            >
+                <CardHeader p={0}>
                     <Flex flexWrap='wrap' justifyContent='space-between'>
-                        <CustomBadge icon={pan} text='Вторые блюда' color='lime.50' />
+                        <Box position={isSmallMobile ? 'absolute' : 'static'} top='8px' left='8px'>
+                            {item.category.slice(0, 1).map((category) => (
+                                <CustomBadge key={category} category={category} color='lime.50' />
+                            ))}
+                        </Box>
+
                         <Flex>
-                            <SideIcon icon={loveMark} text='85' />
-                            <SideIcon icon={loveSmile} text='152' />
+                            <SideIcon icon={loveMark} text={`${item?.bookmarks}`} />
+                            <SideIcon icon={loveSmile} text={`${item?.likes}`} />
                         </Flex>
                     </Flex>
                 </CardHeader>
-                <CardBody>
-                    <Heading size='md'>Кнели со спагетти</Heading>
+                <CardBody p={0}>
+                    <Heading
+                        size='md'
+                        title={item?.title}
+                        overflow='hidden'
+                        whiteSpace='nowrap'
+                        textOverflow='ellipsis'
+                        fontSize='20px'
+                        lineHeight='28px'
+                        fontWeight='500'
+                    >
+                        <HighlightedText text={item.title} searchTerm={search} />
+                    </Heading>
 
                     {!isMobile && (
-                        <Text py='2'>
-                            Как раз после праздников, когда мясные продукты еще остались, но никто
-                            их уже не хочет, время варить солянку.
+                        <Text title={item?.description} className={styles.description}>
+                            {item.description}
                         </Text>
                     )}
                 </CardBody>
 
-                <CardFooter gap='10px' justifyContent='flex-end'>
+                <CardFooter p={0} gap='10px' justifyContent='flex-end'>
                     <Button
+                        px='12px'
+                        py='6px'
+                        h='auto'
                         leftIcon={<Image src={loveMark} />}
                         variant='outline'
                         colorScheme='dark'
                     >
                         {!isMobile && 'Сохранить'}
                     </Button>
-                    <Button variant='solid' bg='black' color='white'>
+                    <Button
+                        data-test-id={`card-link-${index}`}
+                        onClick={() =>
+                            navigate(
+                                `/${currentCategory || item.category[0]}/${currentSubcategory || item.subcategory[0]}/${item.id}`,
+                            )
+                        }
+                        px='12px'
+                        py='6px'
+                        h='auto'
+                        variant='solid'
+                        bg='black'
+                        color='white'
+                    >
                         Готовить
                     </Button>
                 </CardFooter>

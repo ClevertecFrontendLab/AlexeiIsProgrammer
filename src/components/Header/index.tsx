@@ -50,7 +50,7 @@ function Header({ isOpen, onOpen }: HeaderProps) {
                     </>
                 )}
 
-                {isMobile && !isOpen && (
+                {!isOpen && (
                     <IconButton
                         data-test-id='hamburger-icon'
                         mr={isSmallMobile ? {} : '8px'}
@@ -63,6 +63,7 @@ function Header({ isOpen, onOpen }: HeaderProps) {
                         aria-label='Open menu'
                         onClick={onOpen}
                         color='black'
+                        display={isMobile ? 'block' : 'none'}
                     />
                 )}
             </Flex>

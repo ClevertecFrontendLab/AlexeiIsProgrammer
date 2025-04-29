@@ -35,8 +35,6 @@ const Slider = ({ title }: SliderProps) => {
         [],
     );
 
-    console.log('sortedSlides', sortedSlides);
-
     return (
         <Box mt='24px'>
             {title && (

@@ -436,7 +436,8 @@
                 "description": "Взбить с сливками и специями.",
                 "image": "https://images.pexels.com/photos/539432/pexels-photo-539432.jpeg"
             }
-        ]
+        ],
+        "author": "Ивлев"
     },
 
     {
@@ -445,7 +446,7 @@
         "description": "Классическое блюдо русской кухни с нежными ломтиками говядины в сливочном соусе.",
         "category": ["second-dish"],
         "subcategory": ["meat-dishes"],
-        "image": "https://images.unsplash.com/photo-1606755456206-b25206b46c25",
+        "image": "https://images.pexels.com/photos/842571/pexels-photo-842571.jpeg",
         "bookmarks": 287,
         "likes": 654,
         "date": "2024-02-18T00:00:00Z",
@@ -632,7 +633,7 @@
         "subcategory": ["italian"],
         "image": "https://images.unsplash.com/photo-1574894709920-11b28e7367e3",
         "bookmarks": 890,
-        "likes": 2100,
+        "likes": 100,
         "date": "2024-01-05T00:00:00Z",
         "time": "1 час 20 минут",
         "portions": 6,

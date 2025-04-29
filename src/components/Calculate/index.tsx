@@ -50,19 +50,24 @@ const Calculate = ({ portions: initialPortions, ingredients }: CalculateProps) =
                             >
                                 <NumberInputField />
                                 <NumberInputStepper>
-                                    <NumberIncrementStepper />
-                                    <NumberDecrementStepper />
+                                    <NumberIncrementStepper data-test-id='increment-stepper' />
+                                    <NumberDecrementStepper data-test-id='decrement-stepper' />
                                 </NumberInputStepper>
                             </NumberInput>
                         </Th>
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {ingredients.map((ingredient) => (
+                    {ingredients.map((ingredient, i) => (
                         <Tr key={ingredient.title}>
                             <Td>{ingredient.title}</Td>
                             <Td isNumeric>
-                                {+(ingredient.count || '0') * portions || ''}{' '}
+                                <span data-test-id={`ingredient-quantity-${i}`}>
+                                    {initialPortions
+                                        ? (+(ingredient.count || '0') / initialPortions) *
+                                              portions || ''
+                                        : ''}
+                                </span>{' '}
                                 {ingredient.measureUnit}
                             </Td>
                         </Tr>

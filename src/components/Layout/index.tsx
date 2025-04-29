@@ -29,7 +29,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
     const { isOpen, onClose, onOpen } = useDisclosure();
-    console.log('isOpen', isOpen);
 
     return (
         <Flex direction='column' minH='100vh'>

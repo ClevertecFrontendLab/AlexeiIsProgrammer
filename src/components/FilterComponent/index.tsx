@@ -8,13 +8,26 @@ import {
     Input,
     InputGroup,
     InputRightElement,
-    Select,
     Switch,
     Text,
     useBreakpointValue,
+    useDisclosure,
 } from '@chakra-ui/react';
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import filter from '~/assets/filter.svg';
+import {
+    addAlergen,
+    selectAlergens,
+    setAreAllergensActive,
+    setSearch,
+    userFilterSelector,
+} from '~/store/app-slice';
+import { useAppDispatch, useAppSelector } from '~/store/hooks';
+
+import Filter from '../Filter';
+import CustomSelect from '../UI/CustomSelect';
 
 type FilterComponentProps = {
     title?: string;
@@ -23,6 +36,23 @@ type FilterComponentProps = {
 
 const FilterComponent = ({ title, description }: FilterComponentProps) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
+
+    const { isOpen, onClose, onOpen } = useDisclosure();
+
+    const [input, setInput] = useState('');
+
+    const dispatch = useAppDispatch();
+
+    const { search, activeAllergens, allergens, areAllergensActive } =
+        useAppSelector(userFilterSelector);
+
+    const onSearchHandle = (searchArg: string = '') => {
+        const inputValue = searchArg || input || '';
+
+        if (search === inputValue || inputValue.length <= 2) return;
+
+        dispatch(setSearch(inputValue));
+    };
 
     return (
         <Flex direction='column' alignItems='center'>
@@ -51,17 +81,40 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
             )}
             <Flex direction='column' gap='16px'>
                 <Flex gap='12px' mt={isMobile || !description ? '16px' : '32px'}>
-                    <IconButton icon={<Image src={filter} />} aria-label='filter' />
+                    <IconButton
+                        onClick={onOpen}
+                        icon={<Image src={filter} />}
+                        aria-label='filter'
+                        data-test-id='filter-button'
+                    />
                     <InputGroup>
-                        <Input placeholder='Название или ингредиент...' />
+                        <Input
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            data-test-id='search-input'
+                            placeholder='Название или ингредиент...'
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    onSearchHandle();
+                                }
+                            }}
+                        />
                         <InputRightElement>
-                            <SearchIcon color='black' />
+                            <SearchIcon
+                                pointerEvents={input.length > 2 ? 'auto' : 'none'}
+                                data-test-id='search-button'
+                                onClick={() => {
+                                    onSearchHandle();
+                                }}
+                                cursor='pointer'
+                                color='black'
+                            />
                         </InputRightElement>
                     </InputGroup>
                 </Flex>
                 {!isMobile && (
                     <Flex gap='16px'>
-                        <FormControl display='flex' alignItems='center'>
+                        <FormControl w='auto' display='flex' alignItems='center'>
                             <FormLabel
                                 whiteSpace='nowrap'
                                 fontSize='16px'
@@ -71,12 +124,40 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                             >
                                 Исключить мои аллергены
                             </FormLabel>
-                            <Switch size='md' id='allergens' />
+                            <Switch
+                                data-test-id='allergens-switcher'
+                                checked={areAllergensActive}
+                                onChange={(e) => {
+                                    const isChecked = e.target.checked;
+
+                                    if (!isChecked) {
+                                        dispatch(selectAlergens([]));
+                                    }
+
+                                    dispatch(setAreAllergensActive(isChecked));
+                                }}
+                                size='md'
+                                id='allergens'
+                                colorScheme='green'
+                            />
                         </FormControl>
-                        <Select placeholder='Выберите из списка'></Select>
+                        <CustomSelect
+                            placeholder='Выберите из списка...'
+                            value={activeAllergens}
+                            options={allergens}
+                            onChange={(allergens) => dispatch(selectAlergens(allergens))}
+                            onOptionAdd={(allergen) => dispatch(addAlergen(allergen))}
+                            disabled={!areAllergensActive}
+                        />
                     </Flex>
                 )}
             </Flex>
+            {
+                createPortal(
+                    <Filter onClose={onClose} isOpen={isOpen} />,
+                    document.body,
+                ) as React.ReactNode
+            }
         </Flex>
     );
 };

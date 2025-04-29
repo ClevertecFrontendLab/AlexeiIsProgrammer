@@ -37,7 +37,7 @@ export const routes: AppRoute[] = [
         path: '/',
         element: <App />,
         children: [
-            { noMenu: true, path: 'the-juciest', label: 'Самое сочное', element: <Juciest /> },
+            { label: 'Самое сочное', path: 'the-juiciest', element: <Juciest />, noMenu: true },
             // Салаты
             {
                 path: 'salads',
@@ -93,10 +93,10 @@ export const routes: AppRoute[] = [
                 children: [
                     { label: 'Мясные', path: 'meat-dishes', element: <Subcategory /> },
                     { label: 'Рыбные', path: 'fish-dishes', element: <Subcategory /> },
-                    { label: 'Овощные', path: 'vegetable-dishes', element: <Subcategory /> },
-                    { label: 'Из птицы', path: 'poultry-dishes', element: <Subcategory /> },
-                    { label: 'Из грибов', path: 'mushroom-dishes', element: <Subcategory /> },
-                    { label: 'Из субпродуктов', path: 'offal-dishes', element: <Subcategory /> },
+                    { label: 'Овощные', path: 'vegetable-dish', element: <Subcategory /> },
+                    { label: 'Из птицы', path: 'poultry-dish', element: <Subcategory /> },
+                    { label: 'Из грибов', path: 'mushroom-dish', element: <Subcategory /> },
+                    { label: 'Из субпродуктов', path: 'offal-dish', element: <Subcategory /> },
                     { label: 'На пару', path: 'steamed-dishes', element: <Subcategory /> },
                     { label: 'Пельмени, вареники', path: 'dumplings', element: <Subcategory /> },
                     {
@@ -309,4 +309,3 @@ export const routes: AppRoute[] = [
 ];
 
 export const flattenRoutes = flatten(routes);
-console.log('flattenRoutes', flattenRoutes);

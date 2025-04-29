@@ -24,8 +24,6 @@ const Tabbed = () => {
 
     const currentIndex = tabs.findIndex((tab) => tab.path === currentSubcategory);
 
-    console.log('currentIndex', currentIndex, tabs);
-
     return (
         <Box>
             <Tabs index={currentIndex} isLazy>

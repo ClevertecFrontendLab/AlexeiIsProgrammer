@@ -24,8 +24,11 @@ const SidebarItem = ({ category: { label, icon, children, path } }: SidebarItemP
     return (
         <Box w='100%'>
             <Link
-                data-test-id={path === 'vegan' ? 'vegan-cuisine' : path}
                 to={`/${path}/${children?.[0].path || ''}`}
+                data-test-id={path === 'vegan' ? 'vegan-cuisine' : path}
+                // onClick={() =>
+                //     navigate(isCategoryActive ? '/' : `/${path}/${children?.[0].path || ''}`)
+                // }
             >
                 <Flex
                     cursor='pointer'
@@ -82,8 +85,6 @@ const SidebarItem = ({ category: { label, icon, children, path } }: SidebarItemP
 };
 
 const Sidebar = () => {
-    console.log('routes', routes);
-
     const menu = routes[0]?.children || [];
 
     return (
