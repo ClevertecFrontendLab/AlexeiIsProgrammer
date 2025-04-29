@@ -37,6 +37,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Flex flex='1'>
                 {!isMobile && (
                     <Box
+                        data-test-id='nav'
                         zIndex='10'
                         as='aside'
                         w='260px'
