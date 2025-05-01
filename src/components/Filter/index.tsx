@@ -17,7 +17,6 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
-import { routes } from '~/routes';
 import {
     addAlergen,
     selectAlergens,
@@ -66,12 +65,16 @@ type FilterProps = {
 };
 
 const Filter = ({ isOpen, onClose }: FilterProps) => {
-    const categoryOptions = routes?.[0]?.children
-        .filter((item) => !item.noMenu)
-        .map((route) => ({
-            label: route?.label,
-            value: route.path,
-        }));
+    const categoryOptions = [].map(() => ({
+        label: '1',
+        value: '1',
+    }));
+    // routes?.[0]?.children
+    //     .filter((item) => !item.noMenu)
+    //     .map((route) => ({
+    //         label: route?.label,
+    //         value: route.path,
+    //     }));
 
     const dispatch = useAppDispatch();
 

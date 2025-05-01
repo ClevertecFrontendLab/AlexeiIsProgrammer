@@ -1,17 +1,27 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
+import { useCallback } from 'react';
 import { useLocation } from 'react-router';
 
+import { useGetCategoriesQuery } from '~/query/services/categories';
 import getCurrentRoute from '~/utils/getCurrentRoute';
 import getRecipeById from '~/utils/getRecipeById';
 
 import styles from './Breadcrumb.module.scss';
 
 const Breadcrumbs = () => {
+    const { data: routes } = useGetCategoriesQuery();
+
     const { pathname } = useLocation();
     const pathnames = pathname.split('/').filter(Boolean);
 
     const buildPath = (index: number) => `/${pathnames.slice(0, index + 1).join('/')}`;
+
+    const getBreadcrumbName = useCallback(
+        (name: string) =>
+            getCurrentRoute(routes || [], name)?.title || getRecipeById(name)?.title || name,
+        [routes],
+    );
 
     return (
         <Breadcrumb
@@ -43,7 +53,7 @@ const Breadcrumbs = () => {
                     key={name}
                 >
                     <BreadcrumbLink className={styles.link} href={buildPath(index)}>
-                        {getCurrentRoute(name)?.label || getRecipeById(name)?.title || name}
+                        {getBreadcrumbName(name)}
                     </BreadcrumbLink>
                 </BreadcrumbItem>
             ))}
