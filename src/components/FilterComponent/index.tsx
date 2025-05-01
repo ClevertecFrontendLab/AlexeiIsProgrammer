@@ -142,6 +142,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                             />
                         </FormControl>
                         <CustomSelect
+                            isFilterOpened={isOpen}
                             placeholder='Выберите из списка'
                             value={activeAllergens}
                             options={allergens}

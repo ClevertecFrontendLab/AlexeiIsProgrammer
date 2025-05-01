@@ -27,6 +27,7 @@ type CustomSelectProps = {
     onOptionAdd?: (newOption: OptionType) => void;
     disabled?: boolean;
     placeholder?: string;
+    isFilterOpened?: boolean;
 };
 
 export default function CustomSelect({
@@ -36,6 +37,7 @@ export default function CustomSelect({
     onOptionAdd,
     disabled,
     placeholder = 'Выберите',
+    isFilterOpened,
 }: CustomSelectProps) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [newOption, setNewOption] = useState('');
@@ -171,7 +173,13 @@ export default function CustomSelect({
                         <MenuDivider />
                         <Flex px={3} py={2} alignItems='center' gap='12px'>
                             <Input
-                                data-test-id='add-other-allergen'
+                                data-test-id={
+                                    (isFilterOpened &&
+                                        placeholder === 'Выберите из списка аллергенов...') ||
+                                    (!isFilterOpened && placeholder === 'Выберите из списка')
+                                        ? 'add-other-allergen'
+                                        : ''
+                                }
                                 ref={inputRef}
                                 placeholder='Другой аллерген'
                                 value={newOption}

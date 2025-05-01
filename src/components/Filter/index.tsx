@@ -210,6 +210,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                                 />
                             </FormControl>
                             <CustomSelect
+                                isFilterOpened={isOpen}
                                 placeholder='Выберите из списка аллергенов...'
                                 disabled={!areAllergensActive}
                                 value={localAllergens}
