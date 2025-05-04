@@ -11,7 +11,9 @@ import {
     Stack,
     Text,
     useBreakpointValue,
+    useToast,
 } from '@chakra-ui/react';
+import { memo } from 'react';
 import { useNavigate } from 'react-router';
 
 import loveMark from '~/assets/love-mark.svg';
@@ -34,15 +36,17 @@ type ItemProps = {
     currentSubcategory: string;
 };
 
-const Item = ({ item, index, currentCategory, currentSubcategory }: ItemProps) => {
+const Item = memo(({ item, index, currentCategory, currentSubcategory }: ItemProps) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const isSmallMobile = useBreakpointValue({ base: true, md: false });
-
+    const toast = useToast();
     const { search } = useAppSelector(userFilterSelector);
 
     const navigate = useNavigate();
 
     const [getRecipe] = useLazyGetRecipeByIdQuery();
+
+    console.log('item', `_index-${index}`, search);
 
     return (
         <Card
@@ -130,11 +134,14 @@ const Item = ({ item, index, currentCategory, currentSubcategory }: ItemProps) =
                     <Button
                         data-test-id={`card-link-${index}`}
                         onClick={() => {
-                            getRecipe(item._id).then(() =>
-                                navigate(
-                                    `/${currentCategory || item.categoriesIds?.[0]}/${currentSubcategory || item.categoriesIds?.[0]}/${item._id}`,
-                                ),
-                            );
+                            getRecipe(item._id)
+                                .unwrap()
+                                .then(() =>
+                                    navigate(
+                                        `/${currentCategory || item.categoriesIds?.[0]}/${currentSubcategory || item.categoriesIds?.[0]}/${item._id}`,
+                                    ),
+                                )
+                                .catch(toast);
                         }}
                         px='12px'
                         py='6px'
@@ -149,6 +156,6 @@ const Item = ({ item, index, currentCategory, currentSubcategory }: ItemProps) =
             </Stack>
         </Card>
     );
-};
+});
 
 export default Item;

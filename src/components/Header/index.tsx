@@ -34,7 +34,11 @@ function Header({ isOpen, onOpen }: HeaderProps) {
         >
             <Flex align='center' gap={isSmallMobile ? '14px' : isMobile ? '18px' : '10px'}>
                 <Box marginRight={isMobile ? 'auto' : {}} w={!isMobile ? '256px' : {}}>
-                    <Img onClick={() => navigate('/')} src={isSmallMobile ? logoCup : logo} />
+                    <Img
+                        cursor='pointer'
+                        onClick={() => navigate('/')}
+                        src={isSmallMobile ? logoCup : logo}
+                    />
                 </Box>
 
                 {isMobile ? (

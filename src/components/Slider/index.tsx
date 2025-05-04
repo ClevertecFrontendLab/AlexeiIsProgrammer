@@ -1,4 +1,12 @@
-import { Box, IconButton, Image, Text, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
+import {
+    Box,
+    IconButton,
+    Image,
+    Text,
+    useBreakpointValue,
+    useMediaQuery,
+    useToast,
+} from '@chakra-ui/react';
 import { useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { Navigation } from 'swiper/modules';
@@ -28,6 +36,7 @@ const Slider = ({ title }: SliderProps) => {
         sortOrder: 'desc',
         limit: 10,
     });
+    const toast = useToast();
     const [getRecipe] = useLazyGetRecipeByIdQuery();
 
     const isMobile = useBreakpointValue({ base: true, lg: false });
@@ -77,11 +86,14 @@ const Slider = ({ title }: SliderProps) => {
                         <SwiperSlide
                             data-test-id={`carousel-card-${i}`}
                             onClick={() =>
-                                getRecipe(slide._id).then(() =>
-                                    navigate(
-                                        `/${getCategoriesPath(slide.categoriesIds?.[0], categories)}/${slide._id}`,
-                                    ),
-                                )
+                                getRecipe(slide._id)
+                                    .unwrap()
+                                    .then(() =>
+                                        navigate(
+                                            `/${getCategoriesPath(slide.categoriesIds?.[0], categories)}/${slide._id}`,
+                                        ),
+                                    )
+                                    .catch(toast)
                             }
                             key={slide._id}
                         >

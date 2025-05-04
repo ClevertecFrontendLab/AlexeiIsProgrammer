@@ -14,24 +14,28 @@ const HomePage: React.FC = () => {
     const { data: routes } = useGetCategoriesQuery();
     const { pathname } = useLocation();
 
+    const isJuiciest = pathname === '/the-juiciest';
+
     const currentRoute = getCurrentRoute(
         routes || [],
         pathname.substring(pathname.lastIndexOf('/') + 1),
     );
 
-    console.log('HOMEEE');
+    console.log('HOMEEE', currentRoute);
 
     return (
         <Box>
-            <FilterComponent title={currentRoute?.title || 'Приятного аппетита!'} />
+            <FilterComponent
+                title={isJuiciest ? 'Самое сочное' : currentRoute?.title || 'Приятного аппетита!'}
+            />
 
-            {!currentRoute && <Slider title='Новые рецепты' />}
+            {!currentRoute && !isJuiciest && <Slider title='Новые рецепты' />}
 
             <Outlet />
 
             {pathname === '/' && <Juciest />}
 
-            {!currentRoute && <Blogs />}
+            {!currentRoute && !isJuiciest && <Blogs />}
 
             <Facts />
         </Box>

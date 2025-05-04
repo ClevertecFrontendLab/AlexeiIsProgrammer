@@ -22,12 +22,11 @@ const Facts = () => {
     const category = useMemo(
         () =>
             currentCategory
-                ? categories?.find((category) => category.category === currentCategory)
+                ? categories?.find((category) => category.category === currentCategory) ||
+                  getRandomCategory(categories || [])
                 : getRandomCategory(categories || []),
         [categories, currentCategory],
     );
-
-    console.log('category', category);
 
     const { data: facts } = useGetRecipesQuery(
         {
@@ -36,8 +35,6 @@ const Facts = () => {
         },
         { skip: !category },
     );
-
-    console.log('facts', facts);
 
     return (
         <Box

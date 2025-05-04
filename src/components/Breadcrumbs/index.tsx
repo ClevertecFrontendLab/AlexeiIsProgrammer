@@ -23,9 +23,14 @@ const Breadcrumbs = () => {
     const buildPath = (index: number) => `/${pathnames.slice(0, index + 1).join('/')}`;
 
     const getBreadcrumbName = useCallback(
-        (name: string) => getCurrentRoute(routes || [], name)?.title || recipe?.title || name,
-        [routes, recipe],
+        (name: string) =>
+            pathname === '/the-juiciest'
+                ? 'Самое сочное '
+                : getCurrentRoute(routes || [], name)?.title || recipe?.title || name,
+        [pathname, routes, recipe],
     );
+
+    if (pathname === '/not-found') return null;
 
     return (
         <Breadcrumb

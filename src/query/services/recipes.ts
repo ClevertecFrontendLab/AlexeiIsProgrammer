@@ -31,8 +31,8 @@ type GetRecipesParams = Partial<{
     meat: string;
     garnish: string;
     subcategoriesIds: string;
-    sortBy: string;
-    sortOrder: string;
+    sortBy: 'likes' | 'createdAt' | '';
+    sortOrder: 'asc' | 'desc' | '';
 }> &
     BaseRecipesParams;
 
@@ -101,6 +101,7 @@ export const recipesApiSlice = apiSlice
 
 export const {
     useGetRecipesQuery,
+    useLazyGetRecipesQuery,
     useGetRecipesByCategoryQuery,
     useGetRecipeByIdQuery,
     useLazyGetRecipeByIdQuery,

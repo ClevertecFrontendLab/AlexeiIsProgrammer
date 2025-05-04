@@ -25,6 +25,7 @@ const initialState = {
         categories: [] as OptionType[],
         activeAllergens: [] as OptionType[],
         areAllergensActive: false,
+        page: 1,
     },
 
     isLoading: false,
@@ -66,6 +67,9 @@ export const appSlice = createSlice({
         setSearch(state, { payload: search }: PayloadAction<string>) {
             state.filter.search = search;
         },
+        setPage(state, { payload: page }: PayloadAction<number>) {
+            state.filter.page = page;
+        },
         setAreAllergensActive(state, { payload: areAllergensActive }: PayloadAction<boolean>) {
             state.filter.areAllergensActive = areAllergensActive;
         },
@@ -86,5 +90,6 @@ export const {
     selectSides,
     selectAuthors,
     selectCategories,
+    setPage,
 } = appSlice.actions;
 export default appSlice.reducer;

@@ -1,4 +1,4 @@
-import { Button, Card, Image, Text } from '@chakra-ui/react';
+import { Button, Card, Image, Text, useToast } from '@chakra-ui/react';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
@@ -17,6 +17,7 @@ const Fact = ({ recipe }: FactProps) => {
     const { data: categories } = useGetCategoriesQuery();
 
     const navigate = useNavigate();
+    const toast = useToast();
 
     const [getRecipe] = useLazyGetRecipeByIdQuery();
 
@@ -24,8 +25,6 @@ const Fact = ({ recipe }: FactProps) => {
         () => getCategoryBySubcategoryId(recipe.categoriesIds?.[0], categories),
         [recipe, categories],
     );
-
-    console.log('categoryIcon', category?.icon);
 
     return (
         <Card align='center' w='100%' direction='row' gap='12px' py='14px' px='24px'>
@@ -45,11 +44,14 @@ const Fact = ({ recipe }: FactProps) => {
                 colorScheme='green'
                 variant='outline'
                 onClick={() =>
-                    getRecipe(recipe._id).then(() =>
-                        navigate(
-                            `/${getCategoriesPath(recipe?.categoriesIds?.[0], categories)}/${recipe._id}`,
-                        ),
-                    )
+                    getRecipe(recipe._id)
+                        .unwrap()
+                        .then(() =>
+                            navigate(
+                                `/${getCategoriesPath(recipe?.categoriesIds?.[0], categories)}/${recipe._id}`,
+                            ),
+                        )
+                        .catch(toast)
                 }
             >
                 Готовить
