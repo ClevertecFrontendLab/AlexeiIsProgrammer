@@ -16,6 +16,8 @@ import { useNavigate } from 'react-router';
 
 import loveMark from '~/assets/love-mark.svg';
 import loveSmile from '~/assets/love-smile.svg';
+import { SOURCE_URL } from '~/constants';
+import { useLazyGetRecipeByIdQuery } from '~/query/services/recipes';
 import { userFilterSelector } from '~/store/app-slice';
 import { useAppSelector } from '~/store/hooks';
 import { Recipe } from '~/types';
@@ -40,6 +42,8 @@ const Item = ({ item, index, currentCategory, currentSubcategory }: ItemProps) =
 
     const navigate = useNavigate();
 
+    const [getRecipe] = useLazyGetRecipeByIdQuery();
+
     return (
         <Card
             data-test-id={`food-card-${index}`}
@@ -58,7 +62,12 @@ const Item = ({ item, index, currentCategory, currentSubcategory }: ItemProps) =
                     color='lime.150'
                 />
             )} */}
-            <Image objectFit='cover' w={{ base: '100%', sm: '50%' }} src={item?.image} />
+            <Image
+                objectFit='cover'
+                w={{ base: '100%', sm: '50%' }}
+                src={`${SOURCE_URL}${item?.image}`}
+                title={item.title}
+            />
 
             <Stack
                 py={isSmallMobile ? '8px' : '20px'}
@@ -120,11 +129,13 @@ const Item = ({ item, index, currentCategory, currentSubcategory }: ItemProps) =
                     </Button>
                     <Button
                         data-test-id={`card-link-${index}`}
-                        onClick={() =>
-                            navigate(
-                                `/${currentCategory || item.category[0]}/${currentSubcategory || item.subcategory[0]}/${item.id}`,
-                            )
-                        }
+                        onClick={() => {
+                            getRecipe(item._id).then(() =>
+                                navigate(
+                                    `/${currentCategory || item.categoriesIds?.[0]}/${currentSubcategory || item.categoriesIds?.[0]}/${item._id}`,
+                                ),
+                            );
+                        }}
                         px='12px'
                         py='6px'
                         h='auto'

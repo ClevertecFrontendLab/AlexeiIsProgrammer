@@ -15,8 +15,9 @@ import {
     Switch,
     Text,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
+import { useGetCategoriesQuery } from '~/query/services/categories';
 import {
     addAlergen,
     selectAlergens,
@@ -65,10 +66,18 @@ type FilterProps = {
 };
 
 const Filter = ({ isOpen, onClose }: FilterProps) => {
-    const categoryOptions = [].map(() => ({
-        label: '1',
-        value: '1',
-    }));
+    const { data: categories } = useGetCategoriesQuery();
+
+    const categoryOptions = useMemo(
+        () =>
+            categories
+                ?.filter((category) => category.subCategories)
+                ?.map((category) => ({
+                    label: category.title,
+                    value: category.category,
+                })) || [],
+        [categories],
+    );
     // routes?.[0]?.children
     //     .filter((item) => !item.noMenu)
     //     .map((route) => ({
@@ -228,6 +237,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                     <Flex flexWrap='wrap'>
                         {localCategories.map((category) => (
                             <CustomTag
+                                key={category.value}
                                 data-test-id='filter-tag'
                                 item={category}
                                 removeItem={() =>
@@ -239,6 +249,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         ))}
                         {localAuthors.map((author) => (
                             <CustomTag
+                                key={author.value}
                                 data-test-id='filter-tag'
                                 item={author}
                                 removeItem={() =>
@@ -248,6 +259,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         ))}
                         {localMeats.map((meat) => (
                             <CustomTag
+                                key={meat.value}
                                 data-test-id='filter-tag'
                                 item={meat}
                                 removeItem={() => handleItemSelect(localMeats, meat, setMeats)}
@@ -255,6 +267,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         ))}
                         {localSides.map((side) => (
                             <CustomTag
+                                key={side.value}
                                 data-test-id='filter-tag'
                                 item={side}
                                 removeItem={() => handleItemSelect(localSides, side, setSides)}
@@ -262,6 +275,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         ))}
                         {localAllergens.map((allergen) => (
                             <CustomTag
+                                key={allergen.value}
                                 data-test-id='filter-tag'
                                 item={allergen}
                                 removeItem={() =>

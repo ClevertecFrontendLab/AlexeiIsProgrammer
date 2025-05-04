@@ -4,6 +4,7 @@ import { EndpointNames } from '~/query/constants/endpoint-names.ts';
 import { Tags } from '~/query/constants/tags.ts';
 import { apiSlice } from '~/query/create-api.ts';
 import { Recipe } from '~/types';
+import clearEmptyParams from '~/utils/clearRequestParams';
 
 type BaseRecipesResponse = {
     data: Recipe[];
@@ -56,7 +57,7 @@ export const recipesApiSlice = apiSlice
                     method: 'GET',
                     apiGroupName: ApiGroupNames.RECIPES,
                     name: EndpointNames.GET_RECIPES,
-                    params,
+                    params: clearEmptyParams(params),
                 }),
 
                 providesTags: [Tags.RECIPES],
@@ -70,7 +71,7 @@ export const recipesApiSlice = apiSlice
                     method: 'GET',
                     apiGroupName: ApiGroupNames.RECIPES,
                     name: EndpointNames.GET_RECIPES_BY_CATEGORY,
-                    params,
+                    params: clearEmptyParams(params),
                 }),
 
                 providesTags: [Tags.RECIPES_BY_CATEGORY],
@@ -102,5 +103,6 @@ export const {
     useGetRecipesQuery,
     useGetRecipesByCategoryQuery,
     useGetRecipeByIdQuery,
+    useLazyGetRecipeByIdQuery,
     useGetRecipeByUserIdQuery,
 } = recipesApiSlice;

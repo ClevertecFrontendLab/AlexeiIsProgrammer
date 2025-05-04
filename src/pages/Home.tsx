@@ -19,6 +19,8 @@ const HomePage: React.FC = () => {
         pathname.substring(pathname.lastIndexOf('/') + 1),
     );
 
+    console.log('HOMEEE');
+
     return (
         <Box>
             <FilterComponent title={currentRoute?.title || 'Приятного аппетита!'} />

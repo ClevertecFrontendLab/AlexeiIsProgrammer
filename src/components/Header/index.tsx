@@ -1,5 +1,6 @@
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { Box, Flex, IconButton, Img, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
+import { useNavigate } from 'react-router';
 
 import logo from '~/assets/logo.svg';
 import logoCup from '~/assets/logo-cup.svg';
@@ -18,6 +19,8 @@ function Header({ isOpen, onOpen }: HeaderProps) {
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
 
+    const navigate = useNavigate();
+
     return (
         <Box
             data-test-id='header'
@@ -31,7 +34,7 @@ function Header({ isOpen, onOpen }: HeaderProps) {
         >
             <Flex align='center' gap={isSmallMobile ? '14px' : isMobile ? '18px' : '10px'}>
                 <Box marginRight={isMobile ? 'auto' : {}} w={!isMobile ? '256px' : {}}>
-                    <Img src={isSmallMobile ? logoCup : logo} />
+                    <Img onClick={() => navigate('/')} src={isSmallMobile ? logoCup : logo} />
                 </Box>
 
                 {isMobile ? (

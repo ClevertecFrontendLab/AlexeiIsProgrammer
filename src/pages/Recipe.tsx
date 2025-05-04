@@ -24,18 +24,22 @@ import RecipeInfo from '~/components/RecipeInfo';
 import SideIcon from '~/components/SideIcon';
 import Slider from '~/components/Slider';
 import Steps from '~/components/Steps';
-import { RecipeType } from '~/types';
-import getRecipeById from '~/utils/getRecipeById';
+import { SOURCE_URL } from '~/constants';
+import { useGetRecipeByIdQuery } from '~/query/services/recipes';
 
 import alarm from '../assets/alarm.svg';
 
 type RecipeParams = {
-    id: string;
+    recipeId: string;
 };
 
 const Recipe: React.FC = () => {
-    const { id } = useParams<RecipeParams>();
-    const recipe: RecipeType | undefined = getRecipeById(id);
+    const { recipeId: id } = useParams<RecipeParams>();
+    const { data: recipe } = useGetRecipeByIdQuery(id || '', {
+        skip: !id,
+    });
+
+    console.log('recipe', recipe);
 
     const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -46,7 +50,9 @@ const Recipe: React.FC = () => {
             <Box maxW='1200px' mx='auto'>
                 <SimpleGrid spacing='24px' columns={isMobile ? 1 : 2} mb='40px'>
                     <Image
-                        src={recipe.image || 'https://via.placeholder.com/400x300'}
+                        src={
+                            `${SOURCE_URL}${recipe.image}` || 'https://via.placeholder.com/400x300'
+                        }
                         alt={recipe.title}
                         borderRadius='lg'
                         w='100%'
@@ -57,8 +63,12 @@ const Recipe: React.FC = () => {
                     <Flex direction='column'>
                         <Flex justifyContent='space-between' gap='10px'>
                             <Flex>
-                                {recipe.category.map((category) => (
-                                    <CustomBadge color='lime.50' category={category} />
+                                {recipe.categoriesIds?.map((category) => (
+                                    <CustomBadge
+                                        key={category}
+                                        color='lime.50'
+                                        category={category}
+                                    />
                                 ))}
                             </Flex>
                             <Flex gap='8px'>
@@ -76,7 +86,11 @@ const Recipe: React.FC = () => {
                         </Text>
 
                         <Flex flexWrap='wrap' mt='auto' justifyContent='space-between' gap='10px'>
-                            <CustomBadge color='blackAlpha.100' icon={alarm} text={recipe.time} />
+                            <CustomBadge
+                                color='blackAlpha.100'
+                                icon={alarm}
+                                text={`${recipe.time}`}
+                            />
 
                             <Flex gap='8px' flexWrap='wrap'>
                                 <Button
@@ -105,7 +119,11 @@ const Recipe: React.FC = () => {
                             />
                             <RecipeInfo
                                 label='белки'
-                                value={recipe.nutritionValue.proteins}
+                                value={
+                                    recipe.nutritionValue?.proteins ||
+                                    recipe.nutritionValue?.protein ||
+                                    0
+                                }
                                 measure='грамм'
                             />
                             <RecipeInfo

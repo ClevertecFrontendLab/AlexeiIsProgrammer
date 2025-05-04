@@ -9,6 +9,7 @@ import {
     useMediaQuery,
 } from '@chakra-ui/react';
 
+import { SOURCE_URL } from '~/constants';
 import { Step } from '~/types';
 
 import CustomBadge from '../CustomBadge';
@@ -43,7 +44,14 @@ const Steps = ({ steps }: StepsProps) => {
                         overflow='hidden'
                         variant='outline'
                     >
-                        {step.image && <Image w='50%' objectFit='cover' src={step.image} />}
+                        {step.image && (
+                            <Image
+                                w='50%'
+                                objectFit='cover'
+                                title={`${step.stepNumber}`}
+                                src={`${SOURCE_URL}${step.image}`}
+                            />
+                        )}
                         <CardBody
                             maxW='50%'
                             py={isMobile ? '8px' : '20px'}

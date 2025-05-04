@@ -1,5 +1,5 @@
 import { Box, IconButton, Image, Text, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
@@ -7,7 +7,9 @@ import { NavigationOptions } from 'swiper/types';
 
 import arrowLeft from '~/assets/arrow-left.svg';
 import arrowRight from '~/assets/arrow-right.svg';
-import slides from '~/db.json';
+import { useGetCategoriesQuery } from '~/query/services/categories';
+import { useGetRecipesQuery, useLazyGetRecipeByIdQuery } from '~/query/services/recipes';
+import getCategoriesPath from '~/utils/getCategoriesPath';
 
 import SlideItem from '../SlideItem';
 import styles from './Slider.module.scss';
@@ -19,6 +21,15 @@ type SliderProps = {
 const Slider = ({ title }: SliderProps) => {
     const navigate = useNavigate();
 
+    const { data: categories } = useGetCategoriesQuery();
+
+    const { data: slides } = useGetRecipesQuery({
+        sortBy: 'createdAt',
+        sortOrder: 'desc',
+        limit: 10,
+    });
+    const [getRecipe] = useLazyGetRecipeByIdQuery();
+
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
     const [isMedium] = useMediaQuery('(max-width: 1200px)');
@@ -26,14 +37,6 @@ const Slider = ({ title }: SliderProps) => {
 
     const prevRef = useRef(null);
     const nextRef = useRef(null);
-
-    const sortedSlides = useMemo(
-        () =>
-            structuredClone(slides)
-                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-                .slice(0, 10),
-        [],
-    );
 
     return (
         <Box mt='24px'>
@@ -70,15 +73,17 @@ const Slider = ({ title }: SliderProps) => {
                         navigation.nextEl = nextRef.current;
                     }}
                 >
-                    {sortedSlides.map((slide, i) => (
+                    {slides?.data.map((slide, i) => (
                         <SwiperSlide
                             data-test-id={`carousel-card-${i}`}
                             onClick={() =>
-                                navigate(
-                                    `/${slide.category[0]}/${slide.subcategory[0]}/${slide.id}`,
+                                getRecipe(slide._id).then(() =>
+                                    navigate(
+                                        `/${getCategoriesPath(slide.categoriesIds?.[0], categories)}/${slide._id}`,
+                                    ),
                                 )
                             }
-                            key={slide.id}
+                            key={slide._id}
                         >
                             <SlideItem slide={slide} />
                         </SwiperSlide>

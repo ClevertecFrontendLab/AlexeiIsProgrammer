@@ -12,9 +12,10 @@ export type SubcategoryItem = {
     title: string;
     category: string;
     rootCategoryId: string;
+    _id: string;
 };
 
-interface CategoryItem {
+export interface CategoryItem {
     _id: string;
     title: string;
     category: string;

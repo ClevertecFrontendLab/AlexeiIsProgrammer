@@ -42,7 +42,7 @@ const SidebarItem = ({ category: { title, icon, subCategories, category } }: Sid
                     py='12px'
                 >
                     <Flex alignItems='center' gap='12px'>
-                        <Image src={`${SOURCE_URL}${icon}`} />
+                        <Image src={`${SOURCE_URL}${icon}`} title={title} />
                         <Text
                             letterSpacing='0.4px'
                             lineHeight='24px'

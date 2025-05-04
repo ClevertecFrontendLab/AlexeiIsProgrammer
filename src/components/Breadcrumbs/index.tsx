@@ -4,8 +4,9 @@ import { useCallback } from 'react';
 import { useLocation } from 'react-router';
 
 import { useGetCategoriesQuery } from '~/query/services/categories';
+import { useGetRecipeByIdQuery } from '~/query/services/recipes';
+import getCurrentRecipe from '~/utils/getCurrentRecipe';
 import getCurrentRoute from '~/utils/getCurrentRoute';
-import getRecipeById from '~/utils/getRecipeById';
 
 import styles from './Breadcrumb.module.scss';
 
@@ -13,14 +14,17 @@ const Breadcrumbs = () => {
     const { data: routes } = useGetCategoriesQuery();
 
     const { pathname } = useLocation();
+
+    const currentRecipe = getCurrentRecipe(pathname);
     const pathnames = pathname.split('/').filter(Boolean);
+
+    const { data: recipe } = useGetRecipeByIdQuery(currentRecipe, { skip: !currentRecipe });
 
     const buildPath = (index: number) => `/${pathnames.slice(0, index + 1).join('/')}`;
 
     const getBreadcrumbName = useCallback(
-        (name: string) =>
-            getCurrentRoute(routes || [], name)?.title || getRecipeById(name)?.title || name,
-        [routes],
+        (name: string) => getCurrentRoute(routes || [], name)?.title || recipe?.title || name,
+        [routes, recipe],
     );
 
     return (

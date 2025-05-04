@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 
 import loveMark from '~/assets/love-mark.svg';
+import { SOURCE_URL } from '~/constants';
 import { Recipe } from '~/types';
 
 import CustomBadge from '../CustomBadge';
@@ -35,8 +36,9 @@ const SlideItem = ({ isFact, slide }: SlideProps) => {
                 <Image
                     h={isMobile ? '128px' : '230px'}
                     objectFit='cover'
-                    src={slide.image}
+                    src={`${SOURCE_URL}${slide.image}`}
                     alt='Chakra UI'
+                    title={slide.title}
                 />
             )}
             <CardBody p={isMobile ? '8px' : '12px'}>
@@ -66,7 +68,7 @@ const SlideItem = ({ isFact, slide }: SlideProps) => {
                 <CustomBadge
                     color='lime.150'
                     className={styles.badge}
-                    category={slide?.category[0]}
+                    category={slide?.categoriesIds?.[0]}
                 />
 
                 <SideIcon text='1' icon={loveMark} />

@@ -21,7 +21,8 @@ export type Ingredient = {
 
 export type NutritionValue = {
     calories: number;
-    proteins: number;
+    proteins?: number;
+    protein?: number;
     fats: number;
     carbohydrates: number;
 };
@@ -49,7 +50,7 @@ export type Recipe = {
     garnish: string;
     portions: number;
     authorId: string;
-    categoriesIds: string[];
+    categoriesIds?: string[];
     steps: Step[];
     nutritionValue: NutritionValue;
     ingredients: Ingredient[];
