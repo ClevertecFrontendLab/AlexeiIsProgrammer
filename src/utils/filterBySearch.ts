@@ -1,6 +1,6 @@
-import { RecipeType } from '~/types';
+import { Recipe } from '~/types';
 
-const filterBySearch = (items: RecipeType[], search: string): RecipeType[] =>
+const filterBySearch = (items: Recipe[], search: string): Recipe[] =>
     items.filter((recipe) => recipe.title.toLowerCase().includes(search.toLowerCase()));
 
 export default filterBySearch;

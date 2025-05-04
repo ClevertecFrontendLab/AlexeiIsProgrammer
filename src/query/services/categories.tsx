@@ -18,8 +18,9 @@ interface CategoryItem {
     _id: string;
     title: string;
     category: string;
-    icon: string;
-    description: string;
+    icon?: string;
+    description?: string;
+    rootCategoryId?: string;
     subCategories?: SubcategoryItem[];
 }
 
@@ -46,7 +47,7 @@ export type AppRoute = RouteObject & CategoryItem;
 
 export const categoriesApiSlice = apiSlice
     .enhanceEndpoints({
-        addTagTypes: [Tags.CATEGORIES],
+        addTagTypes: [Tags.CATEGORIES, Tags.CATEGORY_BY_ID],
     })
     .injectEndpoints({
         endpoints: (builder) => ({
@@ -60,7 +61,17 @@ export const categoriesApiSlice = apiSlice
 
                 providesTags: [Tags.CATEGORIES],
             }),
+            getCategoryById: builder.query<CategoryItem, string>({
+                query: (id) => ({
+                    url: `${ApiEndpoints.CATEGORIES}${id}`,
+                    method: 'GET',
+                    apiGroupName: ApiGroupNames.CATEGORIES,
+                    name: EndpointNames.GET_CATEGORY_BY_ID,
+                }),
+
+                providesTags: [Tags.CATEGORY_BY_ID],
+            }),
         }),
     });
 
-export const { useGetCategoriesQuery } = categoriesApiSlice;
+export const { useGetCategoriesQuery, useGetCategoryByIdQuery } = categoriesApiSlice;

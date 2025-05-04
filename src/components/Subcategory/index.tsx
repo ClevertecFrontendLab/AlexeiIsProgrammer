@@ -4,10 +4,9 @@ import { useLocation } from 'react-router';
 
 import { userFilterSelector } from '~/store/app-slice';
 import { useAppSelector } from '~/store/hooks';
-import { RecipeType } from '~/types';
+import { Recipe } from '~/types';
 import filterAll from '~/utils/filterAll';
 import filterByAllergens from '~/utils/filterByAllergens';
-import filterByAuthor from '~/utils/filterByAuthor';
 import filterByCategory from '~/utils/filterByCategory';
 import filterByMeat from '~/utils/filterByMeat';
 import filterBySearch from '~/utils/filterBySearch';
@@ -26,19 +25,19 @@ const Subcategory = () => {
 
     const { pathname } = useLocation();
 
-    const { activeAllergens, search, meats, sides, authors, categories } =
+    const { activeAllergens, search, meats, sides, categories } =
         useAppSelector(userFilterSelector);
 
     const currentCategory = getCurrentCategory(pathname);
     const currentSubcategory = getCurrentSubcategory(pathname);
 
-    const items: RecipeType[] = filterAll(
+    const items: Recipe[] = filterAll(
         getRecipeBySubcategory,
         filterByAllergens,
         filterByMeat,
         filterBySide,
         filterByCategory,
-        filterByAuthor,
+        // filterByAuthor,
         filterBySearch,
     )(
         currentSubcategory,
@@ -46,10 +45,9 @@ const Subcategory = () => {
         meats,
         sides,
         categories,
-        authors,
+        // authors,
         search,
     )(recipes).slice(0, 8);
-    console.log('items', items);
 
     return (
         <Flex direction='column' alignItems='center'>

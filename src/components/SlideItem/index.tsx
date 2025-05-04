@@ -9,14 +9,14 @@ import {
 } from '@chakra-ui/react';
 
 import loveMark from '~/assets/love-mark.svg';
-import { RecipeType } from '~/types';
+import { Recipe } from '~/types';
 
 import CustomBadge from '../CustomBadge';
 import SideIcon from '../SideIcon';
 import styles from './SlideItem.module.scss';
 
 export type SlideProps = {
-    slide?: RecipeType;
+    slide?: Recipe;
     isFact?: boolean;
 };
 

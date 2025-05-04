@@ -14,13 +14,11 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router';
 
-// import pasta from '~/assets/img/pasta.jpg';
 import loveMark from '~/assets/love-mark.svg';
 import loveSmile from '~/assets/love-smile.svg';
 import { userFilterSelector } from '~/store/app-slice';
 import { useAppSelector } from '~/store/hooks';
-// import pan from '~/assets/sidebar/pan.svg';
-import { RecipeType } from '~/types';
+import { Recipe } from '~/types';
 
 import CustomBadge from '../CustomBadge';
 import HighlightedText from '../HighlightText';
@@ -28,7 +26,7 @@ import SideIcon from '../SideIcon';
 import styles from './Item.module.scss';
 
 type ItemProps = {
-    item: RecipeType;
+    item: Recipe;
     index: number;
     currentCategory: string;
     currentSubcategory: string;
@@ -71,9 +69,15 @@ const Item = ({ item, index, currentCategory, currentSubcategory }: ItemProps) =
                 <CardHeader p={0}>
                     <Flex flexWrap='wrap' justifyContent='space-between'>
                         <Box position={isSmallMobile ? 'absolute' : 'static'} top='8px' left='8px'>
-                            {item.category.slice(0, 1).map((category) => (
-                                <CustomBadge key={category} category={category} color='lime.50' />
-                            ))}
+                            {item.categoriesIds
+                                ?.slice(0, 1)
+                                .map((category) => (
+                                    <CustomBadge
+                                        key={category}
+                                        category={category}
+                                        color='lime.50'
+                                    />
+                                ))}
                         </Box>
 
                         <Flex>
