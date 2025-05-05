@@ -18,13 +18,20 @@ type CustomAlertProps = Partial<{
 
 export default function CustomAlert({ onClose, title, description, status }: CustomAlertProps) {
     return (
-        <Alert maxW='400px' position='relative' status={status} variant='solid'>
+        <Alert
+            data-test-id='error-notification'
+            maxW='400px'
+            position='relative'
+            status={status}
+            variant='solid'
+        >
             <AlertIcon />
             <Box>
                 <AlertTitle>{title}</AlertTitle>
                 <AlertDescription>{description}</AlertDescription>
             </Box>
             <CloseButton
+                data-test-id='close-alert-button'
                 position='absolute'
                 alignSelf='flex-start'
                 right={0}

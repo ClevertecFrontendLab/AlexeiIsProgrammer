@@ -64,7 +64,7 @@ const SlideItem = ({ isFact, slide }: SlideProps) => {
                     </Text>
                 )}
             </CardBody>
-            <CardFooter p={isMobile ? '8px' : '12px'} justify='space-between' flexWrap='wrap'>
+            <CardFooter p={isMobile ? '8px' : '12px'} justify='space-between' flexWrap='nowrap'>
                 <CustomBadge
                     color='lime.150'
                     className={styles.badge}

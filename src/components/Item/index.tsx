@@ -46,7 +46,7 @@ const Item = memo(({ item, index, currentCategory, currentSubcategory }: ItemPro
 
     const [getRecipe] = useLazyGetRecipeByIdQuery();
 
-    console.log('item', `_index-${index}`, search);
+    // console.log('item', `_index-${index}`, search);
 
     return (
         <Card

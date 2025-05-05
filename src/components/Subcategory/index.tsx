@@ -1,5 +1,12 @@
 import { ArrowForwardIcon } from '@chakra-ui/icons';
-import { Button, Flex, SimpleGrid, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
+import {
+    Button,
+    Flex,
+    SimpleGrid,
+    useBreakpointValue,
+    useMediaQuery,
+    useToast,
+} from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router';
 
@@ -10,22 +17,20 @@ import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
 
-import CustomSpinner from '../CustomSpinner';
 import Item from '../Item';
 
 const Subcategory = () => {
-    const { data: categories, isLoading: areCategoriesLoading } = useGetCategoriesQuery();
-
+    const toast = useToast();
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const isSmallMobile = useBreakpointValue({ base: true, md: false });
     const [isLargeMobile] = useMediaQuery('(max-width: 1440px)');
 
     const dispatch = useAppDispatch();
 
-    const { pathname } = useLocation();
-
     const { activeAllergens, search, meats, sides, page } = useAppSelector(userFilterSelector);
 
+    const { data: categories } = useGetCategoriesQuery();
+    const { pathname } = useLocation();
     const currentCategory = getCurrentCategory(pathname);
     const currentSubcategory = getCurrentSubcategory(pathname);
 
@@ -36,9 +41,7 @@ const Subcategory = () => {
         [currentCategory, categories],
     );
 
-    console.log('REFRESH');
-
-    const { data: recipes, isLoading: areRecipesLoading } = useGetRecipesQuery(
+    const { data: recipes, isError } = useGetRecipesQuery(
         {
             page: 1,
             limit: pathname === '/' ? 4 : 8 * page,
@@ -54,12 +57,20 @@ const Subcategory = () => {
     );
 
     useEffect(() => {
+        if (isError) {
+            toast();
+        }
+    }, [toast, isError]);
+
+    useEffect(() => {
         dispatch(setPage(1));
     }, [dispatch, pathname]);
 
     return (
         <Flex direction='column' alignItems='center'>
-            {(areRecipesLoading || areCategoriesLoading) && <CustomSpinner overflow />}
+            {/* {(areRecipesLoading || areCategoriesLoading) && (
+                <CustomSpinner data-test-id='app-loader' spinnerOverflow />
+            )} */}
             <SimpleGrid
                 spacing='24px'
                 columns={(isLargeMobile && !isMobile) || isSmallMobile ? 1 : 2}

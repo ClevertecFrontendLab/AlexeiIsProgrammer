@@ -73,6 +73,21 @@ export const appSlice = createSlice({
         setAreAllergensActive(state, { payload: areAllergensActive }: PayloadAction<boolean>) {
             state.filter.areAllergensActive = areAllergensActive;
         },
+        setFilters(
+            state,
+            {
+                payload: filters,
+            }: PayloadAction<
+                {
+                    label: keyof typeof initialState.filter;
+                    value: never;
+                }[]
+            >,
+        ) {
+            filters.forEach(({ label, value }) => {
+                state.filter[label] = value as never;
+            });
+        },
     },
 });
 export const userLoadingSelector = (state: ApplicationState) => state.app.isLoading;
@@ -91,5 +106,6 @@ export const {
     selectAuthors,
     selectCategories,
     setPage,
+    setFilters,
 } = appSlice.actions;
 export default appSlice.reducer;

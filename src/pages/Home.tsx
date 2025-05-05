@@ -21,8 +21,6 @@ const HomePage: React.FC = () => {
         pathname.substring(pathname.lastIndexOf('/') + 1),
     );
 
-    console.log('HOMEEE', currentRoute);
-
     return (
         <Box>
             <FilterComponent

@@ -12,8 +12,15 @@ import {
     useMediaQuery,
 } from '@chakra-ui/react';
 import type React from 'react';
+import { useMemo } from 'react';
+import { Navigate, useLocation } from 'react-router';
+
+import { useGetCategoriesQuery } from '~/query/services/categories';
+import getCurrentCategory from '~/utils/getCurrentCategory';
+import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
 
 import Breadcrumbs from '../Breadcrumbs';
+import CustomSpinner from '../CustomSpinner';
 import Footer from '../Footer';
 import FooterButton from '../FooterButton';
 import Header from '../Header';
@@ -29,6 +36,38 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
     const { isOpen, onClose, onOpen } = useDisclosure();
+
+    const { data: categories, isLoading: areCategoriesLoading } = useGetCategoriesQuery();
+
+    const { pathname } = useLocation();
+
+    const currentCategory = getCurrentCategory(pathname);
+    const currentSubcategory = getCurrentSubcategory(pathname);
+
+    const isJuiciest =
+        currentCategory === 'the-juiciest' || pathname === '/' || pathname === '/not-found';
+
+    const category = useMemo(
+        () => categories?.find((category) => category.category === currentCategory),
+        [currentCategory, categories],
+    );
+
+    const subcategory = useMemo(
+        () => categories?.find((category) => category.category === currentSubcategory),
+        [currentSubcategory, categories],
+    );
+
+    console.log(
+        'categories, category, subcategory, isJuiciest',
+        categories,
+        category,
+        subcategory,
+        isJuiciest,
+    );
+
+    if (categories && !(category || subcategory) && !isJuiciest) {
+        return <Navigate to='not-found' />;
+    }
 
     return (
         <Flex direction='column' minH='100vh'>
@@ -93,7 +132,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     paddingRight={!isMobile ? '280px !important' : {}}
                     paddingBottom={isSmallMobile ? '100px' : {}}
                 >
-                    {children}
+                    {areCategoriesLoading ? (
+                        <CustomSpinner data-test-id='app-loader' spinnerOverflow />
+                    ) : (
+                        children
+                    )}
                 </Box>
 
                 <Footer />

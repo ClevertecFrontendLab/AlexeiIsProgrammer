@@ -1,13 +1,13 @@
-import { Box, Spinner } from '@chakra-ui/react';
+import { Box, BoxProps, Spinner } from '@chakra-ui/react';
 
 import styles from './CustomSpinner.module.scss';
 
-type CustomSpinnerProps = {
-    overflow?: boolean;
+type CustomSpinnerProps = BoxProps & {
+    spinnerOverflow?: boolean;
 };
 
-const CustomSpinner = ({ overflow }: CustomSpinnerProps) => (
-    <Box className={overflow ? styles.overflow : undefined}>
+const CustomSpinner = ({ spinnerOverflow, ...props }: CustomSpinnerProps) => (
+    <Box {...props} className={spinnerOverflow ? styles.overflow : undefined}>
         <Box className={styles.spinner}>
             <Spinner />
         </Box>

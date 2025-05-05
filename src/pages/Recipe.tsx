@@ -12,13 +12,14 @@ import {
     useBreakpointValue,
 } from '@chakra-ui/react';
 import type React from 'react';
-import { useParams } from 'react-router';
+import { Navigate, useParams } from 'react-router';
 
 import group from '~/assets/group.svg';
 import loveMark from '~/assets/love-mark.svg';
 import loveSmile from '~/assets/love-smile.svg';
 import Calculate from '~/components/Calculate';
 import CustomBadge from '~/components/CustomBadge';
+import CustomSpinner from '~/components/CustomSpinner';
 import RecipeInfo from '~/components/RecipeInfo';
 import SideIcon from '~/components/SideIcon';
 import Slider from '~/components/Slider';
@@ -34,13 +35,15 @@ type RecipeParams = {
 
 const Recipe: React.FC = () => {
     const { recipeId: id } = useParams<RecipeParams>();
-    const { data: recipe } = useGetRecipeByIdQuery(id || '', {
+    const { data: recipe, isLoading: isRecipeLoading } = useGetRecipeByIdQuery(id || '', {
         skip: !id,
     });
 
     const isMobile = useBreakpointValue({ base: true, md: false });
 
-    if (!recipe) return null;
+    if (isRecipeLoading) return <CustomSpinner spinnerOverflow />;
+
+    if (!recipe) return <Navigate to='not-found' />;
 
     return (
         <Box maxW='1200px' mx='auto'>

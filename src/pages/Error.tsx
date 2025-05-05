@@ -25,7 +25,12 @@ const Error = () => (
             </Text>
             <Text color='blackAlpha.700' textAlign='center'>
                 Можете поискать другой рецепт{' '}
-                <Link textDecoration='underline' to='/' as={RouterLink}>
+                <Link
+                    data-test-id='error-page-go-home'
+                    textDecoration='underline'
+                    to='/'
+                    as={RouterLink}
+                >
                     здесь.
                 </Link>
             </Text>
