@@ -114,7 +114,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             p={0}
                         >
                             <Box mt='70px' px='24px'>
-                                <Breadcrumbs />
+                                <Breadcrumbs onClose={onClose} />
                             </Box>
 
                             <Sidebar />
