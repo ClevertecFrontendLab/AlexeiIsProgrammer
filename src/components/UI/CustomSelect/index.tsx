@@ -58,7 +58,6 @@ export default function CustomSelect({
 
     const addNewOption = () => {
         if (onOptionAdd && newOption && !options.find((option) => option.value === newOption)) {
-            // onOptionAdd({ label: newOption, value: newOption });
             onChange([...value, { label: newOption, value: newOption }]);
             setNewOption('');
             inputRef.current?.focus();

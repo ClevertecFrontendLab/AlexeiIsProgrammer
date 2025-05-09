@@ -100,13 +100,8 @@ const Subcategory = () => {
         : [allRecipes, isAllRecipesError, isAllRecipesFetching];
 
     const getItemPath = useCallback(
-        (item: Recipe) => {
-            console.log(
-                `/${(isJuiciest ? '' : currentCategory) || getCategoriesPath(item.categoriesIds?.[0], categories)[0]}/${currentSubcategory || getCategoriesPath(item.categoriesIds?.[0], categories)[1]}/${item._id}`,
-            );
-
-            return `/${(isJuiciest ? '' : currentCategory) || getCategoriesPath(item.categoriesIds?.[0], categories)[0]}/${currentSubcategory || getCategoriesPath(item.categoriesIds?.[0], categories)[1]}/${item._id}`;
-        },
+        (item: Recipe) =>
+            `/${(isJuiciest ? '' : currentCategory) || getCategoriesPath(item.categoriesIds?.[0], categories)[0]}/${currentSubcategory || getCategoriesPath(item.categoriesIds?.[0], categories)[1]}/${item._id}`,
         [isJuiciest, categories, currentCategory, currentSubcategory],
     );
 

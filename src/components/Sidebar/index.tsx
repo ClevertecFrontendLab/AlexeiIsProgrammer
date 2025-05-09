@@ -28,9 +28,6 @@ const SidebarItem = ({ category: { title, icon, subCategories, category } }: Sid
             <Link
                 to={`/${category}/${subCategories?.[0].category || ''}`}
                 data-test-id={category === 'vegan' ? 'vegan-cuisine' : category}
-                // onClick={() =>
-                //     navigate(isCategoryActive ? '/' : `/${path}/${children?.[0].path || ''}`)
-                // }
             >
                 <Flex
                     cursor='pointer'

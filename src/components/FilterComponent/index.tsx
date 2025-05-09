@@ -115,7 +115,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
         { skip: !category && !isJuiciest },
     );
 
-    const [recipes, areRecipesLoading, areRecipesFetching] = !isJuiciest
+    const [recipes, areRecipesLoading, _, areRecipesFetching] = !isJuiciest
         ? [recipesByCategory, isRecipesByCategoryError, false, false]
         : [
               allRecipes,
@@ -132,8 +132,6 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
         if (search !== inputValue) {
             dispatch(setFilters([{ name: 'search', value: inputValue }]));
         } else {
-            console.log('call recipes');
-
             getRecipes({
                 page,
                 limit: pathname === '/' && !hasActiveFilters ? 4 : 8,

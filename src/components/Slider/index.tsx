@@ -55,8 +55,6 @@ const Slider = ({ title }: SliderProps) => {
         [data],
     );
 
-    console.log('slides', slides);
-
     return (
         <Box mt='24px'>
             {title && (

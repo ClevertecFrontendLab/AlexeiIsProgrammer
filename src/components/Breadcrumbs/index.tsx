@@ -1,10 +1,11 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router';
 
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import { useGetRecipeByIdQuery } from '~/query/services/recipes';
+import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentRecipe from '~/utils/getCurrentRecipe';
 import getCurrentRoute from '~/utils/getCurrentRoute';
 
@@ -18,9 +19,17 @@ const Breadcrumbs = () => {
     const currentRecipe = getCurrentRecipe(pathname);
     const pathnames = pathname.split('/').filter(Boolean);
 
+    const currentCategory = getCurrentCategory(pathname);
+
+    const category = useMemo(
+        () => routes?.find((category) => category.category === currentCategory),
+        [currentCategory, routes],
+    );
+
     const { data: recipe } = useGetRecipeByIdQuery(currentRecipe, { skip: !currentRecipe });
 
-    const buildPath = (index: number) => `/${pathnames.slice(0, index + 1).join('/')}`;
+    const buildPath = (index: number) =>
+        `/${pathnames.slice(0, index + 1).join('/')}${index === 0 ? `/${category?.subCategories?.[0].category}` : ''}`;
 
     const getBreadcrumbName = useCallback(
         (name: string) =>

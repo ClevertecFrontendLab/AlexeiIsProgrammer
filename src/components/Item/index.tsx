@@ -45,8 +45,6 @@ const Item = memo(({ item, index, to }: ItemProps) => {
 
     const [getRecipe] = useLazyGetRecipeByIdQuery();
 
-    // console.log('item', `_index-${index}`, search);
-
     return (
         <Card
             data-test-id={`food-card-${index}`}
@@ -57,14 +55,6 @@ const Item = memo(({ item, index, to }: ItemProps) => {
             position='relative'
             variant='outline'
         >
-            {/* {!isMobile && (
-                <CustomBadge
-                    className={styles.recommendation}
-                    icon='https://bit.ly/sage-adebayo'
-                    text='Alex Cook рекомендует'
-                    color='lime.150'
-                />
-            )} */}
             <Image
                 objectFit='cover'
                 w={{ base: '100%', sm: '50%' }}

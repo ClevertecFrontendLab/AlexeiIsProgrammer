@@ -8,17 +8,9 @@ import Subcategory from '~/components/Subcategory';
 import Tabbed from '~/components/Tabbed';
 import Error from '~/pages/Error';
 import Recipe from '~/pages/Recipe';
-import {
-    AppRoute,
-    // transformMenuToRoutes,
-    // useGetCategoriesQuery,
-} from '~/query/services/categories';
+import { AppRoute } from '~/query/services/categories';
 
 const Router = () => {
-    // const { data: routes } = useGetCategoriesQuery();
-
-    // const transformedRoutes = useMemo(() => routes?.map(transformMenuToRoutes) || [], [routes]);
-
     const router = useMemo(
         () =>
             createBrowserRouter([
@@ -35,7 +27,6 @@ const Router = () => {
                             path: '/',
                             element: <App />,
                             children: [
-                                // ...transformedRoutes,
                                 {
                                     path: ':category',
                                     element: <Tabbed />,
