@@ -20,12 +20,8 @@ import { useMemo, useState } from 'react';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import {
     addAlergen,
-    selectAlergens,
-    selectAuthors,
-    selectCategories,
-    selectMeats,
-    selectSides,
     setAreAllergensActive,
+    setFilters,
     userFilterSelector,
 } from '~/store/app-slice';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
@@ -78,12 +74,6 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                 })) || [],
         [categories],
     );
-    // routes?.[0]?.children
-    //     .filter((item) => !item.noMenu)
-    //     .map((route) => ({
-    //         label: route?.label,
-    //         value: route.path,
-    //     }));
 
     const dispatch = useAppDispatch();
 
@@ -114,20 +104,36 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
         localCategories.length === 0 &&
         localAllergens.length === 0;
 
-    // useEffect(() => {
-    //     if (isOpen) {
-    //         setCategories(categories);
-    //         setAuthors(authors);
-    //         setMeats(meats);
-    //         setSides(sides);
-    //         setAllergens(activeAllergens);
-    //     }
-    // }, [isOpen, activeAllergens, meats, sides, authors, categories]);
     const clearLocals = () => {
-        setCategories([]);
-        setAuthors([]);
+        dispatch(
+            setFilters([
+                {
+                    name: 'meats',
+                    value: localMeats,
+                },
+                {
+                    name: 'sides',
+                    value: localSides,
+                },
+                {
+                    name: 'authors',
+                    value: localAuthors,
+                },
+                {
+                    name: 'categories',
+                    value: localCategories,
+                },
+                {
+                    name: 'activeAllergens',
+                    value: localAllergens,
+                },
+            ]),
+        );
+
         setMeats([]);
         setSides([]);
+        setAuthors([]);
+        setCategories([]);
         setAllergens([]);
     };
     return (
@@ -291,13 +297,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         <Button
                             data-test-id='clear-filter-button'
                             onClick={() => {
-                                dispatch(selectMeats(localMeats));
-                                dispatch(selectSides(localSides));
-                                dispatch(selectAuthors(localAuthors));
-                                dispatch(selectCategories(localCategories));
-                                dispatch(selectAlergens(localAllergens));
                                 clearLocals();
-                                // onClose();
                             }}
                             variant='outline'
                             colorScheme='dark'
@@ -309,12 +309,6 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                             isDisabled={isFindRecipeDisabled}
                             pointerEvents={isFindRecipeDisabled ? 'none' : 'auto'}
                             onClick={() => {
-                                dispatch(selectMeats(localMeats));
-                                dispatch(selectSides(localSides));
-                                dispatch(selectAuthors(localAuthors));
-                                dispatch(selectCategories(localCategories));
-                                dispatch(selectAlergens(localAllergens));
-
                                 clearLocals();
 
                                 onClose();

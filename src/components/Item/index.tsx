@@ -32,11 +32,10 @@ import styles from './Item.module.scss';
 type ItemProps = {
     item: Recipe;
     index: number;
-    currentCategory: string;
-    currentSubcategory: string;
+    to: string;
 };
 
-const Item = memo(({ item, index, currentCategory, currentSubcategory }: ItemProps) => {
+const Item = memo(({ item, index, to }: ItemProps) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const isSmallMobile = useBreakpointValue({ base: true, md: false });
     const toast = useToast();
@@ -136,11 +135,7 @@ const Item = memo(({ item, index, currentCategory, currentSubcategory }: ItemPro
                         onClick={() => {
                             getRecipe(item._id)
                                 .unwrap()
-                                .then(() =>
-                                    navigate(
-                                        `/${currentCategory || item.categoriesIds?.[0]}/${currentSubcategory || item.categoriesIds?.[0]}/${item._id}`,
-                                    ),
-                                )
+                                .then(() => navigate(to))
                                 .catch(toast);
                         }}
                         px='12px'

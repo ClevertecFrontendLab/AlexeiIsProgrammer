@@ -15,6 +15,7 @@ const Error = () => (
         <Image maxW='206px' src={notFound} />
         <Flex gap='16px' direction='column' alignItems='center'>
             <Text
+                as='h1'
                 textAlign='center'
                 color='black'
                 fontSize='24px'

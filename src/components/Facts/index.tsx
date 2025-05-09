@@ -1,40 +1,46 @@
-import { Box, Flex, SimpleGrid, Text, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
-import { useMemo } from 'react';
-import { useLocation } from 'react-router';
+import {
+    Box,
+    Flex,
+    SimpleGrid,
+    Text,
+    useBreakpointValue,
+    useMediaQuery,
+    useToast,
+} from '@chakra-ui/react';
+import { useEffect, useMemo } from 'react';
 
-import { useGetCategoriesQuery } from '~/query/services/categories';
-import { useGetRecipesQuery } from '~/query/services/recipes';
-import getCurrentCategory from '~/utils/getCurrentCategory';
-import getRandomCategory from '~/utils/getRandomCategory';
+import { useGetCategoriesQuery, useGetCategoryByIdQuery } from '~/query/services/categories';
+import { useGetRecipesByCategoryQuery } from '~/query/services/recipes';
+import getRandomSubcategory from '~/utils/getRandomSubcategory';
 
 import SlideItem from '../SlideItem';
 import Fact from './Fact';
 
 const Facts = () => {
+    const toast = useToast();
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
-
-    const { pathname } = useLocation();
-    const currentCategory = getCurrentCategory(pathname);
-
     const { data: categories } = useGetCategoriesQuery();
 
-    const category = useMemo(
-        () =>
-            currentCategory
-                ? categories?.find((category) => category.category === currentCategory) ||
-                  getRandomCategory(categories || [])
-                : getRandomCategory(categories || []),
-        [categories, currentCategory],
-    );
+    const subcategory = useMemo(() => getRandomSubcategory(categories || []), [categories]);
 
-    const { data: facts } = useGetRecipesQuery(
+    const { data: category } = useGetCategoryByIdQuery(subcategory?.rootCategoryId || '', {
+        skip: !subcategory?.rootCategoryId,
+    });
+
+    const { data: facts, isError } = useGetRecipesByCategoryQuery(
         {
             limit: 5,
-            subcategoriesIds: category?.subCategories?.map((s) => s._id).join(','),
+            id: subcategory?._id || '',
         },
-        { skip: !category },
+        { skip: !subcategory?._id },
     );
+
+    useEffect(() => {
+        if (isError) {
+            toast();
+        }
+    }, [isError, toast]);
 
     return (
         <Box

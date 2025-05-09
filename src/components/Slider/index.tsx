@@ -7,11 +7,10 @@ import {
     useMediaQuery,
     useToast,
 } from '@chakra-ui/react';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
-import { NavigationOptions } from 'swiper/types';
 
 import arrowLeft from '~/assets/arrow-left.svg';
 import arrowRight from '~/assets/arrow-right.svg';
@@ -31,7 +30,7 @@ const Slider = ({ title }: SliderProps) => {
 
     const { data: categories } = useGetCategoriesQuery();
 
-    const { data: slides } = useGetRecipesQuery({
+    const { data } = useGetRecipesQuery({
         sortBy: 'createdAt',
         sortOrder: 'desc',
         limit: 10,
@@ -46,6 +45,17 @@ const Slider = ({ title }: SliderProps) => {
 
     const prevRef = useRef(null);
     const nextRef = useRef(null);
+
+    // Test handling sorting
+    const slides = useMemo(
+        () =>
+            [...(data?.data || [])]
+                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                .slice(0, 10),
+        [data],
+    );
+
+    console.log('slides', slides);
 
     return (
         <Box mt='24px'>
@@ -63,44 +73,46 @@ const Slider = ({ title }: SliderProps) => {
             )}
 
             <Box position='relative'>
-                <Swiper
-                    data-test-id='carousel'
-                    modules={[Navigation]}
-                    spaceBetween={24}
-                    slidesPerView={
-                        isSmallMobile ? 1.2 : isMobile ? 3.2 : isMedium ? 2 : isLarge ? 3 : 4
-                    }
-                    navigation={{
-                        prevEl: prevRef.current,
-                        nextEl: nextRef.current,
-                    }}
-                    loop
-                    onBeforeInit={(swiper: SwiperClass) => {
-                        const navigation = swiper.params.navigation as NavigationOptions;
-
-                        navigation.prevEl = prevRef.current;
-                        navigation.nextEl = nextRef.current;
-                    }}
-                >
-                    {slides?.data.map((slide, i) => (
-                        <SwiperSlide
-                            data-test-id={`carousel-card-${i}`}
-                            onClick={() =>
-                                getRecipe(slide._id)
-                                    .unwrap()
-                                    .then(() =>
-                                        navigate(
-                                            `/${getCategoriesPath(slide.categoriesIds?.[0], categories)}/${slide._id}`,
-                                        ),
-                                    )
-                                    .catch(toast)
-                            }
-                            key={slide._id}
-                        >
-                            <SlideItem slide={slide} />
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
+                {slides && (
+                    <Swiper
+                        data-test-id='carousel'
+                        modules={[Navigation]}
+                        spaceBetween={24}
+                        slidesPerView={
+                            isSmallMobile ? 1.2 : isMobile ? 3.2 : isMedium ? 2 : isLarge ? 3 : 4
+                        }
+                        observer={true}
+                        observeParents={true}
+                        navigation={{
+                            prevEl: prevRef.current,
+                            nextEl: nextRef.current,
+                        }}
+                        loop
+                        onInit={(swiper: SwiperClass) => {
+                            swiper.navigation.init();
+                            swiper.navigation.update();
+                        }}
+                    >
+                        {slides.map((slide, i) => (
+                            <SwiperSlide
+                                data-test-id={`carousel-card-${i}`}
+                                onClick={() =>
+                                    getRecipe(slide._id)
+                                        .unwrap()
+                                        .then(() =>
+                                            navigate(
+                                                `/${getCategoriesPath(slide.categoriesIds?.[0], categories).join('/')}/${slide._id}`,
+                                            ),
+                                        )
+                                        .catch(toast)
+                                }
+                                key={slide._id}
+                            >
+                                <SlideItem slide={slide} />
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+                )}
                 <IconButton
                     data-test-id='carousel-back'
                     ref={prevRef}

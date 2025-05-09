@@ -4,18 +4,20 @@ import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-rou
 import App from '~/app/App';
 import Juciest from '~/components/Juciest';
 import Layout from '~/components/Layout';
+import Subcategory from '~/components/Subcategory';
+import Tabbed from '~/components/Tabbed';
 import Error from '~/pages/Error';
 import Recipe from '~/pages/Recipe';
 import {
     AppRoute,
-    transformMenuToRoutes,
-    useGetCategoriesQuery,
+    // transformMenuToRoutes,
+    // useGetCategoriesQuery,
 } from '~/query/services/categories';
 
 const Router = () => {
-    const { data: routes } = useGetCategoriesQuery();
+    // const { data: routes } = useGetCategoriesQuery();
 
-    const transformedRoutes = useMemo(() => routes?.map(transformMenuToRoutes) || [], [routes]);
+    // const transformedRoutes = useMemo(() => routes?.map(transformMenuToRoutes) || [], [routes]);
 
     const router = useMemo(
         () =>
@@ -23,7 +25,7 @@ const Router = () => {
                 {
                     path: '/',
                     element: (
-                        <Layout>
+                        <Layout key='layout'>
                             <Outlet />
                         </Layout>
                     ),
@@ -33,13 +35,24 @@ const Router = () => {
                             path: '/',
                             element: <App />,
                             children: [
-                                ...transformedRoutes,
+                                // ...transformedRoutes,
+                                {
+                                    path: ':category',
+                                    element: <Tabbed />,
+                                    children: [
+                                        {
+                                            path: ':subCategory',
+                                            element: <Subcategory />,
+                                        },
+                                    ],
+                                },
                                 {
                                     path: 'the-juiciest',
                                     element: <Juciest />,
                                 },
                             ],
                         },
+
                         {
                             path: ':category/:subCategory/:recipeId',
                             element: <Recipe />,
@@ -49,13 +62,13 @@ const Router = () => {
                 {
                     path: 'not-found',
                     element: (
-                        <Layout>
+                        <Layout key='layout'>
                             <Error />,
                         </Layout>
                     ),
                 },
             ] as AppRoute[]),
-        [transformedRoutes],
+        [],
     );
 
     return <RouterProvider router={router} />;

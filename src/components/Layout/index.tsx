@@ -57,16 +57,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         [currentSubcategory, categories],
     );
 
-    console.log(
-        'categories, category, subcategory, isJuiciest',
-        categories,
-        category,
-        subcategory,
-        isJuiciest,
-    );
-
-    if (categories && !(category || subcategory) && !isJuiciest) {
-        return <Navigate to='not-found' />;
+    if (categories && !(category && subcategory) && !isJuiciest) {
+        return (
+            <Navigate
+                to={
+                    category && !currentSubcategory
+                        ? `/${category.category}/${category.subCategories?.[0].category}`
+                        : `not-found`
+                }
+            />
+        );
     }
 
     return (

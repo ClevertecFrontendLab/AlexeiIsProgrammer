@@ -8,7 +8,9 @@ import { useLazyGetRecipesQuery } from '~/query/services/recipes';
 import { userFilterSelector } from '~/store/app-slice';
 import { useAppSelector } from '~/store/hooks';
 import getCurrentCategory from '~/utils/getCurrentCategory';
+import transformAllergen from '~/utils/transformAllergen';
 
+import CustomSpinner from '../CustomSpinner';
 import Subcategory from '../Subcategory';
 
 const Juciest = () => {
@@ -28,15 +30,15 @@ const Juciest = () => {
 
     const isJuiciest = pathname === '/the-juiciest';
 
-    const isMobile = useBreakpointValue({ base: true, lg: false });
+    const isMobile = useBreakpointValue({ base: true, md: false });
 
-    const [getRecipes] = useLazyGetRecipesQuery();
+    const [getRecipes, { isLoading }] = useLazyGetRecipesQuery();
 
     const toJuiciestHandle = () => {
         getRecipes({
             page: 1,
             limit: 8,
-            allergens: activeAllergens.map((m) => m.value).join(','),
+            allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
             searchString: search,
             meat: meats.map((m) => m.value).join(','),
             garnish: sides.map((m) => m.value).join(','),
@@ -53,6 +55,7 @@ const Juciest = () => {
 
     return (
         <Box mt='40px'>
+            {isLoading && <CustomSpinner data-test-id='app-loader' spinnerOverflow />}
             {!isJuiciest && (
                 <Flex mb='24px' justifyContent='space-between' alignItems='flex-end'>
                     <Text

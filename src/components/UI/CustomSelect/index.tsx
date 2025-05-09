@@ -192,7 +192,13 @@ export default function CustomSelect({
                             <SmallAddIcon
                                 as='button'
                                 aria-label='icon'
-                                data-test-id='add-allergen-button'
+                                data-test-id={
+                                    (isFilterOpened &&
+                                        placeholder === 'Выберите из списка аллергенов...') ||
+                                    (!isFilterOpened && placeholder === 'Выберите из списка')
+                                        ? 'add-allergen-button'
+                                        : ''
+                                }
                                 onClick={addNewOption}
                                 color='white'
                                 rounded='lg'

@@ -13,22 +13,29 @@ import {
     useBreakpointValue,
     useDisclosure,
 } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation } from 'react-router';
 
 import filter from '~/assets/filter.svg';
-import { useGetCategoriesQuery } from '~/query/services/categories';
-import { useGetRecipesQuery } from '~/query/services/recipes';
+import { useGetCategoriesQuery, useGetCategoryByIdQuery } from '~/query/services/categories';
+import {
+    useGetRecipesByCategoryQuery,
+    useGetRecipesQuery,
+    useLazyGetRecipesQuery,
+} from '~/query/services/recipes';
 import {
     addAlergen,
-    selectAlergens,
+    hasActiveFiltersSelector,
     setAreAllergensActive,
-    setSearch,
+    setFilters,
     userFilterSelector,
 } from '~/store/app-slice';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import getCurrentCategory from '~/utils/getCurrentCategory';
+import getCurrentRoute from '~/utils/getCurrentRoute';
+import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
+import transformAllergen from '~/utils/transformAllergen';
 
 import CustomSpinner from '../CustomSpinner';
 import Filter from '../Filter';
@@ -50,55 +57,110 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
 
     const { search, activeAllergens, allergens, areAllergensActive, meats, sides, page } =
         useAppSelector(userFilterSelector);
-
-    const notEmptyFilters = activeAllergens.length > 0 || input.length > 0;
+    const hasActiveFilters = useAppSelector(hasActiveFiltersSelector);
 
     const { data: categories } = useGetCategoriesQuery();
+
+    const [getRecipes, { isLoading: areAllRecipesLazyLoading }] = useLazyGetRecipesQuery();
 
     const { pathname } = useLocation();
 
     const currentCategory = getCurrentCategory(pathname);
+    const currentSubcategory = getCurrentSubcategory(pathname);
+    const currentRoute = getCurrentRoute(categories || [], currentCategory);
+
+    const { data: category } = useGetCategoryByIdQuery(currentRoute?._id || '', {
+        skip: !currentRoute?._id,
+    });
+
+    const subcategory = category?.subCategories?.find((sub) => sub.category === currentSubcategory);
 
     const isJuiciest = currentCategory === 'the-juiciest' || pathname === '/';
 
-    const category = useMemo(
-        () => categories?.find((category) => category.category === currentCategory),
-        [currentCategory, categories],
-    );
+    const { data: recipesByCategory, isError: isRecipesByCategoryError } =
+        useGetRecipesByCategoryQuery(
+            {
+                id: subcategory?._id || '',
+                page,
+                limit: pathname === '/' ? 4 : 8,
+                allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
+                searchString: search,
+            },
+            { skip: !subcategory || isJuiciest },
+        );
 
     const {
-        data: recipes,
-        isLoading: areRecipesLoading,
-        isFetching: areRecipesFetching,
+        data: allRecipes,
+        isError: isAllRecipesError,
+        isLoading: areAllRecipesLoading,
+        isFetching: areAllRecipesFetching,
     } = useGetRecipesQuery(
         {
-            page: 1,
-            limit: pathname === '/' ? 4 : 8 * page,
-            allergens: activeAllergens.map((m) => m.value).join(','),
+            page,
+            limit: pathname === '/' && !hasActiveFilters ? 4 : 8,
+            allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
             searchString: search,
             meat: meats.map((m) => m.value).join(','),
             garnish: sides.map((m) => m.value).join(','),
             subcategoriesIds: category?.subCategories?.map((s) => s._id).join(','),
-            sortBy: isJuiciest ? 'likes' : '',
-            sortOrder: isJuiciest ? 'desc' : '',
+            sortBy:
+                currentCategory === 'the-juiciest' || (pathname === '/' && !hasActiveFilters)
+                    ? 'likes'
+                    : '',
+            sortOrder:
+                currentCategory === 'the-juiciest' || (pathname === '/' && !hasActiveFilters)
+                    ? 'desc'
+                    : '',
         },
         { skip: !category && !isJuiciest },
     );
 
+    const [recipes, areRecipesLoading, areRecipesFetching] = !isJuiciest
+        ? [recipesByCategory, isRecipesByCategoryError, false, false]
+        : [
+              allRecipes,
+              isAllRecipesError,
+              areAllRecipesLoading || areAllRecipesLazyLoading,
+              areAllRecipesFetching,
+          ];
+
     const onSearchHandle = (searchArg: string = '') => {
         const inputValue = searchArg || input || '';
 
-        if (search === inputValue || inputValue.length <= 2) return;
+        if (inputValue.length <= 2 && activeAllergens.length === 0) return;
 
-        dispatch(setSearch(inputValue));
+        if (search !== inputValue) {
+            dispatch(setFilters([{ name: 'search', value: inputValue }]));
+        } else {
+            console.log('call recipes');
+
+            getRecipes({
+                page,
+                limit: pathname === '/' && !hasActiveFilters ? 4 : 8,
+                allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
+                searchString: search,
+                meat: meats.map((m) => m.value).join(','),
+                garnish: sides.map((m) => m.value).join(','),
+                subcategoriesIds: category?.subCategories?.map((s) => s._id).join(','),
+                sortBy:
+                    currentCategory === 'the-juiciest' || (pathname === '/' && !hasActiveFilters)
+                        ? 'likes'
+                        : '',
+                sortOrder:
+                    currentCategory === 'the-juiciest' || (pathname === '/' && !hasActiveFilters)
+                        ? 'desc'
+                        : '',
+            });
+        }
     };
 
     return (
         <Flex
+            mx='auto'
             maxW='900px'
             p='32px'
             px={isMobile ? '0px' : '190px'}
-            boxShadow={notEmptyFilters ? 'xl' : 'none'}
+            boxShadow={hasActiveFilters ? 'xl' : 'none'}
             transition='.3s ease all'
             direction='column'
             alignItems='center'
@@ -135,7 +197,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                     </Text>
                 )
             )}
-            {!areRecipesLoading && areRecipesFetching ? (
+            {areRecipesLoading || areRecipesFetching ? (
                 <CustomSpinner data-test-id='loader-search-block' />
             ) : (
                 <>
@@ -173,7 +235,11 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                                 />
                                 <InputRightElement>
                                     <SearchIcon
-                                        pointerEvents={input.length > 2 ? 'auto' : 'none'}
+                                        pointerEvents={
+                                            input.length > 2 || activeAllergens.length > 0
+                                                ? 'auto'
+                                                : 'none'
+                                        }
                                         data-test-id='search-button'
                                         onClick={() => {
                                             onSearchHandle();
@@ -203,7 +269,11 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                                             const isChecked = e.target.checked;
 
                                             if (!isChecked) {
-                                                dispatch(selectAlergens([]));
+                                                dispatch(
+                                                    setFilters([
+                                                        { name: 'activeAllergens', value: [] },
+                                                    ]),
+                                                );
                                             }
 
                                             dispatch(setAreAllergensActive(isChecked));
@@ -218,7 +288,13 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                                     placeholder='Выберите из списка'
                                     value={activeAllergens}
                                     options={allergens}
-                                    onChange={(allergens) => dispatch(selectAlergens(allergens))}
+                                    onChange={(allergens) =>
+                                        dispatch(
+                                            setFilters([
+                                                { name: 'activeAllergens', value: allergens },
+                                            ]),
+                                        )
+                                    }
                                     onOptionAdd={(allergen) => dispatch(addAlergen(allergen))}
                                     disabled={!areAllergensActive}
                                 />

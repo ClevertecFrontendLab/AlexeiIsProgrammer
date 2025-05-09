@@ -48,7 +48,7 @@ const Fact = ({ recipe }: FactProps) => {
                         .unwrap()
                         .then(() =>
                             navigate(
-                                `/${getCategoriesPath(recipe?.categoriesIds?.[0], categories)}/${recipe._id}`,
+                                `/${getCategoriesPath(recipe?.categoriesIds?.[0], categories).join('/')}/${recipe._id}`,
                             ),
                         )
                         .catch(toast)

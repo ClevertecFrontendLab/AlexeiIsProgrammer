@@ -23,7 +23,7 @@ createRoot(document.getElementById('root')!).render(
                             <CustomAlert
                                 onClose={onClose}
                                 title='Ошибка сервера'
-                                description='Попробуйте немного позже'
+                                description='Попробуйте поискать снова попозже'
                                 status='error'
                             />
                         ),

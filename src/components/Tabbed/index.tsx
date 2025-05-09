@@ -1,7 +1,7 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs, useBreakpointValue } from '@chakra-ui/react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
-import { SubcategoryItem, useGetCategoriesQuery } from '~/query/services/categories';
+import { useGetCategoriesQuery, useGetCategoryByIdQuery } from '~/query/services/categories';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentRoute from '~/utils/getCurrentRoute';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
@@ -19,11 +19,14 @@ const Tabbed = () => {
 
     const currentRoute = getCurrentRoute(routes || [], currentCategory);
 
-    const parent = currentRoute?.category;
+    const { data: category } = useGetCategoryByIdQuery(currentRoute?._id || '', {
+        skip: !currentRoute?._id,
+    });
 
-    const tabs: SubcategoryItem[] = currentRoute?.subCategories || [];
+    const tabs = category?.subCategories || [];
+    const parent = category?.category;
 
-    const currentIndex = tabs.findIndex((tab) => tab.category === currentSubcategory);
+    const currentIndex = tabs?.findIndex((tab) => tab.category === currentSubcategory);
 
     return (
         <Box>

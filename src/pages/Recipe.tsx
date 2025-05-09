@@ -65,8 +65,8 @@ const Recipe: React.FC = () => {
                             ))}
                         </Flex>
                         <Flex gap='8px'>
-                            <SideIcon icon={loveMark} text={recipe.bookmarks.toString()} />
-                            <SideIcon icon={loveSmile} text={recipe.likes.toString()} />
+                            <SideIcon icon={loveMark} text={recipe.bookmarks?.toString()} />
+                            <SideIcon icon={loveSmile} text={recipe.likes?.toString()} />
                         </Flex>
                     </Flex>
 

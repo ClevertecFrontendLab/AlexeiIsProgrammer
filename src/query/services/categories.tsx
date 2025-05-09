@@ -64,7 +64,7 @@ export const categoriesApiSlice = apiSlice
             }),
             getCategoryById: builder.query<CategoryItem, string>({
                 query: (id) => ({
-                    url: `${ApiEndpoints.CATEGORIES}${id}`,
+                    url: `${ApiEndpoints.CATEGORIES}/${id}`,
                     method: 'GET',
                     apiGroupName: ApiGroupNames.CATEGORIES,
                     name: EndpointNames.GET_CATEGORY_BY_ID,

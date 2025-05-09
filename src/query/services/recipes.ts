@@ -67,7 +67,7 @@ export const recipesApiSlice = apiSlice
                 GetRecipesByCategoryParams
             >({
                 query: ({ id, ...params }) => ({
-                    url: `${ApiEndpoints.RECIPES}category/${id}`,
+                    url: `${ApiEndpoints.RECIPES}/category/${id}`,
                     method: 'GET',
                     apiGroupName: ApiGroupNames.RECIPES,
                     name: EndpointNames.GET_RECIPES_BY_CATEGORY,
@@ -78,7 +78,7 @@ export const recipesApiSlice = apiSlice
             }),
             getRecipeById: builder.query<Recipe, string>({
                 query: (id) => ({
-                    url: `${ApiEndpoints.RECIPES}${id}`,
+                    url: `${ApiEndpoints.RECIPES}/${id}`,
                     method: 'GET',
                     apiGroupName: ApiGroupNames.RECIPES,
                     name: EndpointNames.GET_RECIPE_BY_ID,
@@ -88,7 +88,7 @@ export const recipesApiSlice = apiSlice
             }),
             getRecipeByUserId: builder.query<Recipe, string>({
                 query: (userId) => ({
-                    url: `${ApiEndpoints.RECIPES}user/${userId}`,
+                    url: `${ApiEndpoints.RECIPES}/user/${userId}`,
                     method: 'GET',
                     apiGroupName: ApiGroupNames.RECIPES,
                     name: EndpointNames.GET_RECIPE_BY_USER_ID,
@@ -101,9 +101,9 @@ export const recipesApiSlice = apiSlice
 
 export const {
     useGetRecipesQuery,
-    useLazyGetRecipesQuery,
     useGetRecipesByCategoryQuery,
     useGetRecipeByIdQuery,
-    useLazyGetRecipeByIdQuery,
     useGetRecipeByUserIdQuery,
+    useLazyGetRecipesQuery,
+    useLazyGetRecipeByIdQuery,
 } = recipesApiSlice;
