@@ -73,11 +73,20 @@ const Slider = ({ title }: SliderProps) => {
             <Box position='relative'>
                 {slides && (
                     <Swiper
+                        className={styles.swiper}
                         data-test-id='carousel'
                         modules={[Navigation]}
                         spaceBetween={24}
                         slidesPerView={
-                            isSmallMobile ? 1.2 : isMobile ? 3.2 : isMedium ? 2 : isLarge ? 3 : 4
+                            isSmallMobile
+                                ? 1.2
+                                : isMobile
+                                  ? 3.2
+                                  : isMedium
+                                    ? 2.2
+                                    : isLarge
+                                      ? 3.2
+                                      : 4.2
                         }
                         observer={true}
                         observeParents={true}
@@ -85,6 +94,7 @@ const Slider = ({ title }: SliderProps) => {
                             prevEl: prevRef.current,
                             nextEl: nextRef.current,
                         }}
+                        speed={0}
                         loop
                         onInit={(swiper: SwiperClass) => {
                             swiper.navigation.init();

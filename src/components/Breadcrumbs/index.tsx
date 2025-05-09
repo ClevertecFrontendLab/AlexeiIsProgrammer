@@ -64,7 +64,7 @@ const Breadcrumbs = ({ onClose }: BreadcrumbsProps) => {
                 className={styles.breadcrumb}
                 color={pathnames.length > 0 ? 'blackAlpha.700' : 'black'}
             >
-                <BreadcrumbLink onClick={onClose} className={styles.link} to='/' as={Link}>
+                <BreadcrumbLink onClick={onClose} as={Link} className={styles.link} to='/'>
                     Главная
                 </BreadcrumbLink>
             </BreadcrumbItem>
@@ -76,9 +76,9 @@ const Breadcrumbs = ({ onClose }: BreadcrumbsProps) => {
                 >
                     <BreadcrumbLink
                         onClick={onClose}
+                        as={Link}
                         className={styles.link}
                         to={buildPath(index)}
-                        as={Link}
                     >
                         {getBreadcrumbName(name)}
                     </BreadcrumbLink>

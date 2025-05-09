@@ -1,16 +1,5 @@
 import { EditIcon } from '@chakra-ui/icons';
-import {
-    Box,
-    Drawer,
-    DrawerBody,
-    DrawerCloseButton,
-    DrawerContent,
-    DrawerOverlay,
-    Flex,
-    useBreakpointValue,
-    useDisclosure,
-    useMediaQuery,
-} from '@chakra-ui/react';
+import { Box, Flex, useBreakpointValue, useDisclosure, useMediaQuery } from '@chakra-ui/react';
 import type React from 'react';
 import { useMemo } from 'react';
 import { Navigate, useLocation } from 'react-router';
@@ -19,11 +8,11 @@ import { useGetCategoriesQuery } from '~/query/services/categories';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
 
-import Breadcrumbs from '../Breadcrumbs';
 import CustomSpinner from '../CustomSpinner';
 import Footer from '../Footer';
 import FooterButton from '../FooterButton';
 import Header from '../Header';
+import MobileMenu from '../MobileMenu';
 import Sidebar from '../Sidebar';
 import SideIcons from '../SideIcons';
 import styles from './Layout.module.scss';
@@ -93,34 +82,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </Box>
                 )}
 
-                <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
-                    <DrawerOverlay
-                        display={isMobile && isOpen ? 'block' : 'none'}
-                        backdropFilter='blur(4px)'
-                    />
-                    <DrawerContent
-                        data-test-id='nav'
-                        borderBottomRadius='12px'
-                        boxShadow='xl'
-                        height='calc(100vh - 60px)'
-                        maxHeight='90vh'
-                    >
-                        <DrawerCloseButton data-test-id='close-icon' />
-                        <DrawerBody
-                            display='flex'
-                            flexDirection='column'
-                            borderBottomRadius='12px'
-                            boxShadow='xl'
-                            p={0}
-                        >
-                            <Box mt='70px' px='24px'>
-                                <Breadcrumbs onClose={onClose} />
-                            </Box>
-
-                            <Sidebar />
-                        </DrawerBody>
-                    </DrawerContent>
-                </Drawer>
+                <MobileMenu isOpen={isOpen} onClose={onClose} />
 
                 <Box
                     as='main'

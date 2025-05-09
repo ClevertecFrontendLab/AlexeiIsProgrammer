@@ -83,8 +83,8 @@ const Item = memo(({ item, index, to }: ItemProps) => {
                         </Box>
 
                         <Flex>
-                            <SideIcon icon={loveMark} text={`${item?.bookmarks}`} />
-                            <SideIcon icon={loveSmile} text={`${item?.likes}`} />
+                            <SideIcon icon={loveMark} text={`${item?.bookmarks || '-'}`} />
+                            <SideIcon icon={loveSmile} text={`${item?.likes || '-'}`} />
                         </Flex>
                     </Flex>
                 </CardHeader>

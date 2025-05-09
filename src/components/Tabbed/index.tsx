@@ -1,9 +1,9 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs, useBreakpointValue } from '@chakra-ui/react';
+import { useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
-import { useGetCategoriesQuery, useGetCategoryByIdQuery } from '~/query/services/categories';
+import { useGetCategoriesQuery } from '~/query/services/categories';
 import getCurrentCategory from '~/utils/getCurrentCategory';
-import getCurrentRoute from '~/utils/getCurrentRoute';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
 
 const Tabbed = () => {
@@ -17,11 +17,10 @@ const Tabbed = () => {
     const currentCategory = getCurrentCategory(pathname);
     const currentSubcategory = getCurrentSubcategory(pathname);
 
-    const currentRoute = getCurrentRoute(routes || [], currentCategory);
-
-    const { data: category } = useGetCategoryByIdQuery(currentRoute?._id || '', {
-        skip: !currentRoute?._id,
-    });
+    const category = useMemo(
+        () => routes?.find((category) => category.category === currentCategory),
+        [currentCategory, routes],
+    );
 
     const tabs = category?.subCategories || [];
     const parent = category?.category;

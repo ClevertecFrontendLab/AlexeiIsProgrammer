@@ -46,7 +46,7 @@ function Header({ isOpen, onOpen }: HeaderProps) {
                 ) : (
                     <>
                         <Box flex={1} overflow='hidden'>
-                            <Breadcrumbs />
+                            <Breadcrumbs key='breadcrumbs' />
                         </Box>
                         <CardAvatar
                             tag='@bake_and_pie UI'

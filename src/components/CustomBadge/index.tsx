@@ -34,7 +34,7 @@ const CustomBadge = ({ color, icon, text, className, category }: BadgeProps) => 
             )}
 
             <Text overflow='hidden' textOverflow='ellipsis'>
-                {text || searchedCategory?.title}
+                {text || searchedCategory?.title || ''}
             </Text>
         </Badge>
     );
