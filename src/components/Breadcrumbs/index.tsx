@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
 import { useCallback, useMemo } from 'react';
-import { useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import { useGetRecipeByIdQuery } from '~/query/services/recipes';
@@ -11,7 +11,11 @@ import getCurrentRoute from '~/utils/getCurrentRoute';
 
 import styles from './Breadcrumb.module.scss';
 
-const Breadcrumbs = () => {
+type BreadcrumbsProps = {
+    onClose?: () => void;
+};
+
+const Breadcrumbs = ({ onClose }: BreadcrumbsProps) => {
     const { data: routes } = useGetCategoriesQuery();
 
     const { pathname } = useLocation();
@@ -60,7 +64,7 @@ const Breadcrumbs = () => {
                 className={styles.breadcrumb}
                 color={pathnames.length > 0 ? 'blackAlpha.700' : 'black'}
             >
-                <BreadcrumbLink className={styles.link} href='/'>
+                <BreadcrumbLink onClick={onClose} className={styles.link} to='/' as={Link}>
                     Главная
                 </BreadcrumbLink>
             </BreadcrumbItem>
@@ -70,7 +74,12 @@ const Breadcrumbs = () => {
                     color={index !== arr.length - 1 ? 'blackAlpha.700' : 'black'}
                     key={name}
                 >
-                    <BreadcrumbLink className={styles.link} href={buildPath(index)}>
+                    <BreadcrumbLink
+                        onClick={onClose}
+                        className={styles.link}
+                        to={buildPath(index)}
+                        as={Link}
+                    >
                         {getBreadcrumbName(name)}
                     </BreadcrumbLink>
                 </BreadcrumbItem>

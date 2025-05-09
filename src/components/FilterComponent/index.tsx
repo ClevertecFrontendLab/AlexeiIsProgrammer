@@ -61,7 +61,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
 
     const { data: categories } = useGetCategoriesQuery();
 
-    const [getRecipes, { isLoading: areAllRecipesLazyLoading }] = useLazyGetRecipesQuery();
+    const [getRecipes, { isFetching: areAllRecipesLazyFetching }] = useLazyGetRecipesQuery();
 
     const { pathname } = useLocation();
 
@@ -77,17 +77,20 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
 
     const isJuiciest = currentCategory === 'the-juiciest' || pathname === '/';
 
-    const { data: recipesByCategory, isError: isRecipesByCategoryError } =
-        useGetRecipesByCategoryQuery(
-            {
-                id: subcategory?._id || '',
-                page,
-                limit: pathname === '/' ? 4 : 8,
-                allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
-                searchString: search,
-            },
-            { skip: !subcategory || isJuiciest },
-        );
+    const {
+        data: recipesByCategory,
+        isError: isRecipesByCategoryError,
+        isSuccess: isRecipesByCategorySuccess,
+    } = useGetRecipesByCategoryQuery(
+        {
+            id: subcategory?._id || '',
+            page,
+            limit: pathname === '/' ? 4 : 8,
+            allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
+            searchString: search,
+        },
+        { skip: !subcategory || isJuiciest },
+    );
 
     const {
         data: allRecipes,
@@ -115,13 +118,12 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
         { skip: !category && !isJuiciest },
     );
 
-    const [recipes, areRecipesLoading, _, areRecipesFetching] = !isJuiciest
-        ? [recipesByCategory, isRecipesByCategoryError, false, false]
+    const [recipes, _, areRecipesLoading] = !isJuiciest
+        ? [recipesByCategory, isRecipesByCategoryError, false, isRecipesByCategorySuccess]
         : [
               allRecipes,
               isAllRecipesError,
-              areAllRecipesLoading || areAllRecipesLazyLoading,
-              areAllRecipesFetching,
+              areAllRecipesLazyFetching || areAllRecipesLoading || areAllRecipesFetching,
           ];
 
     const onSearchHandle = (searchArg: string = '') => {
@@ -195,7 +197,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                     </Text>
                 )
             )}
-            {areRecipesLoading || areRecipesFetching ? (
+            {areRecipesLoading ? (
                 <CustomSpinner data-test-id='loader-search-block' />
             ) : (
                 <>
@@ -221,6 +223,9 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                             />
                             <InputGroup>
                                 <Input
+                                    borderColor={
+                                        recipes?.data && recipes.data.length > 0 ? 'green' : 'auto'
+                                    }
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
                                     data-test-id='search-input'
