@@ -1,7 +1,6 @@
-import { RecipeType } from '~/types';
+import { Recipe } from '~/types';
 
-const getRecipesBySubcategory = (items: RecipeType[], subcategory: string): RecipeType[] =>
-    subcategory ? items.filter((recipe) => recipe.subcategory.includes(subcategory)) : items;
-// subcategory ? items.filter((recipe) => recipe.subcategory[0] === subcategory) : items;
+const getRecipesBySubcategory = (items: Recipe[], subcategory: string): Recipe[] =>
+    subcategory ? items.filter((recipe) => recipe.categoriesIds?.includes(subcategory)) : items;
 
 export default getRecipesBySubcategory;

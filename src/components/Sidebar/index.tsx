@@ -1,34 +1,34 @@
 import { Box, Collapse, Flex, Image, Text, VStack } from '@chakra-ui/react';
-import { Link, RouteObject, useLocation } from 'react-router';
+import { useMemo } from 'react';
+import { Link, useLocation } from 'react-router';
 
 import ArrowDown from '~/assets/arrow-down.svg';
 import ArrowUp from '~/assets/arrow-up.svg';
 import exit from '~/assets/exit.svg';
-import { AppRoute, routes } from '~/routes';
+import { SOURCE_URL } from '~/constants';
+import { VEGAN_CUISINE } from '~/constants/test-id';
+import { AppRoute, useGetCategoriesQuery } from '~/query/services/categories';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
 
 import styles from './Sidebar.module.scss';
 
 type SidebarItemProps = {
-    category: RouteObject & AppRoute;
+    category: AppRoute;
 };
 
-const SidebarItem = ({ category: { label, icon, children, path } }: SidebarItemProps) => {
+const SidebarItem = ({ category: { title, icon, subCategories, category } }: SidebarItemProps) => {
     const { pathname } = useLocation();
 
     const currentCategory = getCurrentCategory(pathname);
 
-    const isCategoryActive = currentCategory === path;
+    const isCategoryActive = currentCategory === category;
 
     return (
         <Box w='100%'>
             <Link
-                to={`/${path}/${children?.[0].path || ''}`}
-                data-test-id={path === 'vegan' ? 'vegan-cuisine' : path}
-                // onClick={() =>
-                //     navigate(isCategoryActive ? '/' : `/${path}/${children?.[0].path || ''}`)
-                // }
+                to={`/${category}/${subCategories?.[0].category || ''}`}
+                data-test-id={category === 'vegan' ? VEGAN_CUISINE : category}
             >
                 <Flex
                     cursor='pointer'
@@ -40,41 +40,46 @@ const SidebarItem = ({ category: { label, icon, children, path } }: SidebarItemP
                     py='12px'
                 >
                     <Flex alignItems='center' gap='12px'>
-                        <Image src={icon} />
+                        <Image src={`${SOURCE_URL}${icon}`} title={title} />
                         <Text
                             letterSpacing='0.4px'
                             lineHeight='24px'
                             fontWeight={isCategoryActive ? '700' : '500'}
                             fontSize='16px'
+                            whiteSpace='nowrap'
+                            overflow='hidden'
+                            textOverflow='ellipsis'
                         >
-                            {label}
+                            {title}
                         </Text>
                     </Flex>
                     <Image src={!isCategoryActive ? ArrowDown : ArrowUp} />
                 </Flex>
             </Link>
             <Collapse in={isCategoryActive}>
-                {children && (
+                {subCategories && (
                     <Box>
-                        {children.map((category: AppRoute) => (
+                        {subCategories.map((subCategory) => (
                             <Text
                                 data-test-id={
-                                    getCurrentSubcategory(pathname) === category.path
-                                        ? `${category.path}-active`
+                                    getCurrentSubcategory(pathname) === subCategory.category
+                                        ? `${subCategory.category}-active`
                                         : null
                                 }
-                                className={`${styles.sub} ${getCurrentSubcategory(pathname) === category.path ? styles.active : ''}`}
+                                className={`${styles.sub} ${getCurrentSubcategory(pathname) === subCategory.category ? styles.active : ''}`}
                                 px='18px'
                                 py='6px'
                                 pl='66px'
                                 _hover={{ bg: 'lime.50' }}
-                                key={category.path}
+                                key={subCategory.category}
                                 fontSize='16px'
                                 fontWeight='500'
                                 lineHeight='24px'
                                 color='black'
                             >
-                                <Link to={`/${path}/${category.path}`}>{category.label}</Link>
+                                <Link to={`/${category}/${subCategory.category}`}>
+                                    {subCategory.title}
+                                </Link>
                             </Text>
                         ))}
                     </Box>
@@ -85,7 +90,9 @@ const SidebarItem = ({ category: { label, icon, children, path } }: SidebarItemP
 };
 
 const Sidebar = () => {
-    const menu = routes[0]?.children || [];
+    const { data: routes } = useGetCategoriesQuery();
+
+    const menu = useMemo(() => routes?.filter((route) => route.subCategories) || [], [routes]);
 
     return (
         <Box
@@ -101,9 +108,9 @@ const Sidebar = () => {
         >
             <VStack py='10px' spacing={0} align='stretch'>
                 {menu
-                    .filter((category: AppRoute) => !category?.noMenu)
+                    .filter((category: AppRoute) => !category?.handle?.noMenu)
                     .map((category) => (
-                        <SidebarItem key={category.path} category={category} />
+                        <SidebarItem key={category.category} category={category} />
                     ))}
             </VStack>
 

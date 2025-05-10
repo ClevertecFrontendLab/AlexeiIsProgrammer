@@ -1,11 +1,11 @@
-export interface Comment {
+export type Comment = {
     id: string;
     author: string;
     authorInitials: string;
     time: string;
     text: string;
     rating: number;
-}
+};
 
 export type Step = {
     stepNumber: number;
@@ -21,7 +21,8 @@ export type Ingredient = {
 
 export type NutritionValue = {
     calories: number;
-    proteins: number;
+    proteins?: number;
+    protein?: number;
     fats: number;
     carbohydrates: number;
 };
@@ -32,24 +33,32 @@ export type RecipeStep = {
     image: string;
 };
 
-export type RecipeType = {
-    id: string;
+export type Author = {
+    login: string;
+    firstName: string;
+    lastName: string;
+    subscribers: string[];
+};
+
+export type Recipe = {
+    _id: string;
     title: string;
     description: string;
-    category: string[];
-    subcategory: string[];
+    time: number;
     image: string;
-    bookmarks: number;
-    likes: number;
-    date: string;
-    time: string;
-    portions?: number;
+    meat: string;
+    garnish: string;
+    portions: number;
+    authorId: string;
+    categoriesIds?: string[];
+    steps: Step[];
     nutritionValue: NutritionValue;
     ingredients: Ingredient[];
-    steps: RecipeStep[];
-    meat?: string;
-    side?: string;
-    author?: string;
+    likes: number;
+    views: number;
+    bookmarks: number;
+    createdAt: string;
+    authorData: Author;
 };
 
 export type OptionType = { label: string; value: string; isCustom?: boolean };

@@ -1,9 +1,9 @@
-import { OptionType, RecipeType } from '~/types';
+import { OptionType, Recipe } from '~/types';
 
-const filterByCategory = (items: RecipeType[], categories: OptionType[]): RecipeType[] =>
+const filterByCategory = (items: Recipe[], categories: OptionType[]): Recipe[] =>
     categories.length > 0
         ? items.filter((recipe) =>
-              recipe.category.some((category) =>
+              recipe.categoriesIds?.some((category) =>
                   categories.map((category) => category.value).includes(category),
               ),
           )

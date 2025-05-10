@@ -1,34 +1,64 @@
 import { EditIcon } from '@chakra-ui/icons';
-import {
-    Box,
-    Drawer,
-    DrawerBody,
-    DrawerCloseButton,
-    DrawerContent,
-    DrawerOverlay,
-    Flex,
-    useBreakpointValue,
-    useDisclosure,
-    useMediaQuery,
-} from '@chakra-ui/react';
+import { Box, Flex, useBreakpointValue, useDisclosure, useMediaQuery } from '@chakra-ui/react';
 import type React from 'react';
+import { useMemo } from 'react';
+import { Navigate, useLocation } from 'react-router';
 
-import Breadcrumbs from '../Breadcrumbs';
+import { APP_LOADER, NAV } from '~/constants/test-id';
+import { useGetCategoriesQuery } from '~/query/services/categories';
+import { MAIN, NOT_FOUND, THE_JUICIEST } from '~/router/constants/routes';
+import getCurrentCategory from '~/utils/getCurrentCategory';
+import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
+
+import CustomSpinner from '../CustomSpinner';
 import Footer from '../Footer';
 import FooterButton from '../FooterButton';
 import Header from '../Header';
+import MobileMenu from '../MobileMenu';
 import Sidebar from '../Sidebar';
 import SideIcons from '../SideIcons';
 import styles from './Layout.module.scss';
 
-interface LayoutProps {
+type LayoutProps = {
     children: React.ReactNode;
-}
+};
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout = ({ children }: LayoutProps) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
     const { isOpen, onClose, onOpen } = useDisclosure();
+
+    const { data: categories, isLoading: areCategoriesLoading } = useGetCategoriesQuery();
+
+    const { pathname } = useLocation();
+
+    const currentCategory = getCurrentCategory(pathname);
+    const currentSubcategory = getCurrentSubcategory(pathname);
+
+    const isJuiciest =
+        currentCategory === THE_JUICIEST || pathname === MAIN || pathname === `/${NOT_FOUND}`;
+
+    const category = useMemo(
+        () => categories?.find((category) => category.category === currentCategory),
+        [currentCategory, categories],
+    );
+
+    const subcategory = useMemo(
+        () => categories?.find((category) => category.category === currentSubcategory),
+        [currentSubcategory, categories],
+    );
+
+    if (categories && !(category && subcategory) && !isJuiciest) {
+        return (
+            <Navigate
+                to={
+                    category && !currentSubcategory
+                        ? `/${category.category}/${category.subCategories?.[0].category}`
+                        : `not-found`
+                }
+            />
+        );
+    }
 
     return (
         <Flex direction='column' minH='100vh'>
@@ -37,7 +67,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Flex flex='1'>
                 {!isMobile && (
                     <Box
-                        data-test-id='nav'
+                        data-test-id={NAV}
                         zIndex='10'
                         as='aside'
                         w='260px'
@@ -54,34 +84,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </Box>
                 )}
 
-                <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
-                    <DrawerOverlay
-                        display={isMobile && isOpen ? 'block' : 'none'}
-                        backdropFilter='blur(4px)'
-                    />
-                    <DrawerContent
-                        data-test-id='nav'
-                        borderBottomRadius='12px'
-                        boxShadow='xl'
-                        height='calc(100vh - 60px)'
-                        maxHeight='90vh'
-                    >
-                        <DrawerCloseButton data-test-id='close-icon' />
-                        <DrawerBody
-                            display='flex'
-                            flexDirection='column'
-                            borderBottomRadius='12px'
-                            boxShadow='xl'
-                            p={0}
-                        >
-                            <Box mt='70px' px='24px'>
-                                <Breadcrumbs />
-                            </Box>
-
-                            <Sidebar />
-                        </DrawerBody>
-                    </DrawerContent>
-                </Drawer>
+                {isOpen && <MobileMenu isOpen={isOpen} onClose={onClose} />}
 
                 <Box
                     as='main'
@@ -93,7 +96,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     paddingRight={!isMobile ? '280px !important' : {}}
                     paddingBottom={isSmallMobile ? '100px' : {}}
                 >
-                    {children}
+                    {areCategoriesLoading ? (
+                        <CustomSpinner data-test-id={APP_LOADER} spinnerOverflow />
+                    ) : (
+                        children
+                    )}
                 </Box>
 
                 <Footer />

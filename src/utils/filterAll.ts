@@ -1,9 +1,9 @@
-import { RecipeType } from '~/types';
+import { Recipe } from '~/types';
 
 const filterAll =
-    (...fns: ((items: RecipeType[], arg: unknown) => RecipeType[])[]) =>
+    (...fns: ((items: Recipe[], arg: unknown) => Recipe[])[]) =>
     (...args: unknown[]) =>
-    (recipes: RecipeType[]): RecipeType[] =>
+    (recipes: Recipe[]): Recipe[] =>
         fns.reduce((acc, curr, i) => curr(acc, args[i]), recipes);
 
 export default filterAll;

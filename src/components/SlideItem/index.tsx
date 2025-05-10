@@ -9,14 +9,15 @@ import {
 } from '@chakra-ui/react';
 
 import loveMark from '~/assets/love-mark.svg';
-import { RecipeType } from '~/types';
+import { SOURCE_URL } from '~/constants';
+import { Recipe } from '~/types';
 
 import CustomBadge from '../CustomBadge';
 import SideIcon from '../SideIcon';
 import styles from './SlideItem.module.scss';
 
 export type SlideProps = {
-    slide?: RecipeType;
+    slide?: Recipe;
     isFact?: boolean;
 };
 
@@ -35,8 +36,9 @@ const SlideItem = ({ isFact, slide }: SlideProps) => {
                 <Image
                     h={isMobile ? '128px' : '230px'}
                     objectFit='cover'
-                    src={slide.image}
+                    src={`${SOURCE_URL}${slide.image}`}
                     alt='Chakra UI'
+                    title={slide.title}
                 />
             )}
             <CardBody p={isMobile ? '8px' : '12px'}>
@@ -62,11 +64,11 @@ const SlideItem = ({ isFact, slide }: SlideProps) => {
                     </Text>
                 )}
             </CardBody>
-            <CardFooter p={isMobile ? '8px' : '12px'} justify='space-between' flexWrap='wrap'>
+            <CardFooter p={isMobile ? '8px' : '12px'} justify='space-between' flexWrap='nowrap'>
                 <CustomBadge
                     color='lime.150'
                     className={styles.badge}
-                    category={slide?.category[0]}
+                    category={slide?.categoriesIds?.[0]}
                 />
 
                 <SideIcon text='1' icon={loveMark} />

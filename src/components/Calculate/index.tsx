@@ -15,6 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
+import { DECREMENT_STEPPER, INCREMENT_STEPPER, INGREDIENT_QUANTITY } from '~/constants/test-id';
 import { Ingredient } from '~/types';
 
 type CalculateProps = {
@@ -50,8 +51,8 @@ const Calculate = ({ portions: initialPortions, ingredients }: CalculateProps) =
                             >
                                 <NumberInputField />
                                 <NumberInputStepper>
-                                    <NumberIncrementStepper data-test-id='increment-stepper' />
-                                    <NumberDecrementStepper data-test-id='decrement-stepper' />
+                                    <NumberIncrementStepper data-test-id={INCREMENT_STEPPER} />
+                                    <NumberDecrementStepper data-test-id={DECREMENT_STEPPER} />
                                 </NumberInputStepper>
                             </NumberInput>
                         </Th>
@@ -62,7 +63,7 @@ const Calculate = ({ portions: initialPortions, ingredients }: CalculateProps) =
                         <Tr key={ingredient.title}>
                             <Td>{ingredient.title}</Td>
                             <Td isNumeric>
-                                <span data-test-id={`ingredient-quantity-${i}`}>
+                                <span data-test-id={`${INGREDIENT_QUANTITY}-${i}`}>
                                     {initialPortions
                                         ? (+(ingredient.count || '0') / initialPortions) *
                                               portions || ''

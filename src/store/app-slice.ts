@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { OptionType } from '~/types';
+import { OptionType, Recipe } from '~/types';
 
 import { ApplicationState } from './configure-store';
 export type AppState = typeof initialState;
@@ -25,6 +25,8 @@ const initialState = {
         categories: [] as OptionType[],
         activeAllergens: [] as OptionType[],
         areAllergensActive: false,
+        items: [] as Recipe[],
+        page: 1,
     },
 
     isLoading: false,
@@ -66,14 +68,52 @@ export const appSlice = createSlice({
         setSearch(state, { payload: search }: PayloadAction<string>) {
             state.filter.search = search;
         },
+        setPage(state, { payload: page }: PayloadAction<number>) {
+            state.filter.page = page;
+        },
+        addItems(state, { payload: items }: PayloadAction<Recipe[]>) {
+            state.filter.items.push(...items);
+        },
+        setItems(state, { payload: items }: PayloadAction<Recipe[]>) {
+            state.filter.items = items;
+        },
         setAreAllergensActive(state, { payload: areAllergensActive }: PayloadAction<boolean>) {
             state.filter.areAllergensActive = areAllergensActive;
         },
+        setFilters(
+            state,
+            {
+                payload: filters,
+            }: PayloadAction<
+                {
+                    name: keyof typeof initialState.filter;
+                    value: OptionType[] | string;
+                }[]
+            >,
+        ) {
+            state.filter.page = 1;
+
+            filters.forEach(({ name, value }) => {
+                state.filter[name] = value as never;
+            });
+        },
     },
 });
+
 export const userLoadingSelector = (state: ApplicationState) => state.app.isLoading;
 export const userErrorSelector = (state: ApplicationState) => state.app.error;
 export const userFilterSelector = (state: ApplicationState) => state.app.filter;
+
+export const hasActiveFiltersSelector = createSelector(
+    [userFilterSelector],
+    (filters) =>
+        filters.search.trim() !== '' ||
+        filters.meats.length > 0 ||
+        filters.sides.length > 0 ||
+        filters.authors.length > 0 ||
+        filters.categories.length > 0 ||
+        filters.activeAllergens.length > 0,
+);
 
 export const {
     setAppError,
@@ -86,5 +126,9 @@ export const {
     selectSides,
     selectAuthors,
     selectCategories,
+    setPage,
+    addItems,
+    setItems,
+    setFilters,
 } = appSlice.actions;
 export default appSlice.reducer;

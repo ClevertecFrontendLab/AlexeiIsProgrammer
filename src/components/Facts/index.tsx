@@ -1,15 +1,58 @@
-import { Box, Flex, SimpleGrid, Text, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
+import {
+    Box,
+    Flex,
+    SimpleGrid,
+    Text,
+    useBreakpointValue,
+    useMediaQuery,
+    useToast,
+} from '@chakra-ui/react';
+import { useEffect, useMemo } from 'react';
+import { useLocation } from 'react-router';
 
-import kastrulya from '~/assets/sidebar/kastrulya.svg';
-import pan from '~/assets/sidebar/pan.svg';
-import getRecipeById from '~/utils/getRecipeById';
+import { useGetCategoriesQuery, useGetCategoryByIdQuery } from '~/query/services/categories';
+import { useGetRecipesByCategoryQuery } from '~/query/services/recipes';
+import getCurrentCategory from '~/utils/getCurrentCategory';
+import getRandomSubcategory from '~/utils/getRandomSubcategory';
 
 import SlideItem from '../SlideItem';
 import Fact from './Fact';
 
 const Facts = () => {
+    const toast = useToast();
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
+    const { data: categories } = useGetCategoriesQuery();
+
+    const { pathname } = useLocation();
+
+    const currentCategory = getCurrentCategory(pathname);
+    const subcategory = useMemo(
+        () =>
+            currentCategory
+                ? categories?.find((category) => category.category === currentCategory)
+                      ?.subCategories?.[0]
+                : getRandomSubcategory(categories || []),
+        [categories, currentCategory],
+    );
+
+    const { data: category } = useGetCategoryByIdQuery(subcategory?.rootCategoryId || '', {
+        skip: !subcategory?.rootCategoryId,
+    });
+
+    const { data: facts, isError } = useGetRecipesByCategoryQuery(
+        {
+            limit: 5,
+            id: subcategory?._id || '',
+        },
+        { skip: !subcategory?._id },
+    );
+
+    useEffect(() => {
+        if (isError) {
+            toast();
+        }
+    }, [isError, toast]);
 
     return (
         <Box
@@ -32,12 +75,11 @@ const Facts = () => {
                     fontWeight='500'
                     textAlign='left'
                 >
-                    Веганская кухня
+                    {category?.title}
                 </Text>
 
                 <Text w={isSmallMobile ? 'auto' : '32%'} color='blackAlpha.700' fontWeight='500'>
-                    Интересны не только убеждённым вегетарианцам, но и тем, кто хочет попробовать
-                    вегетарианскую диету и готовить вкусные вегетарианские блюда.
+                    {category?.description}
                 </Text>
             </Flex>
 
@@ -48,13 +90,15 @@ const Facts = () => {
                     spacing='16px'
                     columns={isSmallMobile ? 1 : 3}
                 >
-                    <SlideItem slide={getRecipeById('0')} isFact />
-                    <SlideItem slide={getRecipeById('1')} isFact />
-                    <Flex direction='column' gap='12px' alignItems='flex-start'>
-                        <Fact icon={pan} text='Стейк для вегетарианцев' />
-                        <Fact icon={pan} text='Котлеты из гречки и фасоли' />
-                        <Fact icon={kastrulya} text='Сырный суп с лапшой и брокколи' />
-                    </Flex>
+                    <SlideItem slide={facts?.data[0]} isFact />
+                    <SlideItem slide={facts?.data[1]} isFact />
+                    {facts?.data && facts?.data.length > 2 && (
+                        <Flex direction='column' gap='12px' alignItems='flex-start'>
+                            {facts?.data[2] && <Fact recipe={facts.data[2]} />}
+                            {facts?.data[3] && <Fact recipe={facts.data[3]} />}
+                            {facts?.data[4] && <Fact recipe={facts.data[4]} />}
+                        </Flex>
+                    )}
                 </SimpleGrid>
             </Flex>
         </Box>

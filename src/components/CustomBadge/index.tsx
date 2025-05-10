@@ -1,6 +1,8 @@
 import { Badge, Box, Image, Text } from '@chakra-ui/react';
 
-import getCurrentRoute from '~/utils/getCurrentRoute';
+import { SOURCE_URL } from '~/constants';
+import { useGetCategoriesQuery } from '~/query/services/categories';
+import getCategoryBySubcategoryId from '~/utils/getCategoryBySubcategoryId';
 
 import styles from './CustomBadge.module.scss';
 
@@ -13,7 +15,9 @@ type BadgeProps = {
 };
 
 const CustomBadge = ({ color, icon, text, className, category }: BadgeProps) => {
-    const searchedCategory = category ? getCurrentRoute(category) : null;
+    const { data: routes } = useGetCategoriesQuery();
+
+    const searchedCategory = category ? getCategoryBySubcategoryId(category, routes || []) : null;
 
     return (
         <Badge bg={color} className={`${styles.badge} ${className || ''}`}>
@@ -24,12 +28,14 @@ const CustomBadge = ({ color, icon, text, className, category }: BadgeProps) => 
                         minH='16px'
                         w='16px'
                         h='16px'
-                        src={icon || searchedCategory?.icon}
+                        src={icon || `${SOURCE_URL}${searchedCategory?.icon}`}
                     />
                 </Box>
             )}
 
-            <Text>{text || searchedCategory?.label}</Text>
+            <Text overflow='hidden' textOverflow='ellipsis'>
+                {text || searchedCategory?.title || ''}
+            </Text>
         </Badge>
     );
 };

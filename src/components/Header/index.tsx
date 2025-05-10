@@ -1,8 +1,10 @@
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { Box, Flex, IconButton, Img, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
+import { useNavigate } from 'react-router';
 
 import logo from '~/assets/logo.svg';
 import logoCup from '~/assets/logo-cup.svg';
+import { HAMBURGER_ICON, HEADER } from '~/constants/test-id';
 
 import Breadcrumbs from '../Breadcrumbs';
 import CardAvatar from '../CardAvatar';
@@ -18,9 +20,11 @@ function Header({ isOpen, onOpen }: HeaderProps) {
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
 
+    const navigate = useNavigate();
+
     return (
         <Box
-            data-test-id='header'
+            data-test-id={HEADER}
             as='header'
             position='fixed'
             w='100%'
@@ -31,7 +35,11 @@ function Header({ isOpen, onOpen }: HeaderProps) {
         >
             <Flex align='center' gap={isSmallMobile ? '14px' : isMobile ? '18px' : '10px'}>
                 <Box marginRight={isMobile ? 'auto' : {}} w={!isMobile ? '256px' : {}}>
-                    <Img src={isSmallMobile ? logoCup : logo} />
+                    <Img
+                        cursor='pointer'
+                        onClick={() => navigate('/')}
+                        src={isSmallMobile ? logoCup : logo}
+                    />
                 </Box>
 
                 {isMobile ? (
@@ -39,7 +47,7 @@ function Header({ isOpen, onOpen }: HeaderProps) {
                 ) : (
                     <>
                         <Box flex={1} overflow='hidden'>
-                            <Breadcrumbs />
+                            <Breadcrumbs key='breadcrumbs' />
                         </Box>
                         <CardAvatar
                             tag='@bake_and_pie UI'
@@ -52,7 +60,7 @@ function Header({ isOpen, onOpen }: HeaderProps) {
 
                 {!isOpen && (
                     <IconButton
-                        data-test-id='hamburger-icon'
+                        data-test-id={HAMBURGER_ICON}
                         mr={isSmallMobile ? {} : '8px'}
                         _active={{}}
                         _hover={{}}

@@ -15,17 +15,22 @@ import {
     Switch,
     Text,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-import { routes } from '~/routes';
+import {
+    ALLERGENS_SWITCHER_FILTER,
+    CHECKBOX_POTATO,
+    CLEAR_FILTER_BUTTON,
+    CLOSE_FILTER_DRAWER,
+    FILTER_DRAWER,
+    FILTER_TAG,
+    FIND_RECIPE_BUTTON,
+} from '~/constants/test-id';
+import { useGetCategoriesQuery } from '~/query/services/categories';
 import {
     addAlergen,
-    selectAlergens,
-    selectAuthors,
-    selectCategories,
-    selectMeats,
-    selectSides,
     setAreAllergensActive,
+    setFilters,
     userFilterSelector,
 } from '~/store/app-slice';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
@@ -66,12 +71,18 @@ type FilterProps = {
 };
 
 const Filter = ({ isOpen, onClose }: FilterProps) => {
-    const categoryOptions = routes?.[0]?.children
-        .filter((item) => !item.noMenu)
-        .map((route) => ({
-            label: route?.label,
-            value: route.path,
-        }));
+    const { data: categories } = useGetCategoriesQuery();
+
+    const categoryOptions = useMemo(
+        () =>
+            categories
+                ?.filter((category) => category.subCategories)
+                ?.map((category) => ({
+                    label: category.title,
+                    value: category.category,
+                })) || [],
+        [categories],
+    );
 
     const dispatch = useAppDispatch();
 
@@ -102,28 +113,55 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
         localCategories.length === 0 &&
         localAllergens.length === 0;
 
-    // useEffect(() => {
-    //     if (isOpen) {
-    //         setCategories(categories);
-    //         setAuthors(authors);
-    //         setMeats(meats);
-    //         setSides(sides);
-    //         setAllergens(activeAllergens);
-    //     }
-    // }, [isOpen, activeAllergens, meats, sides, authors, categories]);
     const clearLocals = () => {
-        setCategories([]);
-        setAuthors([]);
+        dispatch(
+            setFilters([
+                {
+                    name: 'meats',
+                    value: localMeats,
+                },
+                {
+                    name: 'sides',
+                    value: localSides,
+                },
+                {
+                    name: 'authors',
+                    value: localAuthors,
+                },
+                {
+                    name: 'categories',
+                    value: localCategories,
+                },
+                {
+                    name: 'activeAllergens',
+                    value: localAllergens,
+                },
+            ]),
+        );
+
         setMeats([]);
         setSides([]);
+        setAuthors([]);
+        setCategories([]);
         setAllergens([]);
     };
+
+    const clearFilterHandle = () => {
+        clearLocals();
+    };
+
+    const findRecipeHandle = () => {
+        clearFilterHandle();
+
+        onClose();
+    };
+
     return (
         <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
             <DrawerOverlay />
-            <DrawerContent data-test-id='filter-drawer'>
+            <DrawerContent data-test-id={FILTER_DRAWER}>
                 <DrawerCloseButton
-                    data-test-id='close-filter-drawer'
+                    data-test-id={CLOSE_FILTER_DRAWER}
                     borderRadius='50px'
                     bg='black'
                     color='white'
@@ -168,7 +206,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                             {secondaryOptions.map((option) => (
                                 <Checkbox
                                     data-test-id={
-                                        option.value === 'potatoes' ? 'checkbox-картошка' : ''
+                                        option.value === 'potatoes' ? CHECKBOX_POTATO : ''
                                     }
                                     key={option.value}
                                     isChecked={localSides.includes(option)}
@@ -193,7 +231,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                                     Исключить аллергены
                                 </FormLabel>
                                 <Switch
-                                    data-test-id='allergens-switcher-filter'
+                                    data-test-id={ALLERGENS_SWITCHER_FILTER}
                                     isChecked={areAllergensActive}
                                     onChange={(e) => {
                                         const isChecked = e.target.checked;
@@ -210,6 +248,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                                 />
                             </FormControl>
                             <CustomSelect
+                                isFilterOpened={isOpen}
                                 placeholder='Выберите из списка аллергенов...'
                                 disabled={!areAllergensActive}
                                 value={localAllergens}
@@ -224,7 +263,8 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                     <Flex flexWrap='wrap'>
                         {localCategories.map((category) => (
                             <CustomTag
-                                data-test-id='filter-tag'
+                                key={category.value}
+                                data-test-id={FILTER_TAG}
                                 item={category}
                                 removeItem={() =>
                                     setCategories(
@@ -235,7 +275,8 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         ))}
                         {localAuthors.map((author) => (
                             <CustomTag
-                                data-test-id='filter-tag'
+                                key={author.value}
+                                data-test-id={FILTER_TAG}
                                 item={author}
                                 removeItem={() =>
                                     setAuthors(localAuthors.filter((i) => i.value !== author.value))
@@ -244,21 +285,24 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         ))}
                         {localMeats.map((meat) => (
                             <CustomTag
-                                data-test-id='filter-tag'
+                                key={meat.value}
+                                data-test-id={FILTER_TAG}
                                 item={meat}
                                 removeItem={() => handleItemSelect(localMeats, meat, setMeats)}
                             />
                         ))}
                         {localSides.map((side) => (
                             <CustomTag
-                                data-test-id='filter-tag'
+                                key={side.value}
+                                data-test-id={FILTER_TAG}
                                 item={side}
                                 removeItem={() => handleItemSelect(localSides, side, setSides)}
                             />
                         ))}
                         {localAllergens.map((allergen) => (
                             <CustomTag
-                                data-test-id='filter-tag'
+                                key={allergen.value}
+                                data-test-id={FILTER_TAG}
                                 item={allergen}
                                 removeItem={() =>
                                     setAllergens(
@@ -271,36 +315,18 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
 
                     <Flex gap='8px'>
                         <Button
-                            data-test-id='clear-filter-button'
-                            onClick={() => {
-                                dispatch(selectMeats(localMeats));
-                                dispatch(selectSides(localSides));
-                                dispatch(selectAuthors(localAuthors));
-                                dispatch(selectCategories(localCategories));
-                                dispatch(selectAlergens(localAllergens));
-                                clearLocals();
-                                // onClose();
-                            }}
+                            data-test-id={CLEAR_FILTER_BUTTON}
+                            onClick={clearFilterHandle}
                             variant='outline'
                             colorScheme='dark'
                         >
                             Очистить фильтр
                         </Button>
                         <Button
-                            data-test-id='find-recipe-button'
+                            data-test-id={FIND_RECIPE_BUTTON}
                             isDisabled={isFindRecipeDisabled}
                             pointerEvents={isFindRecipeDisabled ? 'none' : 'auto'}
-                            onClick={() => {
-                                dispatch(selectMeats(localMeats));
-                                dispatch(selectSides(localSides));
-                                dispatch(selectAuthors(localAuthors));
-                                dispatch(selectCategories(localCategories));
-                                dispatch(selectAlergens(localAllergens));
-
-                                clearLocals();
-
-                                onClose();
-                            }}
+                            onClick={findRecipeHandle}
                             variant='solid'
                             bg='black'
                             color='white'

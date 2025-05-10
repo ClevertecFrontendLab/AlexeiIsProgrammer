@@ -1,6 +1,6 @@
-import { OptionType, RecipeType } from '~/types';
+import { OptionType, Recipe } from '~/types';
 
-const filterByAllergens = (items: RecipeType[], allergens: OptionType[]): RecipeType[] => {
+const filterByAllergens = (items: Recipe[], allergens: OptionType[]): Recipe[] => {
     const allergenTerms = allergens.map((allergen) => allergen.value.toLowerCase());
 
     return items.filter(

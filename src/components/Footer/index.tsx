@@ -2,6 +2,7 @@ import { EditIcon, SearchIcon } from '@chakra-ui/icons';
 import { Box, Flex } from '@chakra-ui/react';
 
 import home from '~/assets/home.svg';
+import { FOOTER } from '~/constants/test-id';
 
 import FooterButton from '../FooterButton';
 import styles from './Footer.module.scss';
@@ -9,7 +10,7 @@ import styles from './Footer.module.scss';
 const Footer = () => (
     <Box
         className={styles.footer}
-        data-test-id='footer'
+        data-test-id={FOOTER}
         position='fixed'
         bottom='0'
         left='0'

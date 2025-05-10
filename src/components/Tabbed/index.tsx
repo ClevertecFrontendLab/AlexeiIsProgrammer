@@ -1,12 +1,14 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs, useBreakpointValue } from '@chakra-ui/react';
+import { useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
-import { AppRoute } from '~/routes';
+import { TAB } from '~/constants/test-id';
+import { useGetCategoriesQuery } from '~/query/services/categories';
 import getCurrentCategory from '~/utils/getCurrentCategory';
-import getCurrentRoute from '~/utils/getCurrentRoute';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
 
 const Tabbed = () => {
+    const { data: routes } = useGetCategoriesQuery();
     const isMobile = useBreakpointValue({ base: true, lg: false });
 
     const navigate = useNavigate();
@@ -16,13 +18,15 @@ const Tabbed = () => {
     const currentCategory = getCurrentCategory(pathname);
     const currentSubcategory = getCurrentSubcategory(pathname);
 
-    const currentRoute = getCurrentRoute(currentCategory);
+    const category = useMemo(
+        () => routes?.find((category) => category.category === currentCategory),
+        [currentCategory, routes],
+    );
 
-    const parent = currentRoute?.path;
+    const tabs = category?.subCategories || [];
+    const parent = category?.category;
 
-    const tabs: AppRoute[] = currentRoute?.children || [];
-
-    const currentIndex = tabs.findIndex((tab) => tab.path === currentSubcategory);
+    const currentIndex = tabs?.findIndex((tab) => tab.category === currentSubcategory);
 
     return (
         <Box>
@@ -35,22 +39,22 @@ const Tabbed = () => {
                 >
                     {tabs.map((tab, i) => (
                         <Tab
-                            data-test-id={`tab-${tab.path}-${i}`}
+                            data-test-id={`${TAB}-${tab.category}-${i}`}
                             flexShrink={0}
                             color='lime.800'
                             _selected={{ borderColor: 'lime.700', color: 'lime.700' }}
-                            value={tab.path}
-                            key={tab.path}
-                            onClick={() => navigate(`/${parent}/${tab.path}`)}
+                            value={tab.category}
+                            key={tab.category}
+                            onClick={() => navigate(`/${parent}/${tab.category}`)}
                         >
-                            {tab.label}
+                            {tab.title}
                         </Tab>
                     ))}
                 </TabList>
 
                 <TabPanels>
                     {tabs.map((tab) => (
-                        <TabPanel key={tab.path}>
+                        <TabPanel key={tab.category}>
                             <Outlet />
                         </TabPanel>
                     ))}

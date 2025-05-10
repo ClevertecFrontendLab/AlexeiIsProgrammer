@@ -1,21 +1,55 @@
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
-import { useLocation } from 'react-router';
+import { useCallback, useMemo } from 'react';
+import { Link, useLocation } from 'react-router';
 
+import { BREADCRUMBS } from '~/constants/test-id';
+import { useGetCategoriesQuery } from '~/query/services/categories';
+import { useGetRecipeByIdQuery } from '~/query/services/recipes';
+import { THE_JUICIEST } from '~/router/constants/routes';
+import getCurrentCategory from '~/utils/getCurrentCategory';
+import getCurrentRecipe from '~/utils/getCurrentRecipe';
 import getCurrentRoute from '~/utils/getCurrentRoute';
-import getRecipeById from '~/utils/getRecipeById';
 
 import styles from './Breadcrumb.module.scss';
 
-const Breadcrumbs = () => {
+type BreadcrumbsProps = {
+    onClose?: () => void;
+};
+
+const Breadcrumbs = ({ onClose }: BreadcrumbsProps) => {
+    const { data: routes } = useGetCategoriesQuery();
+
     const { pathname } = useLocation();
+
+    const currentRecipe = getCurrentRecipe(pathname);
     const pathnames = pathname.split('/').filter(Boolean);
 
-    const buildPath = (index: number) => `/${pathnames.slice(0, index + 1).join('/')}`;
+    const currentCategory = getCurrentCategory(pathname);
+
+    const category = useMemo(
+        () => routes?.find((category) => category.category === currentCategory),
+        [currentCategory, routes],
+    );
+
+    const { data: recipe } = useGetRecipeByIdQuery(currentRecipe, { skip: !currentRecipe });
+
+    const buildPath = (index: number) =>
+        `/${pathnames.slice(0, index + 1).join('/')}${index === 0 ? `/${category?.subCategories?.[0].category}` : ''}`;
+
+    const getBreadcrumbName = useCallback(
+        (name: string) =>
+            pathname === `/${THE_JUICIEST}`
+                ? 'Самое сочное '
+                : getCurrentRoute(routes || [], name)?.title || recipe?.title || name,
+        [pathname, routes, recipe],
+    );
+
+    if (pathname === '/not-found') return null;
 
     return (
         <Breadcrumb
-            data-test-id='breadcrumbs'
+            data-test-id={BREADCRUMBS}
             sx={{
                 '& > ol': {
                     display: 'flex',
@@ -27,12 +61,13 @@ const Breadcrumbs = () => {
                 },
             }}
             separator={<ChevronRightIcon color='gray.800' />}
+            onClick={onClose}
         >
             <BreadcrumbItem
                 className={styles.breadcrumb}
                 color={pathnames.length > 0 ? 'blackAlpha.700' : 'black'}
             >
-                <BreadcrumbLink className={styles.link} href='/'>
+                <BreadcrumbLink as={Link} className={styles.link} to='/'>
                     Главная
                 </BreadcrumbLink>
             </BreadcrumbItem>
@@ -42,8 +77,8 @@ const Breadcrumbs = () => {
                     color={index !== arr.length - 1 ? 'blackAlpha.700' : 'black'}
                     key={name}
                 >
-                    <BreadcrumbLink className={styles.link} href={buildPath(index)}>
-                        {getCurrentRoute(name)?.label || getRecipeById(name)?.title || name}
+                    <BreadcrumbLink as={Link} className={styles.link} to={buildPath(index)}>
+                        {getBreadcrumbName(name)}
                     </BreadcrumbLink>
                 </BreadcrumbItem>
             ))}

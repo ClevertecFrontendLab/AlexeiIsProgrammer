@@ -1,13 +1,24 @@
-import { Box, IconButton, Image, Text, useBreakpointValue, useMediaQuery } from '@chakra-ui/react';
-import { useMemo, useRef } from 'react';
+import {
+    Box,
+    IconButton,
+    Image,
+    Text,
+    useBreakpointValue,
+    useMediaQuery,
+    useToast,
+} from '@chakra-ui/react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
-import { NavigationOptions } from 'swiper/types';
 
 import arrowLeft from '~/assets/arrow-left.svg';
 import arrowRight from '~/assets/arrow-right.svg';
-import slides from '~/db.json';
+import { CAROUSEL, CAROUSEL_BACK, CAROUSEL_CARD, CAROUSEL_FORWARD } from '~/constants/test-id';
+import { useGetCategoriesQuery } from '~/query/services/categories';
+import { useGetRecipesQuery, useLazyGetRecipeByIdQuery } from '~/query/services/recipes';
+import { Recipe } from '~/types';
+import getCategoriesPath from '~/utils/getCategoriesPath';
 
 import SlideItem from '../SlideItem';
 import styles from './Slider.module.scss';
@@ -19,6 +30,16 @@ type SliderProps = {
 const Slider = ({ title }: SliderProps) => {
     const navigate = useNavigate();
 
+    const { data: categories } = useGetCategoriesQuery();
+
+    const { data } = useGetRecipesQuery({
+        sortBy: 'createdAt',
+        sortOrder: 'desc',
+        limit: 10,
+    });
+    const toast = useToast();
+    const [getRecipe] = useLazyGetRecipeByIdQuery();
+
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
     const [isMedium] = useMediaQuery('(max-width: 1200px)');
@@ -27,12 +48,45 @@ const Slider = ({ title }: SliderProps) => {
     const prevRef = useRef(null);
     const nextRef = useRef(null);
 
-    const sortedSlides = useMemo(
+    // Test handling sorting
+    const slides = useMemo(
         () =>
-            structuredClone(slides)
-                .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            [...(data?.data || [])]
+                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                 .slice(0, 10),
-        [],
+        [data],
+    );
+
+    const redirectRecipeHandle = useCallback(
+        (slide: Recipe) =>
+            getRecipe(slide._id)
+                .unwrap()
+                .then(() =>
+                    navigate(
+                        `/${getCategoriesPath(slide.categoriesIds?.[0], categories).join('/')}/${slide._id}`,
+                    ),
+                )
+                .catch(toast),
+        [categories, getRecipe, navigate, toast],
+    );
+
+    const slidesPerView = useMemo(
+        () =>
+            (() => {
+                switch (true) {
+                    case isSmallMobile:
+                        return 1.2;
+                    case Boolean(isMobile):
+                        return 3.2;
+                    case isMedium:
+                        return 2.2;
+                    case isLarge:
+                        return 3.2;
+                    default:
+                        return 4.2;
+                }
+            })(),
+        [isSmallMobile, isMobile, isMedium, isLarge],
     );
 
     return (
@@ -51,48 +105,45 @@ const Slider = ({ title }: SliderProps) => {
             )}
 
             <Box position='relative'>
-                <Swiper
-                    data-test-id='carousel'
-                    modules={[Navigation]}
-                    spaceBetween={24}
-                    slidesPerView={
-                        isSmallMobile ? 1.2 : isMobile ? 3.2 : isMedium ? 2 : isLarge ? 3 : 4
-                    }
-                    navigation={{
-                        prevEl: prevRef.current,
-                        nextEl: nextRef.current,
-                    }}
-                    loop
-                    onBeforeInit={(swiper: SwiperClass) => {
-                        const navigation = swiper.params.navigation as NavigationOptions;
-
-                        navigation.prevEl = prevRef.current;
-                        navigation.nextEl = nextRef.current;
-                    }}
-                >
-                    {sortedSlides.map((slide, i) => (
-                        <SwiperSlide
-                            data-test-id={`carousel-card-${i}`}
-                            onClick={() =>
-                                navigate(
-                                    `/${slide.category[0]}/${slide.subcategory[0]}/${slide.id}`,
-                                )
-                            }
-                            key={slide.id}
-                        >
-                            <SlideItem slide={slide} />
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
+                {slides && (
+                    <Swiper
+                        data-test-id={CAROUSEL}
+                        modules={[Navigation]}
+                        spaceBetween={24}
+                        slidesPerView={slidesPerView}
+                        observer={true}
+                        observeParents={true}
+                        navigation={{
+                            prevEl: prevRef.current,
+                            nextEl: nextRef.current,
+                        }}
+                        speed={0}
+                        loop
+                        onInit={(swiper: SwiperClass) => {
+                            swiper.navigation.init();
+                            swiper.navigation.update();
+                        }}
+                    >
+                        {slides.map((slide, i) => (
+                            <SwiperSlide
+                                data-test-id={`${CAROUSEL_CARD}-${i}`}
+                                onClick={() => redirectRecipeHandle(slide)}
+                                key={slide._id}
+                            >
+                                <SlideItem slide={slide} />
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+                )}
                 <IconButton
-                    data-test-id='carousel-back'
+                    data-test-id={CAROUSEL_BACK}
                     ref={prevRef}
                     aria-label='arrow-left'
                     icon={<Image src={arrowLeft} />}
                     className={`${styles.arrow} ${styles['arrow-left']}`}
                 />
                 <IconButton
-                    data-test-id='carousel-forward'
+                    data-test-id={CAROUSEL_FORWARD}
                     ref={nextRef}
                     aria-label='arrow-right'
                     icon={<Image src={arrowRight} />}
