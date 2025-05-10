@@ -2,7 +2,7 @@ import { EditIcon, SearchIcon } from '@chakra-ui/icons';
 import { Box, Flex } from '@chakra-ui/react';
 
 import home from '~/assets/home.svg';
-import { FOOTER } from '~/query/constants/test-id';
+import { FOOTER } from '~/constants/test-id';
 
 import FooterButton from '../FooterButton';
 import styles from './Footer.module.scss';

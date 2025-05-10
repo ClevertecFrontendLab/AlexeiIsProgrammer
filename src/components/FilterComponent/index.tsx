@@ -24,13 +24,14 @@ import {
     LOADER_SEARCH_BLOCK,
     SEARCH_BUTTON,
     SEARCH_INPUT,
-} from '~/query/constants/test-id';
+} from '~/constants/test-id';
 import { useGetCategoriesQuery, useGetCategoryByIdQuery } from '~/query/services/categories';
 import {
     useGetRecipesByCategoryQuery,
     useGetRecipesQuery,
     useLazyGetRecipesQuery,
 } from '~/query/services/recipes';
+import { MAIN, THE_JUICIEST } from '~/router/constants/routes';
 import {
     addAlergen,
     hasActiveFiltersSelector,
@@ -82,7 +83,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
 
     const subcategory = category?.subCategories?.find((sub) => sub.category === currentSubcategory);
 
-    const isJuiciest = currentCategory === 'the-juiciest' || pathname === '/';
+    const isJuiciest = currentCategory === THE_JUICIEST || pathname === MAIN;
 
     const {
         data: recipesByCategory,
@@ -92,7 +93,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
         {
             id: subcategory?._id || '',
             page,
-            limit: pathname === '/' ? 4 : 8,
+            limit: pathname === MAIN ? 4 : 8,
             allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
             searchString: search,
         },
@@ -107,18 +108,18 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
     } = useGetRecipesQuery(
         {
             page,
-            limit: pathname === '/' && !hasActiveFilters ? 4 : 8,
+            limit: pathname === MAIN && !hasActiveFilters ? 4 : 8,
             allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
             searchString: search,
             meat: meats.map((m) => m.value).join(','),
             garnish: sides.map((m) => m.value).join(','),
             subcategoriesIds: category?.subCategories?.map((s) => s._id).join(','),
             sortBy:
-                currentCategory === 'the-juiciest' || (pathname === '/' && !hasActiveFilters)
+                currentCategory === THE_JUICIEST || (pathname === MAIN && !hasActiveFilters)
                     ? 'likes'
                     : '',
             sortOrder:
-                currentCategory === 'the-juiciest' || (pathname === '/' && !hasActiveFilters)
+                currentCategory === THE_JUICIEST || (pathname === MAIN && !hasActiveFilters)
                     ? 'desc'
                     : '',
         },
@@ -143,18 +144,18 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
         } else {
             getRecipes({
                 page,
-                limit: pathname === '/' && !hasActiveFilters ? 4 : 8,
+                limit: pathname === MAIN && !hasActiveFilters ? 4 : 8,
                 allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
                 searchString: search,
                 meat: meats.map((m) => m.value).join(','),
                 garnish: sides.map((m) => m.value).join(','),
                 subcategoriesIds: category?.subCategories?.map((s) => s._id).join(','),
                 sortBy:
-                    currentCategory === 'the-juiciest' || (pathname === '/' && !hasActiveFilters)
+                    currentCategory === THE_JUICIEST || (pathname === MAIN && !hasActiveFilters)
                         ? 'likes'
                         : '',
                 sortOrder:
-                    currentCategory === 'the-juiciest' || (pathname === '/' && !hasActiveFilters)
+                    currentCategory === THE_JUICIEST || (pathname === MAIN && !hasActiveFilters)
                         ? 'desc'
                         : '',
             });

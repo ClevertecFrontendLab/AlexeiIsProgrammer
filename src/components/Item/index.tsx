@@ -19,7 +19,7 @@ import { useNavigate } from 'react-router';
 import loveMark from '~/assets/love-mark.svg';
 import loveSmile from '~/assets/love-smile.svg';
 import { SOURCE_URL } from '~/constants';
-import { CARD_LINK, FOOD_CARD } from '~/query/constants/test-id';
+import { CARD_LINK, FOOD_CARD } from '~/constants/test-id';
 import { useLazyGetRecipeByIdQuery } from '~/query/services/recipes';
 import { userFilterSelector } from '~/store/app-slice';
 import { useAppSelector } from '~/store/hooks';

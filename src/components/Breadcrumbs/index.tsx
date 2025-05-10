@@ -3,9 +3,10 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
 import { useCallback, useMemo } from 'react';
 import { Link, useLocation } from 'react-router';
 
-import { BREADCRUMBS } from '~/query/constants/test-id';
+import { BREADCRUMBS } from '~/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import { useGetRecipeByIdQuery } from '~/query/services/recipes';
+import { THE_JUICIEST } from '~/router/constants/routes';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentRecipe from '~/utils/getCurrentRecipe';
 import getCurrentRoute from '~/utils/getCurrentRoute';
@@ -38,7 +39,7 @@ const Breadcrumbs = ({ onClose }: BreadcrumbsProps) => {
 
     const getBreadcrumbName = useCallback(
         (name: string) =>
-            pathname === '/the-juiciest'
+            pathname === `/${THE_JUICIEST}`
                 ? 'Самое сочное '
                 : getCurrentRoute(routes || [], name)?.title || recipe?.title || name,
         [pathname, routes, recipe],

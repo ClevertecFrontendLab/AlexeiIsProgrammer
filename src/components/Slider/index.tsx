@@ -7,21 +7,17 @@ import {
     useMediaQuery,
     useToast,
 } from '@chakra-ui/react';
-import { useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 
 import arrowLeft from '~/assets/arrow-left.svg';
 import arrowRight from '~/assets/arrow-right.svg';
-import {
-    CAROUSEL,
-    CAROUSEL_BACK,
-    CAROUSEL_CARD,
-    CAROUSEL_FORWARD,
-} from '~/query/constants/test-id';
+import { CAROUSEL, CAROUSEL_BACK, CAROUSEL_CARD, CAROUSEL_FORWARD } from '~/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import { useGetRecipesQuery, useLazyGetRecipeByIdQuery } from '~/query/services/recipes';
+import { Recipe } from '~/types';
 import getCategoriesPath from '~/utils/getCategoriesPath';
 
 import SlideItem from '../SlideItem';
@@ -61,6 +57,38 @@ const Slider = ({ title }: SliderProps) => {
         [data],
     );
 
+    const redirectRecipeHandle = useCallback(
+        (slide: Recipe) =>
+            getRecipe(slide._id)
+                .unwrap()
+                .then(() =>
+                    navigate(
+                        `/${getCategoriesPath(slide.categoriesIds?.[0], categories).join('/')}/${slide._id}`,
+                    ),
+                )
+                .catch(toast),
+        [categories, getRecipe, navigate, toast],
+    );
+
+    const slidesPerView = useMemo(
+        () =>
+            (() => {
+                switch (true) {
+                    case isSmallMobile:
+                        return 1.2;
+                    case Boolean(isMobile):
+                        return 3.2;
+                    case isMedium:
+                        return 2.2;
+                    case isLarge:
+                        return 3.2;
+                    default:
+                        return 4.2;
+                }
+            })(),
+        [isSmallMobile, isMobile, isMedium, isLarge],
+    );
+
     return (
         <Box mt='24px'>
             {title && (
@@ -83,17 +111,7 @@ const Slider = ({ title }: SliderProps) => {
                         data-test-id={CAROUSEL}
                         modules={[Navigation]}
                         spaceBetween={24}
-                        slidesPerView={
-                            isSmallMobile
-                                ? 1.2
-                                : isMobile
-                                  ? 3.2
-                                  : isMedium
-                                    ? 2.2
-                                    : isLarge
-                                      ? 3.2
-                                      : 4.2
-                        }
+                        slidesPerView={slidesPerView}
                         observer={true}
                         observeParents={true}
                         navigation={{
@@ -110,16 +128,7 @@ const Slider = ({ title }: SliderProps) => {
                         {slides.map((slide, i) => (
                             <SwiperSlide
                                 data-test-id={`${CAROUSEL_CARD}-${i}`}
-                                onClick={() =>
-                                    getRecipe(slide._id)
-                                        .unwrap()
-                                        .then(() =>
-                                            navigate(
-                                                `/${getCategoriesPath(slide.categoriesIds?.[0], categories).join('/')}/${slide._id}`,
-                                            ),
-                                        )
-                                        .catch(toast)
-                                }
+                                onClick={() => redirectRecipeHandle(slide)}
                                 key={slide._id}
                             >
                                 <SlideItem slide={slide} />

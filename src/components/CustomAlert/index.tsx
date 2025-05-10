@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
-import { CLOSE_ALERT_BUTTON, ERROR_NOTIFICATION } from '~/query/constants/test-id';
+import { CLOSE_ALERT_BUTTON, ERROR_NOTIFICATION } from '~/constants/test-id';
 
 type CustomAlertProps = Partial<{
     onClose: () => void;

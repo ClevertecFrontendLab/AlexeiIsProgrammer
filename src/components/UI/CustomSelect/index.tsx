@@ -24,7 +24,7 @@ import {
     ALLERGENS_MENU_BUTTON_FILTER,
     CHECKBOX_VEGAN,
     FILTER_MENU_CATEGORY,
-} from '~/query/constants/test-id';
+} from '~/constants/test-id';
 import type { OptionType } from '~/types';
 
 import CustomTag from '../CustomTag';
@@ -81,12 +81,36 @@ export default function CustomSelect({
         }
     };
 
-    const getTestId = () => {
+    const getOptionId = (label: string, index: number) => {
+        switch (true) {
+            case label === 'Веганская кухня':
+                return CHECKBOX_VEGAN;
+            case placeholder === 'Выберите из списка':
+                return `${ALLERGEN}-${index}`;
+            case placeholder === 'Выберите из списка аллергенов...':
+                return `${ALLERGEN}-${index}`;
+
+            default:
+                return '';
+        }
+    };
+
+    const getAllergenId = (id: string) => {
+        if (
+            (isFilterOpened && placeholder === 'Выберите из списка аллергенов...') ||
+            (!isFilterOpened && placeholder === 'Выберите из списка')
+        ) {
+            return id;
+        }
+        return '';
+    };
+
+    const getTestId = (() => {
         if (placeholder === 'Категория') return FILTER_MENU_CATEGORY;
         if (placeholder === 'Выберите из списка') return ALLERGENS_MENU_BUTTON;
         if (placeholder === 'Выберите из списка аллергенов...') return ALLERGENS_MENU_BUTTON_FILTER;
         return '';
-    };
+    })();
 
     return (
         <Menu isOpen={isOpen} onOpen={onOpen} onClose={onClose} closeOnSelect={false}>
@@ -131,7 +155,7 @@ export default function CustomSelect({
                     top='0'
                     right='0'
                     p={0}
-                    data-test-id={getTestId()}
+                    data-test-id={getTestId}
                     isDisabled={disabled}
                     pointerEvents={disabled ? 'none' : 'auto'}
                     rightIcon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
@@ -154,15 +178,7 @@ export default function CustomSelect({
                         value={option.value}
                         onClick={() => handleItemSelect(option)}
                         bg={i % 2 === 0 ? 'blackAlpha.100' : 'white'}
-                        data-test-id={
-                            option.label === 'Веганская кухня'
-                                ? CHECKBOX_VEGAN
-                                : placeholder === 'Выберите из списка'
-                                  ? `${ALLERGEN}-${i}`
-                                  : placeholder === 'Выберите из списка аллергенов...'
-                                    ? `${ALLERGEN}-${i}`
-                                    : ''
-                        }
+                        data-test-id={getOptionId(option.label, i)}
                     >
                         <Checkbox
                             isChecked={Boolean(value.find((curr) => curr.value === option.value))}
@@ -181,13 +197,7 @@ export default function CustomSelect({
                         <MenuDivider />
                         <Flex px={3} py={2} alignItems='center' gap='12px'>
                             <Input
-                                data-test-id={
-                                    (isFilterOpened &&
-                                        placeholder === 'Выберите из списка аллергенов...') ||
-                                    (!isFilterOpened && placeholder === 'Выберите из списка')
-                                        ? ADD_OTHER_ALLERGEN
-                                        : ''
-                                }
+                                data-test-id={getAllergenId(ADD_OTHER_ALLERGEN)}
                                 ref={inputRef}
                                 placeholder='Другой аллерген'
                                 value={newOption}
@@ -200,13 +210,7 @@ export default function CustomSelect({
                             <SmallAddIcon
                                 as='button'
                                 aria-label='icon'
-                                data-test-id={
-                                    (isFilterOpened &&
-                                        placeholder === 'Выберите из списка аллергенов...') ||
-                                    (!isFilterOpened && placeholder === 'Выберите из списка')
-                                        ? ADD_ALLERGEN_BUTTON
-                                        : ''
-                                }
+                                data-test-id={getAllergenId(ADD_ALLERGEN_BUTTON)}
                                 onClick={addNewOption}
                                 color='white'
                                 rounded='lg'

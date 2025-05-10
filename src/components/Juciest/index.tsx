@@ -3,9 +3,10 @@ import { Box, Button, Flex, Text, useBreakpointValue, useToast } from '@chakra-u
 import { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
-import { APP_LOADER, JUICIEST_LINK, JUICIEST_LINK_MOBILE } from '~/query/constants/test-id';
+import { APP_LOADER, JUICIEST_LINK, JUICIEST_LINK_MOBILE } from '~/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import { useLazyGetRecipesQuery } from '~/query/services/recipes';
+import { THE_JUICIEST } from '~/router/constants/routes';
 import { userFilterSelector } from '~/store/app-slice';
 import { useAppSelector } from '~/store/hooks';
 import getCurrentCategory from '~/utils/getCurrentCategory';
@@ -29,7 +30,7 @@ const Juciest = () => {
 
     const { activeAllergens, search, meats, sides } = useAppSelector(userFilterSelector);
 
-    const isJuiciest = pathname === '/the-juiciest';
+    const isJuiciest = pathname === `/${THE_JUICIEST}`;
 
     const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -49,7 +50,7 @@ const Juciest = () => {
         })
             .unwrap()
             .then(() => {
-                navigate('/the-juiciest');
+                navigate(`/${THE_JUICIEST}`);
             })
             .catch(toast);
     };

@@ -15,11 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
-import {
-    DECREMENT_STEPPER,
-    INCREMENT_STEPPER,
-    INGREDIENT_QUANTITY,
-} from '~/query/constants/test-id';
+import { DECREMENT_STEPPER, INCREMENT_STEPPER, INGREDIENT_QUANTITY } from '~/constants/test-id';
 import { Ingredient } from '~/types';
 
 type CalculateProps = {

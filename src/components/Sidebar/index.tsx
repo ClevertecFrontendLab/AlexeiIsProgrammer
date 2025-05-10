@@ -6,7 +6,7 @@ import ArrowDown from '~/assets/arrow-down.svg';
 import ArrowUp from '~/assets/arrow-up.svg';
 import exit from '~/assets/exit.svg';
 import { SOURCE_URL } from '~/constants';
-import { VEGAN_CUISINE } from '~/query/constants/test-id';
+import { VEGAN_CUISINE } from '~/constants/test-id';
 import { AppRoute, useGetCategoriesQuery } from '~/query/services/categories';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';

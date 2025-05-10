@@ -10,6 +10,34 @@ import Error from '~/pages/Error';
 import Recipe from '~/pages/Recipe';
 import { AppRoute } from '~/query/services/categories';
 
+import {
+    CATEGORY,
+    MAIN,
+    NOT_FOUND,
+    RECIPE_ID,
+    SUBCATEGORY,
+    THE_JUICIEST,
+} from './constants/routes';
+
+// export const transformMenuToRoutes = (menuItem: CategoryItem): AppRoute => ({
+//     ...menuItem,
+//     path: menuItem.category,
+//     element: <Tabbed />,
+//     handle: {
+//         label: menuItem.title,
+//         icon: menuItem.icon,
+//         description: menuItem.description,
+//     },
+//     children: menuItem.subCategories?.map((subCategory) => ({
+//         path: subCategory.category,
+//         element: <Subcategory />,
+//         handle: {
+//             label: subCategory.title,
+//             parentId: menuItem._id,
+//         },
+//     })),
+// });
+
 const Router = () => {
     const router = useMemo(
         () =>
@@ -21,37 +49,36 @@ const Router = () => {
                             <Outlet />
                         </Layout>
                     ),
-                    errorElement: <Navigate to='not-found' />,
+                    errorElement: <Navigate to={NOT_FOUND} />,
                     children: [
                         {
-                            path: '/',
+                            path: MAIN,
                             element: <App />,
                             children: [
                                 {
-                                    path: ':category',
+                                    path: CATEGORY,
                                     element: <Tabbed />,
                                     children: [
                                         {
-                                            path: ':subCategory',
+                                            path: SUBCATEGORY,
                                             element: <Subcategory />,
                                         },
                                     ],
                                 },
                                 {
-                                    path: 'the-juiciest',
+                                    path: THE_JUICIEST,
                                     element: <Juciest />,
                                 },
                             ],
                         },
-
                         {
-                            path: ':category/:subCategory/:recipeId',
+                            path: `${CATEGORY}/${SUBCATEGORY}/${RECIPE_ID}`,
                             element: <Recipe />,
                         },
                     ],
                 },
                 {
-                    path: 'not-found',
+                    path: NOT_FOUND,
                     element: (
                         <Layout key='layout'>
                             <Error />,

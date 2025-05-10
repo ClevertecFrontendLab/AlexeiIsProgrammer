@@ -1,7 +1,5 @@
 import { RouteObject } from 'react-router';
 
-import Subcategory from '~/components/Subcategory';
-import Tabbed from '~/components/Tabbed';
 import { ApiEndpoints } from '~/query/constants/api.ts';
 import { ApiGroupNames } from '~/query/constants/api-group-names.ts';
 import { EndpointNames } from '~/query/constants/endpoint-names.ts';
@@ -15,7 +13,7 @@ export type SubcategoryItem = {
     _id: string;
 };
 
-export interface CategoryItem {
+export type CategoryItem = {
     _id: string;
     title: string;
     category: string;
@@ -23,26 +21,7 @@ export interface CategoryItem {
     description?: string;
     rootCategoryId?: string;
     subCategories?: SubcategoryItem[];
-}
-
-export const transformMenuToRoutes = (menuItem: CategoryItem): AppRoute => ({
-    ...menuItem,
-    path: menuItem.category,
-    element: <Tabbed />,
-    handle: {
-        label: menuItem.title,
-        icon: menuItem.icon,
-        description: menuItem.description,
-    },
-    children: menuItem.subCategories?.map((subCategory) => ({
-        path: subCategory.category,
-        element: <Subcategory />,
-        handle: {
-            label: subCategory.title,
-            parentId: menuItem._id,
-        },
-    })),
-});
+};
 
 export type AppRoute = RouteObject & CategoryItem;
 

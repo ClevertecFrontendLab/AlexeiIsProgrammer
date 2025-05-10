@@ -1,11 +1,11 @@
-export interface Comment {
+export type Comment = {
     id: string;
     author: string;
     authorInitials: string;
     time: string;
     text: string;
     rating: number;
-}
+};
 
 export type Step = {
     stepNumber: number;

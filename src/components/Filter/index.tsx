@@ -25,7 +25,7 @@ import {
     FILTER_DRAWER,
     FILTER_TAG,
     FIND_RECIPE_BUTTON,
-} from '~/query/constants/test-id';
+} from '~/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import {
     addAlergen,
@@ -145,6 +145,17 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
         setCategories([]);
         setAllergens([]);
     };
+
+    const clearFilterHandle = () => {
+        clearLocals();
+    };
+
+    const findRecipeHandle = () => {
+        clearFilterHandle();
+
+        onClose();
+    };
+
     return (
         <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
             <DrawerOverlay />
@@ -305,9 +316,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                     <Flex gap='8px'>
                         <Button
                             data-test-id={CLEAR_FILTER_BUTTON}
-                            onClick={() => {
-                                clearLocals();
-                            }}
+                            onClick={clearFilterHandle}
                             variant='outline'
                             colorScheme='dark'
                         >
@@ -317,11 +326,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                             data-test-id={FIND_RECIPE_BUTTON}
                             isDisabled={isFindRecipeDisabled}
                             pointerEvents={isFindRecipeDisabled ? 'none' : 'auto'}
-                            onClick={() => {
-                                clearLocals();
-
-                                onClose();
-                            }}
+                            onClick={findRecipeHandle}
                             variant='solid'
                             bg='black'
                             color='white'

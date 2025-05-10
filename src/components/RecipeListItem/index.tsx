@@ -3,7 +3,7 @@ import { Box, Button, Flex, HStack, Image, Text } from '@chakra-ui/react';
 import type React from 'react';
 import { Link } from 'react-router';
 
-interface RecipeListItemProps {
+type RecipeListItemProps = {
     id: string;
     title: string;
     image: string;
@@ -11,9 +11,9 @@ interface RecipeListItemProps {
     rating: number;
     description: string;
     comments?: number;
-}
+};
 
-const RecipeListItem: React.FC<RecipeListItemProps> = ({
+const RecipeListItem = ({
     id,
     title,
     image,
@@ -21,7 +21,7 @@ const RecipeListItem: React.FC<RecipeListItemProps> = ({
     rating,
     description,
     comments = 0,
-}) => (
+}: RecipeListItemProps) => (
     <Box
         borderWidth='1px'
         borderRadius='lg'

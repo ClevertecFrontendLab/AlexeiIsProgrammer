@@ -2,7 +2,7 @@ import { Box, Tab, TabList, TabPanel, TabPanels, Tabs, useBreakpointValue } from
 import { useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
-import { TAB } from '~/query/constants/test-id';
+import { TAB } from '~/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';

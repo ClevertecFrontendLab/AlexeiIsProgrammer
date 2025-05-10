@@ -2,7 +2,7 @@ import { Flex, Image, Link, Text } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router';
 
 import notFound from '~/assets/404.png';
-import { ERROR_PAGE_GO_HOME } from '~/query/constants/test-id';
+import { ERROR_PAGE_GO_HOME } from '~/constants/test-id';
 
 const Error = () => (
     <Flex

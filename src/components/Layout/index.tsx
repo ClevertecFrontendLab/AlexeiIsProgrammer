@@ -4,8 +4,9 @@ import type React from 'react';
 import { useMemo } from 'react';
 import { Navigate, useLocation } from 'react-router';
 
-import { APP_LOADER, NAV } from '~/query/constants/test-id';
+import { APP_LOADER, NAV } from '~/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
+import { MAIN, NOT_FOUND, THE_JUICIEST } from '~/router/constants/routes';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
 
@@ -18,11 +19,11 @@ import Sidebar from '../Sidebar';
 import SideIcons from '../SideIcons';
 import styles from './Layout.module.scss';
 
-interface LayoutProps {
+type LayoutProps = {
     children: React.ReactNode;
-}
+};
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout = ({ children }: LayoutProps) => {
     const isMobile = useBreakpointValue({ base: true, lg: false });
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
     const { isOpen, onClose, onOpen } = useDisclosure();
@@ -35,7 +36,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const currentSubcategory = getCurrentSubcategory(pathname);
 
     const isJuiciest =
-        currentCategory === 'the-juiciest' || pathname === '/' || pathname === '/not-found';
+        currentCategory === THE_JUICIEST || pathname === MAIN || pathname === `/${NOT_FOUND}`;
 
     const category = useMemo(
         () => categories?.find((category) => category.category === currentCategory),

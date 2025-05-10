@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 
 import logo from '~/assets/logo.svg';
 import logoCup from '~/assets/logo-cup.svg';
-import { HAMBURGER_ICON, HEADER } from '~/query/constants/test-id';
+import { HAMBURGER_ICON, HEADER } from '~/constants/test-id';
 
 import Breadcrumbs from '../Breadcrumbs';
 import CardAvatar from '../CardAvatar';

@@ -8,13 +8,14 @@ import FilterComponent from '~/components/FilterComponent';
 import Juciest from '~/components/Juciest';
 import Slider from '~/components/Slider';
 import { useGetCategoriesQuery } from '~/query/services/categories';
+import { MAIN, THE_JUICIEST } from '~/router/constants/routes';
 import getCurrentRoute from '~/utils/getCurrentRoute';
 
 const HomePage: React.FC = () => {
     const { data: routes } = useGetCategoriesQuery();
     const { pathname } = useLocation();
 
-    const isJuiciest = pathname === '/the-juiciest';
+    const isJuiciest = pathname === `/${THE_JUICIEST}`;
 
     const currentRoute = getCurrentRoute(
         routes || [],
@@ -31,7 +32,7 @@ const HomePage: React.FC = () => {
 
             <Outlet />
 
-            {pathname === '/' && <Juciest />}
+            {pathname === MAIN && <Juciest />}
 
             {!currentRoute && !isJuiciest && <Blogs />}
 

@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 import { memo } from 'react';
 
-import { CLOSE_ICON, NAV } from '~/query/constants/test-id';
+import { CLOSE_ICON, NAV } from '~/constants/test-id';
 
 import Breadcrumbs from '../Breadcrumbs';
 import Sidebar from '../Sidebar';
