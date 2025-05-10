@@ -2,6 +2,7 @@ import { Flex, Image, Link, Text } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router';
 
 import notFound from '~/assets/404.png';
+import { ERROR_PAGE_GO_HOME } from '~/query/constants/test-id';
 
 const Error = () => (
     <Flex
@@ -27,7 +28,7 @@ const Error = () => (
             <Text color='blackAlpha.700' textAlign='center'>
                 Можете поискать другой рецепт{' '}
                 <Link
-                    data-test-id='error-page-go-home'
+                    data-test-id={ERROR_PAGE_GO_HOME}
                     textDecoration='underline'
                     to='/'
                     as={RouterLink}

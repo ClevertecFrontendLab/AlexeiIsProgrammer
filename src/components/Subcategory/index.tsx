@@ -10,6 +10,7 @@ import {
 import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router';
 
+import { LOAD_MORE_BUTTON } from '~/query/constants/test-id';
 import { useGetCategoriesQuery, useGetCategoryByIdQuery } from '~/query/services/categories';
 import { useGetRecipesByCategoryQuery, useGetRecipesQuery } from '~/query/services/recipes';
 import {
@@ -142,7 +143,7 @@ const Subcategory = () => {
                 (pathname !== '/' || hasActiveFilters) && (
                     <Button
                         onClick={() => dispatch(setPage(page + 1))}
-                        data-test-id='load-more-button'
+                        data-test-id={LOAD_MORE_BUTTON}
                         mt='12px'
                         rightIcon={<ArrowForwardIcon />}
                         bg='lime.400'

@@ -3,6 +3,7 @@ import { Box, Button, Flex, Text, useBreakpointValue, useToast } from '@chakra-u
 import { useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 
+import { APP_LOADER, JUICIEST_LINK, JUICIEST_LINK_MOBILE } from '~/query/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import { useLazyGetRecipesQuery } from '~/query/services/recipes';
 import { userFilterSelector } from '~/store/app-slice';
@@ -55,7 +56,7 @@ const Juciest = () => {
 
     return (
         <Box mt='40px'>
-            {isLoading && <CustomSpinner data-test-id='app-loader' spinnerOverflow />}
+            {isLoading && <CustomSpinner data-test-id={APP_LOADER} spinnerOverflow />}
             {!isJuiciest && (
                 <Flex mb='24px' justifyContent='space-between' alignItems='flex-end'>
                     <Text
@@ -72,7 +73,7 @@ const Juciest = () => {
                         onClick={toJuiciestHandle}
                         rightIcon={<ArrowForwardIcon />}
                         bg='lime.400'
-                        data-test-id='juiciest-link'
+                        data-test-id={JUICIEST_LINK}
                         display={!isMobile ? 'block' : 'none'}
                     >
                         Вся подборка
@@ -88,7 +89,7 @@ const Juciest = () => {
                     onClick={toJuiciestHandle}
                     rightIcon={<ArrowForwardIcon />}
                     bg='lime.400'
-                    data-test-id='juiciest-link-mobile'
+                    data-test-id={JUICIEST_LINK_MOBILE}
                     display={isMobile ? 'block' : 'none'}
                 >
                     Вся подборка

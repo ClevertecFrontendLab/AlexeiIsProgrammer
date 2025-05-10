@@ -14,6 +14,12 @@ import { Swiper, SwiperClass, SwiperSlide } from 'swiper/react';
 
 import arrowLeft from '~/assets/arrow-left.svg';
 import arrowRight from '~/assets/arrow-right.svg';
+import {
+    CAROUSEL,
+    CAROUSEL_BACK,
+    CAROUSEL_CARD,
+    CAROUSEL_FORWARD,
+} from '~/query/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import { useGetRecipesQuery, useLazyGetRecipeByIdQuery } from '~/query/services/recipes';
 import getCategoriesPath from '~/utils/getCategoriesPath';
@@ -74,7 +80,7 @@ const Slider = ({ title }: SliderProps) => {
                 {slides && (
                     <Swiper
                         className={styles.swiper}
-                        data-test-id='carousel'
+                        data-test-id={CAROUSEL}
                         modules={[Navigation]}
                         spaceBetween={24}
                         slidesPerView={
@@ -103,7 +109,7 @@ const Slider = ({ title }: SliderProps) => {
                     >
                         {slides.map((slide, i) => (
                             <SwiperSlide
-                                data-test-id={`carousel-card-${i}`}
+                                data-test-id={`${CAROUSEL_CARD}-${i}`}
                                 onClick={() =>
                                     getRecipe(slide._id)
                                         .unwrap()
@@ -122,14 +128,14 @@ const Slider = ({ title }: SliderProps) => {
                     </Swiper>
                 )}
                 <IconButton
-                    data-test-id='carousel-back'
+                    data-test-id={CAROUSEL_BACK}
                     ref={prevRef}
                     aria-label='arrow-left'
                     icon={<Image src={arrowLeft} />}
                     className={`${styles.arrow} ${styles['arrow-left']}`}
                 />
                 <IconButton
-                    data-test-id='carousel-forward'
+                    data-test-id={CAROUSEL_FORWARD}
                     ref={nextRef}
                     aria-label='arrow-right'
                     icon={<Image src={arrowRight} />}

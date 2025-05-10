@@ -18,6 +18,13 @@ import { createPortal } from 'react-dom';
 import { useLocation } from 'react-router';
 
 import filter from '~/assets/filter.svg';
+import {
+    ALLERGENS_SWITCHER,
+    FILTER_BUTTON,
+    LOADER_SEARCH_BLOCK,
+    SEARCH_BUTTON,
+    SEARCH_INPUT,
+} from '~/query/constants/test-id';
 import { useGetCategoriesQuery, useGetCategoryByIdQuery } from '~/query/services/categories';
 import {
     useGetRecipesByCategoryQuery,
@@ -198,7 +205,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                 )
             )}
             {areRecipesLoading ? (
-                <CustomSpinner data-test-id='loader-search-block' />
+                <CustomSpinner data-test-id={LOADER_SEARCH_BLOCK} />
             ) : (
                 <>
                     {description && (
@@ -219,7 +226,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                                 onClick={onOpen}
                                 icon={<Image src={filter} />}
                                 aria-label='filter'
-                                data-test-id='filter-button'
+                                data-test-id={FILTER_BUTTON}
                             />
                             <InputGroup>
                                 <Input
@@ -230,7 +237,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                                     }
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
-                                    data-test-id='search-input'
+                                    data-test-id={SEARCH_INPUT}
                                     placeholder='Название или ингредиент...'
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
@@ -245,7 +252,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                                                 ? 'auto'
                                                 : 'none'
                                         }
-                                        data-test-id='search-button'
+                                        data-test-id={SEARCH_BUTTON}
                                         onClick={() => {
                                             onSearchHandle();
                                         }}
@@ -268,7 +275,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                                         Исключить мои аллергены
                                     </FormLabel>
                                     <Switch
-                                        data-test-id='allergens-switcher'
+                                        data-test-id={ALLERGENS_SWITCHER}
                                         isChecked={areAllergensActive}
                                         onChange={(e) => {
                                             const isChecked = e.target.checked;

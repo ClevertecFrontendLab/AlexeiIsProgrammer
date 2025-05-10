@@ -15,6 +15,16 @@ import {
 } from '@chakra-ui/react';
 import { useRef, useState } from 'react';
 
+import {
+    ADD_ALLERGEN_BUTTON,
+    ADD_OTHER_ALLERGEN,
+    ALLERGEN,
+    ALLERGENS_MENU,
+    ALLERGENS_MENU_BUTTON,
+    ALLERGENS_MENU_BUTTON_FILTER,
+    CHECKBOX_VEGAN,
+    FILTER_MENU_CATEGORY,
+} from '~/query/constants/test-id';
 import type { OptionType } from '~/types';
 
 import CustomTag from '../CustomTag';
@@ -72,10 +82,9 @@ export default function CustomSelect({
     };
 
     const getTestId = () => {
-        if (placeholder === 'Категория') return 'filter-menu-button-категория';
-        if (placeholder === 'Выберите из списка') return 'allergens-menu-button';
-        if (placeholder === 'Выберите из списка аллергенов...')
-            return 'allergens-menu-button-filter';
+        if (placeholder === 'Категория') return FILTER_MENU_CATEGORY;
+        if (placeholder === 'Выберите из списка') return ALLERGENS_MENU_BUTTON;
+        if (placeholder === 'Выберите из списка аллергенов...') return ALLERGENS_MENU_BUTTON_FILTER;
         return '';
     };
 
@@ -134,7 +143,7 @@ export default function CustomSelect({
 
             <MenuList
                 zIndex={10}
-                data-test-id={placeholder === 'Выберите из списка' ? 'allergens-menu' : ''}
+                data-test-id={placeholder === 'Выберите из списка' ? ALLERGENS_MENU : ''}
                 maxH='300px'
                 overflowY='auto'
                 w='270px'
@@ -147,11 +156,11 @@ export default function CustomSelect({
                         bg={i % 2 === 0 ? 'blackAlpha.100' : 'white'}
                         data-test-id={
                             option.label === 'Веганская кухня'
-                                ? 'checkbox-веганская кухня'
+                                ? CHECKBOX_VEGAN
                                 : placeholder === 'Выберите из списка'
-                                  ? `allergen-${i}`
+                                  ? `${ALLERGEN}-${i}`
                                   : placeholder === 'Выберите из списка аллергенов...'
-                                    ? `allergen-${i}`
+                                    ? `${ALLERGEN}-${i}`
                                     : ''
                         }
                     >
@@ -176,7 +185,7 @@ export default function CustomSelect({
                                     (isFilterOpened &&
                                         placeholder === 'Выберите из списка аллергенов...') ||
                                     (!isFilterOpened && placeholder === 'Выберите из списка')
-                                        ? 'add-other-allergen'
+                                        ? ADD_OTHER_ALLERGEN
                                         : ''
                                 }
                                 ref={inputRef}
@@ -195,7 +204,7 @@ export default function CustomSelect({
                                     (isFilterOpened &&
                                         placeholder === 'Выберите из списка аллергенов...') ||
                                     (!isFilterOpened && placeholder === 'Выберите из списка')
-                                        ? 'add-allergen-button'
+                                        ? ADD_ALLERGEN_BUTTON
                                         : ''
                                 }
                                 onClick={addNewOption}

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 
 import logo from '~/assets/logo.svg';
 import logoCup from '~/assets/logo-cup.svg';
+import { HAMBURGER_ICON, HEADER } from '~/query/constants/test-id';
 
 import Breadcrumbs from '../Breadcrumbs';
 import CardAvatar from '../CardAvatar';
@@ -23,7 +24,7 @@ function Header({ isOpen, onOpen }: HeaderProps) {
 
     return (
         <Box
-            data-test-id='header'
+            data-test-id={HEADER}
             as='header'
             position='fixed'
             w='100%'
@@ -59,7 +60,7 @@ function Header({ isOpen, onOpen }: HeaderProps) {
 
                 {!isOpen && (
                     <IconButton
-                        data-test-id='hamburger-icon'
+                        data-test-id={HAMBURGER_ICON}
                         mr={isSmallMobile ? {} : '8px'}
                         _active={{}}
                         _hover={{}}

@@ -2,6 +2,7 @@ import { Box, Tab, TabList, TabPanel, TabPanels, Tabs, useBreakpointValue } from
 import { useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
+import { TAB } from '~/query/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
@@ -38,7 +39,7 @@ const Tabbed = () => {
                 >
                     {tabs.map((tab, i) => (
                         <Tab
-                            data-test-id={`tab-${tab.category}-${i}`}
+                            data-test-id={`${TAB}-${tab.category}-${i}`}
                             flexShrink={0}
                             color='lime.800'
                             _selected={{ borderColor: 'lime.700', color: 'lime.700' }}

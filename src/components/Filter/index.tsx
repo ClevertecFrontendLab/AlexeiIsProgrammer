@@ -17,6 +17,15 @@ import {
 } from '@chakra-ui/react';
 import { useMemo, useState } from 'react';
 
+import {
+    ALLERGENS_SWITCHER_FILTER,
+    CHECKBOX_POTATO,
+    CLEAR_FILTER_BUTTON,
+    CLOSE_FILTER_DRAWER,
+    FILTER_DRAWER,
+    FILTER_TAG,
+    FIND_RECIPE_BUTTON,
+} from '~/query/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import {
     addAlergen,
@@ -139,9 +148,9 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
     return (
         <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
             <DrawerOverlay />
-            <DrawerContent data-test-id='filter-drawer'>
+            <DrawerContent data-test-id={FILTER_DRAWER}>
                 <DrawerCloseButton
-                    data-test-id='close-filter-drawer'
+                    data-test-id={CLOSE_FILTER_DRAWER}
                     borderRadius='50px'
                     bg='black'
                     color='white'
@@ -186,7 +195,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                             {secondaryOptions.map((option) => (
                                 <Checkbox
                                     data-test-id={
-                                        option.value === 'potatoes' ? 'checkbox-картошка' : ''
+                                        option.value === 'potatoes' ? CHECKBOX_POTATO : ''
                                     }
                                     key={option.value}
                                     isChecked={localSides.includes(option)}
@@ -211,7 +220,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                                     Исключить аллергены
                                 </FormLabel>
                                 <Switch
-                                    data-test-id='allergens-switcher-filter'
+                                    data-test-id={ALLERGENS_SWITCHER_FILTER}
                                     isChecked={areAllergensActive}
                                     onChange={(e) => {
                                         const isChecked = e.target.checked;
@@ -244,7 +253,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         {localCategories.map((category) => (
                             <CustomTag
                                 key={category.value}
-                                data-test-id='filter-tag'
+                                data-test-id={FILTER_TAG}
                                 item={category}
                                 removeItem={() =>
                                     setCategories(
@@ -256,7 +265,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         {localAuthors.map((author) => (
                             <CustomTag
                                 key={author.value}
-                                data-test-id='filter-tag'
+                                data-test-id={FILTER_TAG}
                                 item={author}
                                 removeItem={() =>
                                     setAuthors(localAuthors.filter((i) => i.value !== author.value))
@@ -266,7 +275,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         {localMeats.map((meat) => (
                             <CustomTag
                                 key={meat.value}
-                                data-test-id='filter-tag'
+                                data-test-id={FILTER_TAG}
                                 item={meat}
                                 removeItem={() => handleItemSelect(localMeats, meat, setMeats)}
                             />
@@ -274,7 +283,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         {localSides.map((side) => (
                             <CustomTag
                                 key={side.value}
-                                data-test-id='filter-tag'
+                                data-test-id={FILTER_TAG}
                                 item={side}
                                 removeItem={() => handleItemSelect(localSides, side, setSides)}
                             />
@@ -282,7 +291,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                         {localAllergens.map((allergen) => (
                             <CustomTag
                                 key={allergen.value}
-                                data-test-id='filter-tag'
+                                data-test-id={FILTER_TAG}
                                 item={allergen}
                                 removeItem={() =>
                                     setAllergens(
@@ -295,7 +304,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
 
                     <Flex gap='8px'>
                         <Button
-                            data-test-id='clear-filter-button'
+                            data-test-id={CLEAR_FILTER_BUTTON}
                             onClick={() => {
                                 clearLocals();
                             }}
@@ -305,7 +314,7 @@ const Filter = ({ isOpen, onClose }: FilterProps) => {
                             Очистить фильтр
                         </Button>
                         <Button
-                            data-test-id='find-recipe-button'
+                            data-test-id={FIND_RECIPE_BUTTON}
                             isDisabled={isFindRecipeDisabled}
                             pointerEvents={isFindRecipeDisabled ? 'none' : 'auto'}
                             onClick={() => {

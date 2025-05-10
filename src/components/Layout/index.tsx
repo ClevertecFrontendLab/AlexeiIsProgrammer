@@ -4,6 +4,7 @@ import type React from 'react';
 import { useMemo } from 'react';
 import { Navigate, useLocation } from 'react-router';
 
+import { APP_LOADER, NAV } from '~/query/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
@@ -65,7 +66,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <Flex flex='1'>
                 {!isMobile && (
                     <Box
-                        data-test-id='nav'
+                        data-test-id={NAV}
                         zIndex='10'
                         as='aside'
                         w='260px'
@@ -95,7 +96,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     paddingBottom={isSmallMobile ? '100px' : {}}
                 >
                     {areCategoriesLoading ? (
-                        <CustomSpinner data-test-id='app-loader' spinnerOverflow />
+                        <CustomSpinner data-test-id={APP_LOADER} spinnerOverflow />
                     ) : (
                         children
                     )}

@@ -6,6 +6,7 @@ import ArrowDown from '~/assets/arrow-down.svg';
 import ArrowUp from '~/assets/arrow-up.svg';
 import exit from '~/assets/exit.svg';
 import { SOURCE_URL } from '~/constants';
+import { VEGAN_CUISINE } from '~/query/constants/test-id';
 import { AppRoute, useGetCategoriesQuery } from '~/query/services/categories';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
@@ -27,7 +28,7 @@ const SidebarItem = ({ category: { title, icon, subCategories, category } }: Sid
         <Box w='100%'>
             <Link
                 to={`/${category}/${subCategories?.[0].category || ''}`}
-                data-test-id={category === 'vegan' ? 'vegan-cuisine' : category}
+                data-test-id={category === 'vegan' ? VEGAN_CUISINE : category}
             >
                 <Flex
                     cursor='pointer'

@@ -9,6 +9,8 @@ import {
 } from '@chakra-ui/react';
 import { ReactNode } from 'react';
 
+import { CLOSE_ALERT_BUTTON, ERROR_NOTIFICATION } from '~/query/constants/test-id';
+
 type CustomAlertProps = Partial<{
     onClose: () => void;
     title: ReactNode;
@@ -19,7 +21,7 @@ type CustomAlertProps = Partial<{
 export default function CustomAlert({ onClose, title, description, status }: CustomAlertProps) {
     return (
         <Alert
-            data-test-id='error-notification'
+            data-test-id={ERROR_NOTIFICATION}
             maxW='400px'
             position='relative'
             status={status}
@@ -31,7 +33,7 @@ export default function CustomAlert({ onClose, title, description, status }: Cus
                 <AlertDescription>{description}</AlertDescription>
             </Box>
             <CloseButton
-                data-test-id='close-alert-button'
+                data-test-id={CLOSE_ALERT_BUTTON}
                 position='absolute'
                 alignSelf='flex-start'
                 right={0}

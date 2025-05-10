@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router';
 import loveMark from '~/assets/love-mark.svg';
 import loveSmile from '~/assets/love-smile.svg';
 import { SOURCE_URL } from '~/constants';
+import { CARD_LINK, FOOD_CARD } from '~/query/constants/test-id';
 import { useLazyGetRecipeByIdQuery } from '~/query/services/recipes';
 import { userFilterSelector } from '~/store/app-slice';
 import { useAppSelector } from '~/store/hooks';
@@ -47,7 +48,7 @@ const Item = memo(({ item, index, to }: ItemProps) => {
 
     return (
         <Card
-            data-test-id={`food-card-${index}`}
+            data-test-id={`${FOOD_CARD}-${index}`}
             maxH='244px'
             _hover={{ shadow: 'md' }}
             direction={{ base: 'column', sm: 'row' }}
@@ -121,7 +122,7 @@ const Item = memo(({ item, index, to }: ItemProps) => {
                         {!isMobile && 'Сохранить'}
                     </Button>
                     <Button
-                        data-test-id={`card-link-${index}`}
+                        data-test-id={`${CARD_LINK}-${index}`}
                         onClick={() => {
                             getRecipe(item._id)
                                 .unwrap()

@@ -3,6 +3,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
 import { useCallback, useMemo } from 'react';
 import { Link, useLocation } from 'react-router';
 
+import { BREADCRUMBS } from '~/query/constants/test-id';
 import { useGetCategoriesQuery } from '~/query/services/categories';
 import { useGetRecipeByIdQuery } from '~/query/services/recipes';
 import getCurrentCategory from '~/utils/getCurrentCategory';
@@ -47,7 +48,7 @@ const Breadcrumbs = ({ onClose }: BreadcrumbsProps) => {
 
     return (
         <Breadcrumb
-            data-test-id='breadcrumbs'
+            data-test-id={BREADCRUMBS}
             sx={{
                 '& > ol': {
                     display: 'flex',

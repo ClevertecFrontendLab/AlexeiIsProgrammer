@@ -8,6 +8,8 @@ import {
 } from '@chakra-ui/react';
 import { memo } from 'react';
 
+import { CLOSE_ICON, NAV } from '~/query/constants/test-id';
+
 import Breadcrumbs from '../Breadcrumbs';
 import Sidebar from '../Sidebar';
 
@@ -20,13 +22,13 @@ const MobileMenu = memo(({ isOpen, onClose }: MobileMenuProps) => (
     <Drawer isOpen={isOpen} placement='right' onClose={onClose}>
         <DrawerOverlay backdropFilter='blur(4px)' />
         <DrawerContent
-            data-test-id='nav'
+            data-test-id={NAV}
             borderBottomRadius='12px'
             boxShadow='xl'
             height='calc(100vh - 60px)'
             maxHeight='90vh'
         >
-            <DrawerCloseButton data-test-id='close-icon' />
+            <DrawerCloseButton data-test-id={CLOSE_ICON} />
             <DrawerBody
                 display='flex'
                 flexDirection='column'
