@@ -33,6 +33,7 @@ import {
     userFilterSelector,
 } from '~/store/app-slice';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
+import { OptionType } from '~/types';
 
 import CustomSpinner from '../CustomSpinner';
 import Filter from '../Filter';
@@ -49,11 +50,11 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
     const { isOpen, onClose, onOpen } = useDisclosure();
 
     const [input, setInput] = useState('');
+    const [localAllergens, setLocalAllergens] = useState<OptionType[]>([]);
 
     const dispatch = useAppDispatch();
 
-    const { search, activeAllergens, allergens, areAllergensActive } =
-        useAppSelector(userFilterSelector);
+    const { search, allergens, areAllergensActive } = useAppSelector(userFilterSelector);
     const hasActiveFilters = useAppSelector(hasActiveFiltersSelector);
 
     const { data: recipes, isLoading: areRecipesLoading, getRecipes } = useSearch();
@@ -61,10 +62,15 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
     const onSearchHandle = (searchArg: string = '') => {
         const inputValue = searchArg || input || '';
 
-        if (inputValue.length <= 2 && activeAllergens.length === 0) return;
+        if (inputValue.length <= 2 && localAllergens.length === 0) return;
 
-        if (search !== inputValue) {
-            dispatch(setFilters([{ name: 'search', value: inputValue }]));
+        if (search !== inputValue || localAllergens.length > 0) {
+            dispatch(
+                setFilters([
+                    { name: 'search', value: inputValue },
+                    { name: 'activeAllergens', value: localAllergens },
+                ]),
+            );
         }
 
         getRecipes();
@@ -157,7 +163,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                                 <InputRightElement>
                                     <SearchIcon
                                         pointerEvents={
-                                            input.length > 2 || activeAllergens.length > 0
+                                            input.length > 2 || localAllergens.length > 0
                                                 ? 'auto'
                                                 : 'none'
                                         }
@@ -190,11 +196,12 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                                             const isChecked = e.target.checked;
 
                                             if (!isChecked) {
-                                                dispatch(
-                                                    setFilters([
-                                                        { name: 'activeAllergens', value: [] },
-                                                    ]),
-                                                );
+                                                setLocalAllergens([]);
+                                                // dispatch(
+                                                //     setFilters([
+                                                //         { name: 'activeAllergens', value: [] },
+                                                //     ]),
+                                                // );
                                             }
 
                                             dispatch(setAreAllergensActive(isChecked));
@@ -207,15 +214,16 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                                 <CustomSelect
                                     isFilterOpened={isOpen}
                                     placeholder='Выберите из списка'
-                                    value={activeAllergens}
+                                    value={localAllergens}
                                     options={allergens}
-                                    onChange={(allergens) =>
-                                        dispatch(
-                                            setFilters([
-                                                { name: 'activeAllergens', value: allergens },
-                                            ]),
-                                        )
-                                    }
+                                    onChange={(allergens) => {
+                                        setLocalAllergens(allergens);
+                                        // dispatch(
+                                        //     setFilters([
+                                        //         { name: 'activeAllergens', value: allergens },
+                                        //     ]),
+                                        // )
+                                    }}
                                     onOptionAdd={(allergen) => dispatch(addAlergen(allergen))}
                                     disabled={!areAllergensActive}
                                 />
