@@ -27,23 +27,28 @@ const useSearch = () => {
     const currentSubcategory = getCurrentSubcategory(pathname);
     const currentRoute = getCurrentRoute(categories || [], currentCategory);
 
+    console.log('categories', categories);
+    console.log('currentRoute', currentRoute);
+
     const { data: category } = useGetCategoryByIdQuery(currentRoute?._id || '', {
         skip: !currentRoute?._id,
     });
 
     const subcategory = category?.subCategories?.find((sub) => sub.category === currentSubcategory);
+    console.log('category', category);
 
     const isJuiciest = currentCategory === THE_JUICIEST || pathname === MAIN;
 
     // Request params
 
-    const id = subcategory?._id || '';
     const limit = pathname === MAIN && !hasActiveFilters ? 4 : 8;
     const allergens = activeAllergens.map((m) => transformAllergen(m.value)).join(',');
     const searchString = search;
     const meat = meats.map((m) => m.value).join(',');
     const garnish = sides.map((m) => m.value).join(',');
-    const subcategoriesIds = category?.subCategories?.map((s) => s._id).join(',');
+    const subcategoriesIds = isJuiciest
+        ? category?.subCategories?.map((s) => s._id).join(',')
+        : subcategory?._id;
 
     const sort = (param: string) =>
         currentCategory === THE_JUICIEST || (pathname === MAIN && !hasActiveFilters) ? param : '';
@@ -65,13 +70,9 @@ const useSearch = () => {
         sortOrder,
     };
 
-    const {
-        data: recipesByCategory,
-        isError: isRecipesByCategoryError,
-        isFetching: isRecipesByCategoryFetching,
-    } = useGetRecipesByCategoryQuery(
+    useGetRecipesByCategoryQuery(
         {
-            id,
+            id: subcategory?._id || '',
             page,
             limit,
             allergens,
@@ -85,24 +86,26 @@ const useSearch = () => {
         isError: isAllRecipesError,
         isFetching: isAllRecipesFetching,
         isLoading: isAllRecipesLoading,
-    } = useGetRecipesQuery(requestBody, { skip: !category && !isJuiciest });
+    } = useGetRecipesQuery(requestBody, { skip: !isJuiciest && !subcategory });
 
     const getRecipesHandle = () => {
         getRecipes(requestBody);
     };
 
-    const { data, isError, isLoading, isFetching } = !isJuiciest
-        ? {
-              data: recipesByCategory,
-              isError: isRecipesByCategoryError,
-              isFetching: isRecipesByCategoryFetching,
-          }
-        : {
-              data: allRecipes,
-              isError: isAllRecipesError,
-              isLoading: isAllRecipesLoading || areAllRecipesLazyFetching,
-              isFetching: isAllRecipesFetching,
-          };
+    const { data, isError, isLoading, isFetching } =
+        // !isJuiciest
+        //     ? {
+        //           data: recipesByCategory,
+        //           isError: isRecipesByCategoryError,
+        //           isFetching: isRecipesByCategoryFetching,
+        //       }
+        //     :
+        {
+            data: allRecipes,
+            isError: isAllRecipesError,
+            isLoading: isAllRecipesLoading || areAllRecipesLazyFetching,
+            isFetching: isAllRecipesFetching,
+        };
 
     return { data, isError, isFetching, isLoading, getRecipes: getRecipesHandle };
 };

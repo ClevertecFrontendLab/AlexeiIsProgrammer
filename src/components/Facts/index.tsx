@@ -8,9 +8,11 @@ import {
     useToast,
 } from '@chakra-ui/react';
 import { useEffect, useMemo } from 'react';
+import { useLocation } from 'react-router';
 
 import { useGetCategoriesQuery, useGetCategoryByIdQuery } from '~/query/services/categories';
 import { useGetRecipesByCategoryQuery } from '~/query/services/recipes';
+import getCurrentCategory from '~/utils/getCurrentCategory';
 import getRandomSubcategory from '~/utils/getRandomSubcategory';
 
 import SlideItem from '../SlideItem';
@@ -22,7 +24,17 @@ const Facts = () => {
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
     const { data: categories } = useGetCategoriesQuery();
 
-    const subcategory = useMemo(() => getRandomSubcategory(categories || []), [categories]);
+    const { pathname } = useLocation();
+
+    const currentCategory = getCurrentCategory(pathname);
+    const subcategory = useMemo(
+        () =>
+            currentCategory
+                ? categories?.find((category) => category.category === currentCategory)
+                      ?.subCategories?.[0]
+                : getRandomSubcategory(categories || []),
+        [categories, currentCategory],
+    );
 
     const { data: category } = useGetCategoryByIdQuery(subcategory?.rootCategoryId || '', {
         skip: !subcategory?.rootCategoryId,
