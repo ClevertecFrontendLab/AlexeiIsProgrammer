@@ -224,7 +224,9 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                             <InputGroup>
                                 <Input
                                     borderColor={
-                                        recipes?.data && recipes.data.length > 0 ? 'green' : 'auto'
+                                        recipes?.data && recipes.data.length > 0 && hasActiveFilters
+                                            ? 'green'
+                                            : 'auto'
                                     }
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}

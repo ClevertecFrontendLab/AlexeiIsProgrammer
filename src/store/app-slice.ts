@@ -99,6 +99,7 @@ export const appSlice = createSlice({
         },
     },
 });
+
 export const userLoadingSelector = (state: ApplicationState) => state.app.isLoading;
 export const userErrorSelector = (state: ApplicationState) => state.app.error;
 export const userFilterSelector = (state: ApplicationState) => state.app.filter;

@@ -59,12 +59,13 @@ const Breadcrumbs = ({ onClose }: BreadcrumbsProps) => {
                 },
             }}
             separator={<ChevronRightIcon color='gray.800' />}
+            onClick={onClose}
         >
             <BreadcrumbItem
                 className={styles.breadcrumb}
                 color={pathnames.length > 0 ? 'blackAlpha.700' : 'black'}
             >
-                <BreadcrumbLink onClick={onClose} as={Link} className={styles.link} to='/'>
+                <BreadcrumbLink as={Link} className={styles.link} to='/'>
                     Главная
                 </BreadcrumbLink>
             </BreadcrumbItem>
@@ -74,12 +75,7 @@ const Breadcrumbs = ({ onClose }: BreadcrumbsProps) => {
                     color={index !== arr.length - 1 ? 'blackAlpha.700' : 'black'}
                     key={name}
                 >
-                    <BreadcrumbLink
-                        onClick={onClose}
-                        as={Link}
-                        className={styles.link}
-                        to={buildPath(index)}
-                    >
+                    <BreadcrumbLink as={Link} className={styles.link} to={buildPath(index)}>
                         {getBreadcrumbName(name)}
                     </BreadcrumbLink>
                 </BreadcrumbItem>

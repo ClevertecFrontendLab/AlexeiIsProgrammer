@@ -82,7 +82,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </Box>
                 )}
 
-                <MobileMenu isOpen={isOpen} onClose={onClose} />
+                {isOpen && <MobileMenu isOpen={isOpen} onClose={onClose} />}
 
                 <Box
                     as='main'
