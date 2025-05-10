@@ -27,7 +27,7 @@ type GetRecipesResponse = BaseRecipesResponse;
 
 type GetRecipesByCategoryResponse = BaseRecipesResponse;
 
-type GetRecipesParams = Partial<{
+export type GetRecipesParams = Partial<{
     meat: string;
     garnish: string;
     subcategoriesIds: string;

@@ -1,6 +1,5 @@
 import { ChatIcon, StarIcon, TimeIcon } from '@chakra-ui/icons';
 import { Box, Button, Flex, HStack, Image, Text } from '@chakra-ui/react';
-import type React from 'react';
 import { Link } from 'react-router';
 
 type RecipeListItemProps = {

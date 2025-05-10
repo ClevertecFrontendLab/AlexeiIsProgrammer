@@ -11,8 +11,8 @@ import { useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router';
 
 import { LOAD_MORE_BUTTON } from '~/constants/test-id';
-import { useGetCategoriesQuery, useGetCategoryByIdQuery } from '~/query/services/categories';
-import { useGetRecipesByCategoryQuery, useGetRecipesQuery } from '~/query/services/recipes';
+import useSearch from '~/hooks/useSearch';
+import { useGetCategoriesQuery } from '~/query/services/categories';
 import { MAIN, THE_JUICIEST } from '~/router/constants/routes';
 import {
     addItems,
@@ -25,9 +25,7 @@ import { useAppDispatch, useAppSelector } from '~/store/hooks';
 import { Recipe } from '~/types';
 import getCategoriesPath from '~/utils/getCategoriesPath';
 import getCurrentCategory from '~/utils/getCurrentCategory';
-import getCurrentRoute from '~/utils/getCurrentRoute';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
-import transformAllergen from '~/utils/transformAllergen';
 
 import Item from '../Item';
 
@@ -39,67 +37,17 @@ const Subcategory = () => {
 
     const dispatch = useAppDispatch();
 
-    const { activeAllergens, search, meats, sides, page, items } =
-        useAppSelector(userFilterSelector);
+    const { page, items } = useAppSelector(userFilterSelector);
     const hasActiveFilters = useAppSelector(hasActiveFiltersSelector);
 
     const { data: categories } = useGetCategoriesQuery();
     const { pathname } = useLocation();
     const currentCategory = getCurrentCategory(pathname);
     const currentSubcategory = getCurrentSubcategory(pathname);
-    const currentRoute = getCurrentRoute(categories || [], currentCategory);
-
-    const { data: category } = useGetCategoryByIdQuery(currentRoute?._id || '', {
-        skip: !currentRoute?._id,
-    });
-
-    const subcategory = category?.subCategories?.find((sub) => sub.category === currentSubcategory);
 
     const isJuiciest = currentCategory === THE_JUICIEST || pathname === MAIN;
 
-    const {
-        data: recipesByCategory,
-        isError: isRecipesByCategoryError,
-        isFetching: isRecipesByCategoryFetching,
-    } = useGetRecipesByCategoryQuery(
-        {
-            id: subcategory?._id || '',
-            page,
-            limit: pathname === MAIN && !hasActiveFilters ? 4 : 8,
-            allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
-            searchString: search,
-        },
-        { skip: !subcategory || isJuiciest },
-    );
-
-    const {
-        data: allRecipes,
-        isError: isAllRecipesError,
-        isFetching: isAllRecipesFetching,
-    } = useGetRecipesQuery(
-        {
-            page,
-            limit: pathname === MAIN && !hasActiveFilters ? 4 : 8,
-            allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
-            searchString: search,
-            meat: meats.map((m) => m.value).join(','),
-            garnish: sides.map((m) => m.value).join(','),
-            subcategoriesIds: category?.subCategories?.map((s) => s._id).join(','),
-            sortBy:
-                currentCategory === THE_JUICIEST || (pathname === MAIN && !hasActiveFilters)
-                    ? 'likes'
-                    : '',
-            sortOrder:
-                currentCategory === THE_JUICIEST || (pathname === MAIN && !hasActiveFilters)
-                    ? 'desc'
-                    : '',
-        },
-        { skip: !category && !isJuiciest },
-    );
-
-    const [recipes, isError, isFetching] = !isJuiciest
-        ? [recipesByCategory, isRecipesByCategoryError, isRecipesByCategoryFetching]
-        : [allRecipes, isAllRecipesError, isAllRecipesFetching];
+    const { data: recipes, isError, isFetching } = useSearch();
 
     const getItemPath = useCallback(
         (item: Recipe) =>

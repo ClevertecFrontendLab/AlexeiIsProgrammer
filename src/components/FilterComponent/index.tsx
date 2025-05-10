@@ -15,7 +15,6 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useLocation } from 'react-router';
 
 import filter from '~/assets/filter.svg';
 import {
@@ -25,13 +24,7 @@ import {
     SEARCH_BUTTON,
     SEARCH_INPUT,
 } from '~/constants/test-id';
-import { useGetCategoriesQuery, useGetCategoryByIdQuery } from '~/query/services/categories';
-import {
-    useGetRecipesByCategoryQuery,
-    useGetRecipesQuery,
-    useLazyGetRecipesQuery,
-} from '~/query/services/recipes';
-import { MAIN, THE_JUICIEST } from '~/router/constants/routes';
+import useSearch from '~/hooks/useSearch';
 import {
     addAlergen,
     hasActiveFiltersSelector,
@@ -40,10 +33,6 @@ import {
     userFilterSelector,
 } from '~/store/app-slice';
 import { useAppDispatch, useAppSelector } from '~/store/hooks';
-import getCurrentCategory from '~/utils/getCurrentCategory';
-import getCurrentRoute from '~/utils/getCurrentRoute';
-import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
-import transformAllergen from '~/utils/transformAllergen';
 
 import CustomSpinner from '../CustomSpinner';
 import Filter from '../Filter';
@@ -63,76 +52,11 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
 
     const dispatch = useAppDispatch();
 
-    const { search, activeAllergens, allergens, areAllergensActive, meats, sides, page } =
+    const { search, activeAllergens, allergens, areAllergensActive } =
         useAppSelector(userFilterSelector);
     const hasActiveFilters = useAppSelector(hasActiveFiltersSelector);
 
-    const { data: categories } = useGetCategoriesQuery();
-
-    const [getRecipes, { isFetching: areAllRecipesLazyFetching }] = useLazyGetRecipesQuery();
-
-    const { pathname } = useLocation();
-
-    const currentCategory = getCurrentCategory(pathname);
-    const currentSubcategory = getCurrentSubcategory(pathname);
-    const currentRoute = getCurrentRoute(categories || [], currentCategory);
-
-    const { data: category } = useGetCategoryByIdQuery(currentRoute?._id || '', {
-        skip: !currentRoute?._id,
-    });
-
-    const subcategory = category?.subCategories?.find((sub) => sub.category === currentSubcategory);
-
-    const isJuiciest = currentCategory === THE_JUICIEST || pathname === MAIN;
-
-    const {
-        data: recipesByCategory,
-        isError: isRecipesByCategoryError,
-        isSuccess: isRecipesByCategorySuccess,
-    } = useGetRecipesByCategoryQuery(
-        {
-            id: subcategory?._id || '',
-            page,
-            limit: pathname === MAIN ? 4 : 8,
-            allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
-            searchString: search,
-        },
-        { skip: !subcategory || isJuiciest },
-    );
-
-    const {
-        data: allRecipes,
-        isError: isAllRecipesError,
-        isLoading: areAllRecipesLoading,
-        isFetching: areAllRecipesFetching,
-    } = useGetRecipesQuery(
-        {
-            page,
-            limit: pathname === MAIN && !hasActiveFilters ? 4 : 8,
-            allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
-            searchString: search,
-            meat: meats.map((m) => m.value).join(','),
-            garnish: sides.map((m) => m.value).join(','),
-            subcategoriesIds: category?.subCategories?.map((s) => s._id).join(','),
-            sortBy:
-                currentCategory === THE_JUICIEST || (pathname === MAIN && !hasActiveFilters)
-                    ? 'likes'
-                    : '',
-            sortOrder:
-                currentCategory === THE_JUICIEST || (pathname === MAIN && !hasActiveFilters)
-                    ? 'desc'
-                    : '',
-        },
-        { skip: !category && !isJuiciest },
-    );
-
-    const [recipes, _, areRecipesLoading] = !isJuiciest
-        ? [recipesByCategory, isRecipesByCategoryError, false, isRecipesByCategorySuccess]
-        : [
-              allRecipes,
-              isAllRecipesError,
-              areAllRecipesLazyFetching || areAllRecipesLoading || areAllRecipesFetching,
-          ];
+    const { data: recipes, isLoading: areRecipesLoading, getRecipes } = useSearch();
 
     const onSearchHandle = (searchArg: string = '') => {
         const inputValue = searchArg || input || '';
@@ -141,25 +65,9 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
 
         if (search !== inputValue) {
             dispatch(setFilters([{ name: 'search', value: inputValue }]));
-        } else {
-            getRecipes({
-                page,
-                limit: pathname === MAIN && !hasActiveFilters ? 4 : 8,
-                allergens: activeAllergens.map((m) => transformAllergen(m.value)).join(','),
-                searchString: search,
-                meat: meats.map((m) => m.value).join(','),
-                garnish: sides.map((m) => m.value).join(','),
-                subcategoriesIds: category?.subCategories?.map((s) => s._id).join(','),
-                sortBy:
-                    currentCategory === THE_JUICIEST || (pathname === MAIN && !hasActiveFilters)
-                        ? 'likes'
-                        : '',
-                sortOrder:
-                    currentCategory === THE_JUICIEST || (pathname === MAIN && !hasActiveFilters)
-                        ? 'desc'
-                        : '',
-            });
         }
+
+        getRecipes();
     };
 
     return (

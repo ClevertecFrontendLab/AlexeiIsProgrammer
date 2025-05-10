@@ -107,7 +107,6 @@ const Slider = ({ title }: SliderProps) => {
             <Box position='relative'>
                 {slides && (
                     <Swiper
-                        className={styles.swiper}
                         data-test-id={CAROUSEL}
                         modules={[Navigation]}
                         spaceBetween={24}
