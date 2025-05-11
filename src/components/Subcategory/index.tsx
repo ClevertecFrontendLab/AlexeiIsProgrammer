@@ -62,7 +62,11 @@ const Subcategory = () => {
 
     useEffect(() => {
         if (isError) {
-            toast();
+            toast({
+                status: 'error',
+                title: 'Ошибка сервера',
+                description: 'Попробуйте поискать снова попозже',
+            });
         }
     }, [toast, isError]);
 

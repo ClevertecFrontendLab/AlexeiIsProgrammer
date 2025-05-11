@@ -19,16 +19,16 @@ createRoot(document.getElementById('root')!).render(
                 theme={theme}
                 toastOptions={{
                     defaultOptions: {
-                        render: ({ onClose }) => (
+                        render: ({ onClose, status, title, description }) => (
                             <CustomAlert
                                 onClose={onClose}
-                                title='Ошибка сервера'
-                                description='Попробуйте поискать снова попозже'
-                                status='error'
+                                title={title}
+                                description={description}
+                                status={status}
                             />
                         ),
                         position: 'bottom',
-                        duration: 5000,
+                        duration: 20000,
                     },
                 }}
             >

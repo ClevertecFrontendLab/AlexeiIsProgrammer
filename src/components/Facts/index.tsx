@@ -50,7 +50,11 @@ const Facts = () => {
 
     useEffect(() => {
         if (isError) {
-            toast();
+            toast({
+                status: 'error',
+                title: 'Ошибка сервера',
+                description: 'Попробуйте поискать снова попозже',
+            });
         }
     }, [isError, toast]);
 

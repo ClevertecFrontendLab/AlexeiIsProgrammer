@@ -28,7 +28,7 @@ const tabs = [
 const Auth = () => {
     const { pathname } = useLocation();
 
-    const isMobile = useBreakpointValue({ base: true, lg: false });
+    const isMobile = useBreakpointValue({ base: true, md: false });
 
     const navigate = useNavigate();
 
@@ -36,17 +36,23 @@ const Auth = () => {
 
     return (
         <Box className={styles.container}>
-            <SimpleGrid flex='1' templateColumns='1fr 1fr'>
-                <Flex direction='column' alignItems='center' justify='center' position='relative'>
-                    <Image src={logo} mb='80px' />
+            <SimpleGrid flex='1' templateColumns={isMobile ? '1fr' : '1fr 1fr'}>
+                <Flex
+                    direction='column'
+                    alignItems='center'
+                    justify='flex-start'
+                    position='relative'
+                >
+                    <Image src={logo} mb='80px' h={isMobile ? '38px' : '64px'} />
 
-                    <Box maxW='460px' mx='auto'>
+                    <Box w='100%' maxW='460px' mx='auto'>
                         <Tabs isLazy index={currentIndex}>
                             <TabList
                                 justifyContent={isMobile ? 'flex-start' : 'center'}
                                 pb='5px'
                                 overflowX='auto'
                                 flexWrap={isMobile ? 'nowrap' : 'wrap'}
+                                borderColor='blackAlpha.200'
                             >
                                 {tabs.map((tab) => (
                                     <Tab
@@ -83,19 +89,21 @@ const Auth = () => {
                         ̶Все права защищены, ученический файл, ©Клевер Технолоджи, 2025
                     </Text>
                 </Flex>
-                <Box overflow='hidden' position='relative'>
-                    <Image objectFit='cover' w='100%' h='100%' src={auth} alt='Auth photo' />
-                    <Text
-                        position='absolute'
-                        p='10px'
-                        fontWeight='600'
-                        fontSize='12px'
-                        right='20px'
-                        bottom='20px'
-                    >
-                        ̶ Лучший сервис для ваших кулинарных побед
-                    </Text>
-                </Box>
+                {!isMobile && (
+                    <Box overflow='hidden' position='relative'>
+                        <Image objectFit='cover' w='100%' h='100%' src={auth} alt='Auth photo' />
+                        <Text
+                            position='absolute'
+                            p='10px'
+                            fontWeight='600'
+                            fontSize='12px'
+                            right='20px'
+                            bottom='20px'
+                        >
+                            ̶ Лучший сервис для ваших кулинарных побед
+                        </Text>
+                    </Box>
+                )}
             </SimpleGrid>
         </Box>
     );
