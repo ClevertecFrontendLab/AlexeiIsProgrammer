@@ -117,7 +117,6 @@ const Slider = ({ title }: SliderProps) => {
                             prevEl: prevRef.current,
                             nextEl: nextRef.current,
                         }}
-                        speed={0}
                         loop
                         onInit={(swiper: SwiperClass) => {
                             swiper.navigation.init();

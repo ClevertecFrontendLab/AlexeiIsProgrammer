@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router';
 
 import App from '~/app/App';
+import Auth from '~/components/Auth';
 import Juciest from '~/components/Juciest';
 import Layout from '~/components/Layout';
 import Subcategory from '~/components/Subcategory';
@@ -12,9 +13,11 @@ import { AppRoute } from '~/query/services/categories';
 
 import {
     CATEGORY,
+    LOGIN,
     MAIN,
     NOT_FOUND,
     RECIPE_ID,
+    REGISTRATION,
     SUBCATEGORY,
     THE_JUICIEST,
 } from './constants/routes';
@@ -76,6 +79,14 @@ const Router = () => {
                             element: <Recipe />,
                         },
                     ],
+                },
+                {
+                    path: REGISTRATION,
+                    element: <Auth />,
+                },
+                {
+                    path: LOGIN,
+                    element: <Auth />,
                 },
                 {
                     path: NOT_FOUND,

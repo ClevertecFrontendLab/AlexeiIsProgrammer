@@ -57,7 +57,11 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
     const { search, allergens, areAllergensActive } = useAppSelector(userFilterSelector);
     const hasActiveFilters = useAppSelector(hasActiveFiltersSelector);
 
-    const { data: recipes, isLoading: areRecipesLoading, getRecipes } = useSearch();
+    const {
+        data: recipes,
+        isLoading: areRecipesLoading,
+        isFetching: areRecipesFetching,
+    } = useSearch();
 
     const onSearchHandle = (searchArg: string = '') => {
         const inputValue = searchArg || input || '';
@@ -72,8 +76,6 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                 ]),
             );
         }
-
-        getRecipes();
     };
 
     return (
@@ -119,7 +121,7 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                     </Text>
                 )
             )}
-            {areRecipesLoading ? (
+            {!areRecipesLoading && areRecipesFetching ? (
                 <CustomSpinner data-test-id={LOADER_SEARCH_BLOCK} />
             ) : (
                 <>
