@@ -20,6 +20,7 @@ import {
     REGISTRATION,
     SUBCATEGORY,
     THE_JUICIEST,
+    VERIFICATION,
 } from './constants/routes';
 
 // export const transformMenuToRoutes = (menuItem: CategoryItem): AppRoute => ({
@@ -79,6 +80,10 @@ const Router = () => {
                             element: <Recipe />,
                         },
                     ],
+                },
+                {
+                    path: VERIFICATION,
+                    element: <Auth />,
                 },
                 {
                     path: REGISTRATION,

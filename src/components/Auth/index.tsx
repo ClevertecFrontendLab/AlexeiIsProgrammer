@@ -10,14 +10,18 @@ import {
     Tabs,
     Text,
     useBreakpointValue,
+    useDisclosure,
+    useToast,
 } from '@chakra-ui/react';
-import { useLocation, useNavigate } from 'react-router';
+import { useEffect } from 'react';
+import { useLocation, useNavigate, useSearchParams } from 'react-router';
 
 import auth from '~/assets/auth.jpg';
 import logo from '~/assets/logo.svg';
 import Login from '~/pages/Login';
 import Registration from '~/pages/Registration';
 
+import WrongVerificationModal from '../WrongVerificationModal';
 import styles from './Auth.module.scss';
 
 const tabs = [
@@ -26,6 +30,8 @@ const tabs = [
 ];
 
 const Auth = () => {
+    const { isOpen, onClose, onOpen } = useDisclosure();
+    const toast = useToast();
     const { pathname } = useLocation();
 
     const isMobile = useBreakpointValue({ base: true, md: false });
@@ -33,6 +39,28 @@ const Auth = () => {
     const navigate = useNavigate();
 
     const currentIndex = tabs.findIndex((tab) => tab.value === pathname);
+
+    const [searchParams] = useSearchParams();
+
+    const isVerification = pathname === '/verification';
+
+    useEffect(() => {
+        if (isVerification) {
+            const emailVerified = searchParams.get('emailVerified');
+
+            if (emailVerified === 'true') {
+                navigate('/login');
+                toast({
+                    status: 'success',
+                    title: 'Верификация прошла успешно',
+                    description: '',
+                });
+            } else {
+                navigate('/registration');
+                onOpen();
+            }
+        }
+    }, [isVerification, searchParams, navigate, toast, onOpen]);
 
     return (
         <Box className={styles.container}>
@@ -105,6 +133,7 @@ const Auth = () => {
                     </Box>
                 )}
             </SimpleGrid>
+            <WrongVerificationModal onClose={onClose} isOpen={isOpen} />
         </Box>
     );
 };
