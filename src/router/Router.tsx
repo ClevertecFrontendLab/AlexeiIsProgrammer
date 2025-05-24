@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { createBrowserRouter, Navigate, Outlet, redirect, RouterProvider } from 'react-router';
+import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router';
 
 import App from '~/app/App';
 import Auth from '~/components/Auth';
@@ -9,9 +9,7 @@ import Subcategory from '~/components/Subcategory';
 import Tabbed from '~/components/Tabbed';
 import Error from '~/pages/Error';
 import Recipe from '~/pages/Recipe';
-import { authApiSlice } from '~/query/services/auth';
 import { AppRoute } from '~/query/services/categories';
-import { store } from '~/store/configure-store';
 
 import {
     CATEGORY,
@@ -24,35 +22,7 @@ import {
     THE_JUICIEST,
     VERIFICATION,
 } from './constants/routes';
-
-// export const transformMenuToRoutes = (menuItem: CategoryItem): AppRoute => ({
-//     ...menuItem,
-//     path: menuItem.category,
-//     element: <Tabbed />,
-//     handle: {
-//         label: menuItem.title,
-//         icon: menuItem.icon,
-//         description: menuItem.description,
-//     },
-//     children: menuItem.subCategories?.map((subCategory) => ({
-//         path: subCategory.category,
-//         element: <Subcategory />,
-//         handle: {
-//             label: subCategory.title,
-//             parentId: menuItem._id,
-//         },
-//     })),
-// });
-
-const protectedLoader = async () => {
-    const checkUser = store.dispatch(authApiSlice.endpoints.checkAuth.initiate());
-    try {
-        await checkUser.unwrap();
-        return null;
-    } catch {
-        return redirect('/login');
-    }
-};
+import { PrivateRoute } from './PrivateRoute';
 
 const Router = () => {
     const router = useMemo(
@@ -60,59 +30,64 @@ const Router = () => {
             createBrowserRouter([
                 {
                     path: '/',
-                    element: (
-                        <Layout key='layout'>
-                            <Outlet />
-                        </Layout>
-                    ),
-                    loader: protectedLoader,
-                    errorElement: <Navigate to={NOT_FOUND} />,
+                    element: <PrivateRoute />,
                     children: [
                         {
-                            path: MAIN,
-                            element: <App />,
+                            path: '/',
+                            element: (
+                                <Layout key='layout'>
+                                    <Outlet />
+                                </Layout>
+                            ),
+                            errorElement: <Navigate to={NOT_FOUND} />,
                             children: [
                                 {
-                                    path: CATEGORY,
-                                    element: <Tabbed />,
+                                    path: MAIN,
+                                    element: <App />,
                                     children: [
                                         {
-                                            path: SUBCATEGORY,
-                                            element: <Subcategory />,
+                                            path: CATEGORY,
+                                            element: <Tabbed />,
+                                            children: [
+                                                {
+                                                    path: SUBCATEGORY,
+                                                    element: <Subcategory />,
+                                                },
+                                            ],
+                                        },
+                                        {
+                                            path: THE_JUICIEST,
+                                            element: <Juciest />,
                                         },
                                     ],
                                 },
                                 {
-                                    path: THE_JUICIEST,
-                                    element: <Juciest />,
+                                    path: `${CATEGORY}/${SUBCATEGORY}/${RECIPE_ID}`,
+                                    element: <Recipe />,
                                 },
                             ],
                         },
                         {
-                            path: `${CATEGORY}/${SUBCATEGORY}/${RECIPE_ID}`,
-                            element: <Recipe />,
+                            path: VERIFICATION,
+                            element: <Auth />,
+                        },
+                        {
+                            path: REGISTRATION,
+                            element: <Auth />,
+                        },
+                        {
+                            path: LOGIN,
+                            element: <Auth />,
+                        },
+                        {
+                            path: NOT_FOUND,
+                            element: (
+                                <Layout key='layout'>
+                                    <Error />,
+                                </Layout>
+                            ),
                         },
                     ],
-                },
-                {
-                    path: VERIFICATION,
-                    element: <Auth />,
-                },
-                {
-                    path: REGISTRATION,
-                    element: <Auth />,
-                },
-                {
-                    path: LOGIN,
-                    element: <Auth />,
-                },
-                {
-                    path: NOT_FOUND,
-                    element: (
-                        <Layout key='layout'>
-                            <Error />,
-                        </Layout>
-                    ),
                 },
             ] as AppRoute[]),
         [],

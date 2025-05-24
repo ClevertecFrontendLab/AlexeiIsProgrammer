@@ -28,7 +28,7 @@ const Layout = ({ children }: LayoutProps) => {
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
     const { isOpen, onClose, onOpen } = useDisclosure();
 
-    const { data: categories, isLoading: areCategoriesLoading } = useGetCategoriesQuery(undefined);
+    const { data: categories, isLoading: areCategoriesLoading } = useGetCategoriesQuery();
 
     const { pathname } = useLocation();
 

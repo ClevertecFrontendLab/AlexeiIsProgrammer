@@ -144,6 +144,7 @@ export const {
     useSignupMutation,
     useLoginMutation,
     useRefreshQuery,
+    useLazyCheckAuthQuery,
     useCheckAuthQuery,
     useVerifyQuery,
     useForgotPasswordMutation,

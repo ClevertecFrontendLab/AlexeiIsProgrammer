@@ -4,7 +4,7 @@ const baseQuery = fetchBaseQuery({
     baseUrl: 'https://marathon-api.clevertec.ru',
     credentials: 'include',
     // prepareHeaders: (headers) => {
-    //     const token = localStorage.getItem('token');
+    //     const token = localStorage.getItem('accessToken');
     //     if (token) {
     //         headers.set('Authorization', `Bearer ${token}`);
     //     }
