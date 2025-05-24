@@ -57,7 +57,12 @@ const registrationSchema = z
             .min(8, 'Не соответствует формату')
             .max(50, 'Максимальная длина 50 символов')
             .regex(PASSWORD_REGX, 'Не соответствует формату'),
-        confirmPassword: z.string(),
+        confirmPassword: z
+            .string()
+            .min(1, 'Введите пароль')
+            .min(8, 'Не соответствует формату')
+            .max(50, 'Максимальная длина 50 символов')
+            .regex(PASSWORD_REGX, 'Не соответствует формату'),
     })
     .refine((data) => data.password === data.confirmPassword, {
         message: 'Пароли должны совпадать',
@@ -73,7 +78,7 @@ const Registration = () => {
     const [step, setStep] = useState(1);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const { register, handleSubmit, formState, watch, trigger, getFieldState } =
+    const { register, handleSubmit, getValues, formState, watch, trigger, getFieldState } =
         useTrimForm<RegistrationFormData>({
             resolver: zodResolver(registrationSchema),
             mode: 'onChange',
@@ -111,13 +116,13 @@ const Registration = () => {
             .catch((err) => {
                 const data = err?.data;
 
-                if (data.statusCode === 400) {
+                if (err?.status === 400) {
                     toast({
                         status: 'error',
                         title: data.message,
                         description: '',
                     });
-                } else if (data.statusCode >= 500 && data.statusCode <= 599) {
+                } else if (err?.status >= 500 && err?.status <= 599) {
                     toast({
                         status: 'error',
                         title: 'Ошибка сервера',
@@ -131,13 +136,6 @@ const Registration = () => {
         const isValid = await trigger(currentStepFields as [keyof RegistrationFormData]);
         if (isValid) setStep(2);
     };
-
-    const isStepValid = (): boolean =>
-        currentStepFields.every(
-            (field) =>
-                !getFieldState(field as keyof RegistrationFormData).invalid &&
-                !!currentValues[field as keyof RegistrationFormData],
-        );
 
     return (
         <>
@@ -182,7 +180,6 @@ const Registration = () => {
                             colorScheme='blackAlpha'
                             width='full'
                             onClick={handleNextStep}
-                            isDisabled={!isStepValid()}
                         >
                             Дальше
                         </Button>
@@ -211,8 +208,8 @@ const Registration = () => {
                                 <InputRightElement>
                                     <Button
                                         variant='ghost'
-                                        onMouseDown={() => setShowPassword((prev) => !prev)}
-                                        onMouseUp={() => setShowPassword((prev) => !prev)}
+                                        onMouseDown={() => setShowPassword(true)}
+                                        onMouseUp={() => setShowPassword(false)}
                                     >
                                         {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                                     </Button>
@@ -237,8 +234,8 @@ const Registration = () => {
                                 <InputRightElement>
                                     <Button
                                         variant='ghost'
-                                        onMouseDown={() => setShowConfirmPassword((prev) => !prev)}
-                                        onMouseUp={() => setShowConfirmPassword((prev) => !prev)}
+                                        onMouseDown={() => setShowConfirmPassword(true)}
+                                        onMouseUp={() => setShowConfirmPassword(false)}
                                     >
                                         {showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
                                     </Button>
@@ -254,7 +251,6 @@ const Registration = () => {
                             type='submit'
                             data-test-id='submit-button'
                             width='full'
-                            isDisabled={!isStepValid()}
                         >
                             Зарегистрироваться
                         </Button>
@@ -262,7 +258,7 @@ const Registration = () => {
                 )}
             </form>
             {isLoading && <CustomSpinner data-test-id={APP_LOADER} spinnerOverflow />}
-            <VerificationModal isOpen={isOpen} onClose={onClose} />
+            <VerificationModal email={getValues().email} isOpen={isOpen} onClose={onClose} />
         </>
     );
 };

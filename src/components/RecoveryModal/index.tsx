@@ -52,7 +52,12 @@ const recoverySchema = z
             .min(8, 'Не соответствует формату')
             .max(50, 'Максимальная длина 50 символов')
             .regex(PASSWORD_REGX, 'Не соответствует формату'),
-        passwordConfirm: z.string(),
+        passwordConfirm: z
+            .string()
+            .min(1, 'Введите пароль')
+            .min(8, 'Не соответствует формату')
+            .max(50, 'Максимальная длина 50 символов')
+            .regex(PASSWORD_REGX, 'Не соответствует формату'),
     })
     .refine((data) => data.password === data.passwordConfirm, {
         message: 'Пароли должны совпадать',
@@ -69,19 +74,10 @@ const RecoveryModal = ({ isOpen, onClose, email }: RecoveryModalProps) => {
 
     const navigate = useNavigate();
 
-    const { register, handleSubmit, formState, getFieldState, watch } =
-        useTrimForm<RecoveryFormDataHook>({
-            resolver: zodResolver(recoverySchema),
-            mode: 'onChange',
-        });
-
-    const currentValues = watch();
-    const isFormValid = (): boolean =>
-        ['login', 'password', 'passwordConfirm'].every(
-            (field) =>
-                !getFieldState(field as keyof RecoveryFormDataHook).invalid &&
-                !!currentValues[field as keyof RecoveryFormDataHook],
-        );
+    const { register, handleSubmit, formState } = useTrimForm<RecoveryFormDataHook>({
+        resolver: zodResolver(recoverySchema),
+        mode: 'onChange',
+    });
 
     const onSubmit = (data: RecoveryFormDataHook) => {
         resetPassword({ email, ...data })
@@ -95,7 +91,11 @@ const RecoveryModal = ({ isOpen, onClose, email }: RecoveryModalProps) => {
                     description: '',
                 });
             })
-            .catch(() => {
+            .catch((err) => {
+                const data = err?.data;
+
+                if (!data) return;
+
                 toast({
                     status: 'error',
                     title: 'Ошибка сервера',
@@ -154,8 +154,8 @@ const RecoveryModal = ({ isOpen, onClose, email }: RecoveryModalProps) => {
                                     <InputRightElement>
                                         <Button
                                             variant='ghost'
-                                            onMouseDown={() => setShowPassword((prev) => !prev)}
-                                            onMouseUp={() => setShowPassword((prev) => !prev)}
+                                            onMouseDown={() => setShowPassword(true)}
+                                            onMouseUp={() => setShowPassword(false)}
                                         >
                                             {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                                         </Button>
@@ -180,12 +180,8 @@ const RecoveryModal = ({ isOpen, onClose, email }: RecoveryModalProps) => {
                                     <InputRightElement>
                                         <Button
                                             variant='ghost'
-                                            onMouseDown={() =>
-                                                setShowConfirmPassword((prev) => !prev)
-                                            }
-                                            onMouseUp={() =>
-                                                setShowConfirmPassword((prev) => !prev)
-                                            }
+                                            onMouseDown={() => setShowConfirmPassword(true)}
+                                            onMouseUp={() => setShowConfirmPassword(false)}
                                         >
                                             {showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
                                         </Button>
@@ -201,7 +197,6 @@ const RecoveryModal = ({ isOpen, onClose, email }: RecoveryModalProps) => {
                                 colorScheme='blackAlpha'
                                 type='submit'
                                 width='full'
-                                isDisabled={!isFormValid()}
                             >
                                 Зарегистрироваться
                             </Button>

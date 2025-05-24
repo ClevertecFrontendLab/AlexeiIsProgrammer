@@ -53,8 +53,6 @@ const EmailModal = ({ isOpen, onClose }: EmailModalProps) => {
     );
 
     const onSubmit = (data: EmailFormData) => {
-        console.log('data', data);
-
         forgotPassword(data)
             .unwrap()
             .then(() => {
@@ -62,14 +60,12 @@ const EmailModal = ({ isOpen, onClose }: EmailModalProps) => {
                 onPinOpen();
             })
             .catch((e) => {
-                const data = e?.data;
-
                 resetField('email');
 
-                if (data.statusCode === 403) {
+                if (e?.status === 403) {
                     toast({
                         status: 'error',
-                        title: data.message,
+                        title: 'Такого e-mail нет',
                         description:
                             'Попробуйте другой e-mail или проверьте правильность его написания',
                     });
@@ -87,7 +83,7 @@ const EmailModal = ({ isOpen, onClose }: EmailModalProps) => {
         <>
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
-                <ModalContent data-test-id='sign-up-success-modal' gap='20px' maxW='396px'>
+                <ModalContent data-test-id='send-email-modal' gap='20px' maxW='396px'>
                     <ModalHeader display='flex' justifyContent='center'>
                         <Image src={coffee} />
                     </ModalHeader>
@@ -130,7 +126,6 @@ const EmailModal = ({ isOpen, onClose }: EmailModalProps) => {
                                     type='submit'
                                     width='full'
                                     colorScheme='blackAlpha'
-                                    disabled={!!formState.errors.email}
                                     isLoading={isLoading}
                                 >
                                     Получить код

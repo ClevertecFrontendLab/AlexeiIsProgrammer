@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router';
+import { createBrowserRouter, Navigate, Outlet, redirect, RouterProvider } from 'react-router';
 
 import App from '~/app/App';
 import Auth from '~/components/Auth';
@@ -9,7 +9,9 @@ import Subcategory from '~/components/Subcategory';
 import Tabbed from '~/components/Tabbed';
 import Error from '~/pages/Error';
 import Recipe from '~/pages/Recipe';
+import { authApiSlice } from '~/query/services/auth';
 import { AppRoute } from '~/query/services/categories';
+import { store } from '~/store/configure-store';
 
 import {
     CATEGORY,
@@ -42,6 +44,16 @@ import {
 //     })),
 // });
 
+const protectedLoader = async () => {
+    const checkUser = store.dispatch(authApiSlice.endpoints.checkAuth.initiate());
+    try {
+        await checkUser.unwrap();
+        return null;
+    } catch {
+        return redirect('/login');
+    }
+};
+
 const Router = () => {
     const router = useMemo(
         () =>
@@ -53,6 +65,7 @@ const Router = () => {
                             <Outlet />
                         </Layout>
                     ),
+                    loader: protectedLoader,
                     errorElement: <Navigate to={NOT_FOUND} />,
                     children: [
                         {

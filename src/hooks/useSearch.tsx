@@ -27,15 +27,11 @@ const useSearch = () => {
     const currentSubcategory = getCurrentSubcategory(pathname);
     const currentRoute = getCurrentRoute(categories || [], currentCategory);
 
-    console.log('categories', categories);
-    console.log('currentRoute', currentRoute);
-
     const { data: category } = useGetCategoryByIdQuery(currentRoute?._id || '', {
         skip: !currentRoute?._id,
     });
 
     const subcategory = category?.subCategories?.find((sub) => sub.category === currentSubcategory);
-    console.log('category', category);
 
     const isJuiciest = currentCategory === THE_JUICIEST || pathname === MAIN;
 

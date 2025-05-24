@@ -20,13 +20,14 @@ import auth from '~/assets/auth.jpg';
 import logo from '~/assets/logo.svg';
 import Login from '~/pages/Login';
 import Registration from '~/pages/Registration';
+import { LOGIN, REGISTRATION, VERIFICATION } from '~/router/constants/routes';
 
 import WrongVerificationModal from '../WrongVerificationModal';
 import styles from './Auth.module.scss';
 
 const tabs = [
-    { label: 'Вход на сайт', value: '/login', component: <Login /> },
-    { label: 'Регистрация', value: '/registration', component: <Registration /> },
+    { label: 'Вход на сайт', value: `/${LOGIN}`, component: <Login /> },
+    { label: 'Регистрация', value: `/${REGISTRATION}`, component: <Registration /> },
 ];
 
 const Auth = () => {
@@ -42,21 +43,21 @@ const Auth = () => {
 
     const [searchParams] = useSearchParams();
 
-    const isVerification = pathname === '/verification';
+    const isVerification = pathname === `/${VERIFICATION}`;
 
     useEffect(() => {
         if (isVerification) {
             const emailVerified = searchParams.get('emailVerified');
 
             if (emailVerified === 'true') {
-                navigate('/login');
+                navigate(`/${LOGIN}`);
                 toast({
                     status: 'success',
                     title: 'Верификация прошла успешно',
                     description: '',
                 });
             } else {
-                navigate('/registration');
+                navigate(`/${REGISTRATION}`);
                 onOpen();
             }
         }

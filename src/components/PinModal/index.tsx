@@ -30,7 +30,7 @@ type PinModalProps = {
     email: string;
 };
 
-const PinModal = ({ isOpen, onClose, email }: PinModalProps) => {
+const PinModal = ({ isOpen, onClose: onCloseHandle, email }: PinModalProps) => {
     const {
         isOpen: isRecoveryModalOpen,
         onOpen: onRecoveryModalOpen,
@@ -40,24 +40,22 @@ const PinModal = ({ isOpen, onClose, email }: PinModalProps) => {
     const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
     const [pin, setPin] = useState('');
 
+    const onClose = () => {
+        setPin('');
+        onCloseHandle();
+    };
+
     const onComplete = (otpToken: string) => {
         verifyOtp({ otpToken, email })
+            .unwrap()
             .then(() => {
                 onClose();
                 onRecoveryModalOpen();
             })
             .catch((e) => {
-                const data = e?.data;
-
                 setPin('');
-                if (data.statusCode === 403) {
-                    toast({
-                        status: 'error',
-                        title: data.message,
-                        description:
-                            'Попробуйте другой e-mail или проверьте правильность его написания',
-                    });
-                } else {
+
+                if (e?.status >= 500 && e?.status <= 599) {
                     toast({
                         status: 'error',
                         title: 'Ошибка сервера',
@@ -94,8 +92,8 @@ const PinModal = ({ isOpen, onClose, email }: PinModalProps) => {
                                 textAlign='center'
                             >
                                 Мы отправили вам на e-mail{' '}
-                                <b style={{ fontWeight: 600 }}>ekaterinabaker@gmail.ru</b>{' '}
-                                шестизначный код. Введите его ниже.
+                                <b style={{ fontWeight: 600 }}>{email}</b> шестизначный код. Введите
+                                его ниже.
                             </Text>
 
                             <HStack justifyContent='center'>

@@ -15,9 +15,10 @@ import verification from '~/assets/verification.png';
 type VerificationModalProps = {
     isOpen: boolean;
     onClose: () => void;
+    email: string;
 };
 
-const VerificationModal = ({ isOpen, onClose }: VerificationModalProps) => (
+const VerificationModal = ({ email, isOpen, onClose }: VerificationModalProps) => (
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent data-test-id='sign-up-success-modal' maxW='396px'>
@@ -44,8 +45,7 @@ const VerificationModal = ({ isOpen, onClose }: VerificationModalProps) => (
                     Остался последний шаг. Нужно верифицировать ваш e-mail
                 </Text>
                 <Text color='blackAlpha.900' fontSize='16px' lineHeight='24px' textAlign='center'>
-                    Мы отправили вам на почту{' '}
-                    <b style={{ fontWeight: 600 }}>ekaterinabaker@gmail.ru</b> ссылку для
+                    Мы отправили вам на почту <b style={{ fontWeight: 600 }}>{email}</b> ссылку для
                     верификации.
                 </Text>
             </ModalBody>

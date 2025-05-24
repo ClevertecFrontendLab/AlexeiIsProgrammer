@@ -7,7 +7,7 @@ import {
     UseFormReturn,
 } from 'react-hook-form';
 
-export const useTrimForm = <TFieldValues extends FieldValues = FieldValues, TContext>(
+export const useTrimForm = <TFieldValues extends FieldValues = FieldValues, TContext = null>(
     options?: UseFormProps<TFieldValues, TContext>,
 ): UseFormReturn<TFieldValues, TContext> => {
     const formMethods = useForm<TFieldValues, TContext>(options);

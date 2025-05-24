@@ -1,4 +1,3 @@
-// LoginForm.tsx
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
     Button,
@@ -43,8 +42,6 @@ const Login = () => {
     const {
         register,
         handleSubmit,
-        formState,
-        watch,
         formState: { errors },
     } = useTrimForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
@@ -54,16 +51,6 @@ const Login = () => {
 
     const [login, { isLoading }] = useLoginMutation();
 
-    const isFormValid = (): boolean => {
-        const values = watch();
-        return (
-            !!values.login &&
-            !!values.password &&
-            !formState.errors.login &&
-            !formState.errors.password
-        );
-    };
-
     const onSubmit = (data: LoginFormData) => {
         login(data)
             .unwrap()
@@ -71,21 +58,19 @@ const Login = () => {
                 navigate('/');
             })
             .catch((err) => {
-                const data = err?.data;
-
-                if (data.statusCode === 401) {
+                if (err.status === 401) {
                     toast({
                         status: 'error',
                         title: 'Неверный логин или пароль',
                         description: 'Попробуйте снова.',
                     });
-                } else if (data.statusCode === 403) {
+                } else if (err.status === 403) {
                     toast({
                         status: 'error',
                         title: 'E-mail не верифицирован',
-                        description: 'Проверьте почту или перейдите по ссылке',
+                        description: 'Проверьте почту и перейдите по ссылке',
                     });
-                } else if (data.statusCode >= 500 && data.statusCode <= 599) {
+                } else if (err.status >= 500 && err.status <= 599) {
                     onOpen();
                 }
             });
@@ -113,7 +98,8 @@ const Login = () => {
                                 <Button
                                     data-test-id='password-visibility-button'
                                     variant='ghost'
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onMouseDown={() => setShowPassword(true)}
+                                    onMouseUp={() => setShowPassword(false)}
                                 >
                                     {showPassword ? <ViewOffIcon /> : <ViewIcon />}
                                 </Button>
@@ -127,7 +113,6 @@ const Login = () => {
                         type='submit'
                         width='full'
                         colorScheme='blackAlpha'
-                        isDisabled={!isFormValid()}
                     >
                         Войти
                     </Button>

@@ -199,11 +199,6 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
 
                                             if (!isChecked) {
                                                 setLocalAllergens([]);
-                                                // dispatch(
-                                                //     setFilters([
-                                                //         { name: 'activeAllergens', value: [] },
-                                                //     ]),
-                                                // );
                                             }
 
                                             dispatch(setAreAllergensActive(isChecked));
@@ -220,11 +215,6 @@ const FilterComponent = ({ title, description }: FilterComponentProps) => {
                                     options={allergens}
                                     onChange={(allergens) => {
                                         setLocalAllergens(allergens);
-                                        // dispatch(
-                                        //     setFilters([
-                                        //         { name: 'activeAllergens', value: allergens },
-                                        //     ]),
-                                        // )
                                     }}
                                     onOptionAdd={(allergen) => dispatch(addAlergen(allergen))}
                                     disabled={!areAllergensActive}

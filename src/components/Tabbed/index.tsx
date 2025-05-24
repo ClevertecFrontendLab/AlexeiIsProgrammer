@@ -8,7 +8,7 @@ import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
 
 const Tabbed = () => {
-    const { data: routes } = useGetCategoriesQuery();
+    const { data: routes } = useGetCategoriesQuery(undefined);
     const isMobile = useBreakpointValue({ base: true, lg: false });
 
     const navigate = useNavigate();
