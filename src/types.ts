@@ -84,5 +84,6 @@ export type EmailFormData = {
 export type RecoveryFormData = {
     login: string;
     password: string;
-    confirmPassword: string;
+    passwordConfirm: string;
+    email: string;
 };

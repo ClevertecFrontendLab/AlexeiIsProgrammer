@@ -11,15 +11,19 @@ import {
     Progress,
     Text,
     useDisclosure,
+    useToast,
     VStack,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import CustomSpinner from '~/components/CustomSpinner';
 import VerificationModal from '~/components/VerificationModal';
 import { CIRYLLIC_REGX, CIRYLLIC_SYMB_REGX, PASSWORD_REGX } from '~/constants';
+import { APP_LOADER } from '~/constants/test-id';
+import { useTrimForm } from '~/hooks/useTrimForm';
+import { useSignupMutation } from '~/query/services/auth';
 import { RegistrationFormData } from '~/types';
 
 const registrationSchema = z
@@ -61,13 +65,16 @@ const registrationSchema = z
     });
 
 const Registration = () => {
+    const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const [signup, { isLoading }] = useSignupMutation();
 
     const [step, setStep] = useState(1);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const { register, handleSubmit, formState, watch, trigger, getFieldState } =
-        useForm<RegistrationFormData>({
+        useTrimForm<RegistrationFormData>({
             resolver: zodResolver(registrationSchema),
             mode: 'onChange',
         });
@@ -96,8 +103,28 @@ const Registration = () => {
     }, [currentValues, getFieldState]);
 
     const onSubmit = (data: RegistrationFormData) => {
-        console.log(data);
-        onOpen();
+        signup(data)
+            .unwrap()
+            .then(() => {
+                onOpen();
+            })
+            .catch((err) => {
+                const data = err?.data;
+
+                if (data.statusCode === 400) {
+                    toast({
+                        status: 'error',
+                        title: data.message,
+                        description: '',
+                    });
+                } else if (data.statusCode >= 500 && data.statusCode <= 599) {
+                    toast({
+                        status: 'error',
+                        title: 'Ошибка сервера',
+                        description: 'Попробуйте поискать снова попозже',
+                    });
+                }
+            });
     };
 
     const handleNextStep = async () => {
@@ -234,6 +261,7 @@ const Registration = () => {
                     </VStack>
                 )}
             </form>
+            {isLoading && <CustomSpinner data-test-id={APP_LOADER} spinnerOverflow />}
             <VerificationModal isOpen={isOpen} onClose={onClose} />
         </>
     );

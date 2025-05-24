@@ -16,19 +16,26 @@ import {
     ModalHeader,
     ModalOverlay,
     Text,
+    useToast,
     VStack,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router';
 import { z } from 'zod';
 
 import { PASSWORD_REGX } from '~/constants';
+import { APP_LOADER } from '~/constants/test-id';
+import { useTrimForm } from '~/hooks/useTrimForm';
+import { useResetPasswordMutation } from '~/query/services/auth';
 import { RecoveryFormData } from '~/types';
+
+import CustomSpinner from '../CustomSpinner';
 
 type RecoveryModalProps = {
     isOpen: boolean;
     onClose: () => void;
+    email: string;
 };
 
 const recoverySchema = z
@@ -45,33 +52,56 @@ const recoverySchema = z
             .min(8, 'Не соответствует формату')
             .max(50, 'Максимальная длина 50 символов')
             .regex(PASSWORD_REGX, 'Не соответствует формату'),
-        confirmPassword: z.string(),
+        passwordConfirm: z.string(),
     })
-    .refine((data) => data.password === data.confirmPassword, {
+    .refine((data) => data.password === data.passwordConfirm, {
         message: 'Пароли должны совпадать',
-        path: ['confirmPassword'],
+        path: ['passwordConfirm'],
     });
 
-const RecoveryModal = ({ isOpen, onClose }: RecoveryModalProps) => {
+type RecoveryFormDataHook = Omit<RecoveryFormData, 'email'>;
+
+const RecoveryModal = ({ isOpen, onClose, email }: RecoveryModalProps) => {
+    const toast = useToast();
+    const [resetPassword, { isLoading }] = useResetPasswordMutation();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const { register, handleSubmit, formState, getFieldState, watch } = useForm<RecoveryFormData>({
-        resolver: zodResolver(recoverySchema),
-        mode: 'onChange',
-    });
+    const navigate = useNavigate();
+
+    const { register, handleSubmit, formState, getFieldState, watch } =
+        useTrimForm<RecoveryFormDataHook>({
+            resolver: zodResolver(recoverySchema),
+            mode: 'onChange',
+        });
 
     const currentValues = watch();
     const isFormValid = (): boolean =>
-        ['login', 'password', 'confirmPassword'].every(
+        ['login', 'password', 'passwordConfirm'].every(
             (field) =>
-                !getFieldState(field as keyof RecoveryFormData).invalid &&
-                !!currentValues[field as keyof RecoveryFormData],
+                !getFieldState(field as keyof RecoveryFormDataHook).invalid &&
+                !!currentValues[field as keyof RecoveryFormDataHook],
         );
 
-    const onSubmit = (data: RecoveryFormData) => {
-        console.log(data);
-        onClose();
+    const onSubmit = (data: RecoveryFormDataHook) => {
+        resetPassword({ email, ...data })
+            .unwrap()
+            .then(() => {
+                onClose();
+                navigate('/login');
+                toast({
+                    status: 'success',
+                    title: 'Восстановление данных успешно',
+                    description: '',
+                });
+            })
+            .catch(() => {
+                toast({
+                    status: 'error',
+                    title: 'Ошибка сервера',
+                    description: 'Попробуйте немного позже',
+                });
+            });
     };
 
     return (
@@ -99,6 +129,7 @@ const RecoveryModal = ({ isOpen, onClose }: RecoveryModalProps) => {
                     h='24px'
                 />
                 <ModalBody>
+                    {isLoading && <CustomSpinner data-test-id={APP_LOADER} spinnerOverflow />}
                     <form onSubmit={handleSubmit(onSubmit)}>
                         <VStack spacing={4}>
                             <FormControl isInvalid={!!formState.errors.login}>
@@ -138,13 +169,13 @@ const RecoveryModal = ({ isOpen, onClose }: RecoveryModalProps) => {
                                 </FormErrorMessage>
                             </FormControl>
 
-                            <FormControl isInvalid={!!formState.errors.confirmPassword}>
+                            <FormControl isInvalid={!!formState.errors.passwordConfirm}>
                                 <FormLabel>Повторите пароль</FormLabel>
                                 <InputGroup>
                                     <Input
                                         data-test-id='confirm-password-input'
                                         type={showConfirmPassword ? 'text' : 'password'}
-                                        {...register('confirmPassword')}
+                                        {...register('passwordConfirm')}
                                     />
                                     <InputRightElement>
                                         <Button
@@ -161,7 +192,7 @@ const RecoveryModal = ({ isOpen, onClose }: RecoveryModalProps) => {
                                     </InputRightElement>
                                 </InputGroup>
                                 <FormErrorMessage>
-                                    {formState.errors.confirmPassword?.message}
+                                    {formState.errors.passwordConfirm?.message}
                                 </FormErrorMessage>
                             </FormControl>
 

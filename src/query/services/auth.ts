@@ -19,6 +19,13 @@ type SignupRequest = {
     lastName: string;
 };
 
+type ResetPasswordRequest = {
+    email: string;
+    login: string;
+    password: string;
+    passwordConfirm: string;
+};
+
 type LoginRequest = {
     login: string;
     password: string;
@@ -26,6 +33,15 @@ type LoginRequest = {
 
 type VerifyRequest = {
     token: string;
+};
+
+type ForgotPasswordRequest = {
+    email: string;
+};
+
+type VerifyOtpRequest = {
+    email: string;
+    otpToken: string;
 };
 
 export const authApiSlice = apiSlice
@@ -44,20 +60,22 @@ export const authApiSlice = apiSlice
     .injectEndpoints({
         endpoints: (builder) => ({
             signup: builder.mutation<AuthResponse, SignupRequest>({
-                query: () => ({
+                query: (body) => ({
                     url: `${ApiEndpoints.AUTH}/signup`,
                     method: 'POST',
                     apiGroupName: ApiGroupNames.AUTH,
                     name: EndpointNames.SIGNUP,
+                    body,
                 }),
                 invalidatesTags: [Tags.SIGNUP],
             }),
             login: builder.mutation<AuthResponse, LoginRequest>({
-                query: () => ({
+                query: (body) => ({
                     url: `${ApiEndpoints.AUTH}/login`,
                     method: 'POST',
                     apiGroupName: ApiGroupNames.AUTH,
                     name: EndpointNames.LOGIN,
+                    body,
                 }),
                 invalidatesTags: [Tags.LOGIN],
             }),
@@ -89,30 +107,33 @@ export const authApiSlice = apiSlice
                 }),
                 providesTags: [Tags.VERIFY],
             }),
-            forgotPassword: builder.mutation<AuthResponse, LoginRequest>({
-                query: () => ({
+            forgotPassword: builder.mutation<AuthResponse, ForgotPasswordRequest>({
+                query: (body) => ({
                     url: `${ApiEndpoints.AUTH}/forgot-password`,
                     method: 'POST',
                     apiGroupName: ApiGroupNames.AUTH,
                     name: EndpointNames.FORGOT_PASSWORD,
+                    body,
                 }),
                 invalidatesTags: [Tags.FORGOT_PASSWORD],
             }),
-            verifyOtp: builder.mutation<AuthResponse, LoginRequest>({
-                query: () => ({
+            verifyOtp: builder.mutation<AuthResponse, VerifyOtpRequest>({
+                query: (body) => ({
                     url: `${ApiEndpoints.AUTH}/verify-otp`,
                     method: 'POST',
                     apiGroupName: ApiGroupNames.AUTH,
                     name: EndpointNames.VERIFY_OTP,
+                    body,
                 }),
                 invalidatesTags: [Tags.VERIFY_OTP],
             }),
-            resetPassword: builder.mutation<AuthResponse, LoginRequest>({
-                query: () => ({
+            resetPassword: builder.mutation<AuthResponse, ResetPasswordRequest>({
+                query: (body) => ({
                     url: `${ApiEndpoints.AUTH}/reset-password`,
                     method: 'POST',
                     apiGroupName: ApiGroupNames.AUTH,
                     name: EndpointNames.RESET_PASSWORD,
+                    body,
                 }),
                 invalidatesTags: [Tags.RESET_PASSWORD],
             }),

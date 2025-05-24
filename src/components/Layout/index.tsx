@@ -5,8 +5,9 @@ import { useMemo } from 'react';
 import { Navigate, useLocation } from 'react-router';
 
 import { APP_LOADER, NAV } from '~/constants/test-id';
+import { useCheckAuthQuery } from '~/query/services/auth';
 import { useGetCategoriesQuery } from '~/query/services/categories';
-import { MAIN, NOT_FOUND, THE_JUICIEST } from '~/router/constants/routes';
+import { LOGIN, MAIN, NOT_FOUND, THE_JUICIEST } from '~/router/constants/routes';
 import getCurrentCategory from '~/utils/getCurrentCategory';
 import getCurrentSubcategory from '~/utils/getCurrentSubcategory';
 
@@ -28,6 +29,8 @@ const Layout = ({ children }: LayoutProps) => {
     const [isSmallMobile] = useMediaQuery('(max-width: 500px)');
     const { isOpen, onClose, onOpen } = useDisclosure();
 
+    const { isLoading: isCheckAuthLoading, error } = useCheckAuthQuery();
+
     const { data: categories, isLoading: areCategoriesLoading } = useGetCategoriesQuery();
 
     const { pathname } = useLocation();
@@ -47,6 +50,11 @@ const Layout = ({ children }: LayoutProps) => {
         () => categories?.find((category) => category.category === currentSubcategory),
         [currentSubcategory, categories],
     );
+    console.log('error', error);
+
+    if (error && error?.data?.statusCode === 403) {
+        return <Navigate to={LOGIN} />;
+    }
 
     if (categories && !(category && subcategory) && !isJuiciest) {
         return (
@@ -96,7 +104,7 @@ const Layout = ({ children }: LayoutProps) => {
                     paddingRight={!isMobile ? '280px !important' : {}}
                     paddingBottom={isSmallMobile ? '100px' : {}}
                 >
-                    {areCategoriesLoading ? (
+                    {areCategoriesLoading || isCheckAuthLoading ? (
                         <CustomSpinner data-test-id={APP_LOADER} spinnerOverflow />
                     ) : (
                         children

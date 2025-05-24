@@ -10,15 +10,20 @@ import {
     InputRightElement,
     Link,
     useDisclosure,
+    useToast,
     VStack,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router';
 import * as z from 'zod';
 
+import CustomSpinner from '~/components/CustomSpinner';
 import EmailModal from '~/components/EmailModal';
 import WrongLoginModal from '~/components/WrongLoginModal';
+import { APP_LOADER } from '~/constants/test-id';
+import { useTrimForm } from '~/hooks/useTrimForm';
+import { useLoginMutation } from '~/query/services/auth';
 import { LoginFormData } from '~/types';
 
 const loginSchema = z.object({
@@ -27,6 +32,7 @@ const loginSchema = z.object({
 });
 
 const Login = () => {
+    const toast = useToast();
     const {
         isOpen: isEmailModalOpen,
         onOpen: onEmailModalOpen,
@@ -40,9 +46,13 @@ const Login = () => {
         formState,
         watch,
         formState: { errors },
-    } = useForm<LoginFormData>({
+    } = useTrimForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
     });
+
+    const navigate = useNavigate();
+
+    const [login, { isLoading }] = useLoginMutation();
 
     const isFormValid = (): boolean => {
         const values = watch();
@@ -55,9 +65,30 @@ const Login = () => {
     };
 
     const onSubmit = (data: LoginFormData) => {
-        onOpen();
+        login(data)
+            .unwrap()
+            .then(() => {
+                navigate('/');
+            })
+            .catch((err) => {
+                const data = err?.data;
 
-        console.log(data);
+                if (data.statusCode === 401) {
+                    toast({
+                        status: 'error',
+                        title: 'Неверный логин или пароль',
+                        description: 'Попробуйте снова.',
+                    });
+                } else if (data.statusCode === 403) {
+                    toast({
+                        status: 'error',
+                        title: 'E-mail не верифицирован',
+                        description: 'Проверьте почту или перейдите по ссылке',
+                    });
+                } else if (data.statusCode >= 500 && data.statusCode <= 599) {
+                    onOpen();
+                }
+            });
     };
 
     return (
@@ -105,6 +136,7 @@ const Login = () => {
                     </Link>
                 </VStack>
             </form>
+            {isLoading && <CustomSpinner data-test-id={APP_LOADER} spinnerOverflow />}
             <EmailModal isOpen={isEmailModalOpen} onClose={onEmailModalClose} />
             <WrongLoginModal isOpen={isOpen} onClose={onClose} onClick={handleSubmit(onSubmit)} />
         </>
