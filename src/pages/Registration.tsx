@@ -10,6 +10,7 @@ import {
     InputRightElement,
     Progress,
     Text,
+    useDisclosure,
     VStack,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,6 +18,7 @@ import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import VerificationModal from '~/components/VerificationModal';
 import { RegistrationFormData } from '~/types';
 
 const ciryllicRegx = /^[А-Яа-я]/;
@@ -62,6 +64,8 @@ const registrationSchema = z
     });
 
 const Registration = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
     const [step, setStep] = useState(1);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -73,16 +77,12 @@ const Registration = () => {
 
     const currentValues = watch();
     const currentStepFields =
-        step === 1
-            ? ['firstName', 'lastName', 'email']
-            : ['username', 'password', 'confirmPassword'];
+        step === 1 ? ['firstName', 'lastName', 'email'] : ['login', 'password', 'confirmPassword'];
 
-    // Calculate progress based only on valid fields
     const calculateProgress = useMemo((): number => {
         const totalFields = 6;
         let validFields = 0;
 
-        // Check each field's validity
         if (!getFieldState('firstName').invalid && currentValues.firstName) validFields++;
         if (!getFieldState('lastName').invalid && currentValues.lastName) validFields++;
         if (!getFieldState('email').invalid && currentValues.email) validFields++;
@@ -100,6 +100,7 @@ const Registration = () => {
 
     const onSubmit = (data: RegistrationFormData) => {
         console.log(data);
+        onOpen();
     };
 
     const handleNextStep = async () => {
@@ -115,98 +116,109 @@ const Registration = () => {
         );
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <Text fontSize='16px' textAlign='left'>
-                {step === 1 ? 'Шаг 1. Личная информация' : 'Шаг 2. Логин и пароль'}
-            </Text>
-            <Progress value={calculateProgress} mb={4} colorScheme='green' hasStripe />
+        <>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Text fontSize='16px' textAlign='left'>
+                    {step === 1 ? 'Шаг 1. Личная информация' : 'Шаг 2. Логин и пароль'}
+                </Text>
+                <Progress value={calculateProgress} mb={4} colorScheme='green' hasStripe />
 
-            {step === 1 && (
-                <VStack spacing={4}>
-                    <FormControl isInvalid={!!formState.errors.firstName}>
-                        <FormLabel>Ваше имя</FormLabel>
-                        <Input {...register('firstName')} />
-                        <FormErrorMessage>{formState.errors.firstName?.message}</FormErrorMessage>
-                    </FormControl>
+                {step === 1 && (
+                    <VStack spacing={4}>
+                        <FormControl isInvalid={!!formState.errors.firstName}>
+                            <FormLabel>Ваше имя</FormLabel>
+                            <Input {...register('firstName')} />
+                            <FormErrorMessage>
+                                {formState.errors.firstName?.message}
+                            </FormErrorMessage>
+                        </FormControl>
 
-                    <FormControl isInvalid={!!formState.errors.lastName}>
-                        <FormLabel>Ваша фамилия</FormLabel>
-                        <Input {...register('lastName')} />
-                        <FormErrorMessage>{formState.errors.lastName?.message}</FormErrorMessage>
-                    </FormControl>
+                        <FormControl isInvalid={!!formState.errors.lastName}>
+                            <FormLabel>Ваша фамилия</FormLabel>
+                            <Input {...register('lastName')} />
+                            <FormErrorMessage>
+                                {formState.errors.lastName?.message}
+                            </FormErrorMessage>
+                        </FormControl>
 
-                    <FormControl isInvalid={!!formState.errors.email}>
-                        <FormLabel>Ваше email</FormLabel>
-                        <Input type='email' {...register('email')} />
-                        <FormErrorMessage>{formState.errors.email?.message}</FormErrorMessage>
-                    </FormControl>
+                        <FormControl isInvalid={!!formState.errors.email}>
+                            <FormLabel>Ваше email</FormLabel>
+                            <Input type='email' {...register('email')} />
+                            <FormErrorMessage>{formState.errors.email?.message}</FormErrorMessage>
+                        </FormControl>
 
-                    <Button width='full' onClick={handleNextStep} isDisabled={!isStepValid()}>
-                        Дальше
-                    </Button>
-                </VStack>
-            )}
+                        <Button width='full' onClick={handleNextStep} isDisabled={!isStepValid()}>
+                            Дальше
+                        </Button>
+                    </VStack>
+                )}
 
-            {step === 2 && (
-                <VStack spacing={4}>
-                    <FormControl isInvalid={!!formState.errors.login}>
-                        <FormLabel>Логин входа на сайт</FormLabel>
-                        <Input {...register('login')} />
-                        <FormHelperText>Логин не менее 5 символов, только латиница</FormHelperText>
-                        <FormErrorMessage>{formState.errors.login?.message}</FormErrorMessage>
-                    </FormControl>
+                {step === 2 && (
+                    <VStack spacing={4}>
+                        <FormControl isInvalid={!!formState.errors.login}>
+                            <FormLabel>Логин входа на сайт</FormLabel>
+                            <Input {...register('login')} />
+                            <FormHelperText>
+                                Логин не менее 5 символов, только латиница
+                            </FormHelperText>
+                            <FormErrorMessage>{formState.errors.login?.message}</FormErrorMessage>
+                        </FormControl>
 
-                    <FormControl isInvalid={!!formState.errors.password}>
-                        <FormLabel>Пароль</FormLabel>
-                        <InputGroup>
-                            <Input
-                                type={showPassword ? 'text' : 'password'}
-                                {...register('password')}
-                            />
-                            <InputRightElement>
-                                <Button
-                                    variant='ghost'
-                                    onMouseDown={() => setShowPassword((prev) => !prev)}
-                                    onMouseUp={() => setShowPassword((prev) => !prev)}
-                                >
-                                    {showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                                </Button>
-                            </InputRightElement>
-                        </InputGroup>
-                        <FormHelperText>
-                            Пароль не менее 8 символов, с заглавной буквой и цифрой
-                        </FormHelperText>
-                        <FormErrorMessage>{formState.errors.password?.message}</FormErrorMessage>
-                    </FormControl>
+                        <FormControl isInvalid={!!formState.errors.password}>
+                            <FormLabel>Пароль</FormLabel>
+                            <InputGroup>
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    {...register('password')}
+                                />
+                                <InputRightElement>
+                                    <Button
+                                        variant='ghost'
+                                        onMouseDown={() => setShowPassword((prev) => !prev)}
+                                        onMouseUp={() => setShowPassword((prev) => !prev)}
+                                    >
+                                        {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                                    </Button>
+                                </InputRightElement>
+                            </InputGroup>
+                            <FormHelperText>
+                                Пароль не менее 8 символов, с заглавной буквой и цифрой
+                            </FormHelperText>
+                            <FormErrorMessage>
+                                {formState.errors.password?.message}
+                            </FormErrorMessage>
+                        </FormControl>
 
-                    <FormControl isInvalid={!!formState.errors.confirmPassword}>
-                        <FormLabel>Повторите пароль</FormLabel>
-                        <InputGroup>
-                            <Input
-                                type={showConfirmPassword ? 'text' : 'password'}
-                                {...register('confirmPassword')}
-                            />
-                            <InputRightElement>
-                                <Button
-                                    variant='ghost'
-                                    onMouseDown={() => setShowConfirmPassword((prev) => !prev)}
-                                    onMouseUp={() => setShowConfirmPassword((prev) => !prev)}
-                                >
-                                    {showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
-                                </Button>
-                            </InputRightElement>
-                        </InputGroup>
-                        <FormErrorMessage>
-                            {formState.errors.confirmPassword?.message}
-                        </FormErrorMessage>
-                    </FormControl>
+                        <FormControl isInvalid={!!formState.errors.confirmPassword}>
+                            <FormLabel>Повторите пароль</FormLabel>
+                            <InputGroup>
+                                <Input
+                                    type={showConfirmPassword ? 'text' : 'password'}
+                                    {...register('confirmPassword')}
+                                />
+                                <InputRightElement>
+                                    <Button
+                                        variant='ghost'
+                                        onMouseDown={() => setShowConfirmPassword((prev) => !prev)}
+                                        onMouseUp={() => setShowConfirmPassword((prev) => !prev)}
+                                    >
+                                        {showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                                    </Button>
+                                </InputRightElement>
+                            </InputGroup>
+                            <FormErrorMessage>
+                                {formState.errors.confirmPassword?.message}
+                            </FormErrorMessage>
+                        </FormControl>
 
-                    <Button type='submit' width='full' isDisabled={!isStepValid()}>
-                        Зарегистрироваться
-                    </Button>
-                </VStack>
-            )}
-        </form>
+                        <Button type='submit' width='full' isDisabled={!isStepValid()}>
+                            Зарегистрироваться
+                        </Button>
+                    </VStack>
+                )}
+            </form>
+            <VerificationModal isOpen={isOpen} onClose={onClose} />
+        </>
     );
 };
 
