@@ -10,19 +10,19 @@ import {
     Text,
 } from '@chakra-ui/react';
 
-import verification from '~/assets/verification.png';
+import wrong from '~/assets/wrong.png';
 
-type VerificationModalProps = {
+type WrongVerificationModalProps = {
     isOpen: boolean;
     onClose: () => void;
 };
 
-const VerificationModal = ({ isOpen, onClose }: VerificationModalProps) => (
+const WrongVerificationModal = ({ isOpen, onClose }: WrongVerificationModalProps) => (
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent maxW='396px'>
             <ModalHeader display='flex' justifyContent='center'>
-                <Image src={verification} />
+                <Image src={wrong} />
             </ModalHeader>
             <ModalCloseButton
                 borderRadius='50px'
@@ -40,23 +40,21 @@ const VerificationModal = ({ isOpen, onClose }: VerificationModalProps) => (
                     lineHeight='32px'
                     textAlign='center'
                 >
-                    Остался последний шаг. Нужно верифицировать ваш e-mail
+                    Упс! Что-то пошло не так
                 </Text>
-                <Text color='blackAlpha.900' fontSize='16px' lineHeight='24px' textAlign='center'>
-                    Мы отправили вам на почту{' '}
-                    <b style={{ fontWeight: 600 }}>ekaterinabaker@gmail.ru</b> ссылку для
-                    верификации.
+                <Text color='blackAlpha.700' fontSize='16px' lineHeight='24px' textAlign='center'>
+                    Ваша ссылка для верификации недействительна. Попробуйте зарегистрироваться
+                    снова.
                 </Text>
             </ModalBody>
 
             <ModalFooter justifyContent='center'>
                 <Text color='blackAlpha.600' fontSize='12px' lineHeight='16px' textAlign='center'>
-                    Не пришло письмо? Проверьте папку Спам. По другим вопросам свяжитесь с
-                    поддержкой
+                    Остались вопросы? Свяжитесь с поддержкой
                 </Text>
             </ModalFooter>
         </ModalContent>
     </Modal>
 );
 
-export default VerificationModal;
+export default WrongVerificationModal;

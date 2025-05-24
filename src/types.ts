@@ -76,3 +76,13 @@ export type LoginFormData = {
     login: string;
     password: string;
 };
+
+export type EmailFormData = {
+    email: string;
+};
+
+export type RecoveryFormData = {
+    login: string;
+    password: string;
+    confirmPassword: string;
+};

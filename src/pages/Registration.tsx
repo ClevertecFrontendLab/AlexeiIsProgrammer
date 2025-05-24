@@ -19,11 +19,8 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 import VerificationModal from '~/components/VerificationModal';
+import { CIRYLLIC_REGX, CIRYLLIC_SYMB_REGX, PASSWORD_REGX } from '~/constants';
 import { RegistrationFormData } from '~/types';
-
-const ciryllicRegx = /^[А-Яа-я]/;
-const ciryllicSymbRegx = /^[А-Яа-я-]+$/;
-const passwordRegx = /^[A-Za-z0-9!@#$&_+.-]+$/;
 
 const registrationSchema = z
     .object({
@@ -31,14 +28,14 @@ const registrationSchema = z
             .string()
             .min(1, 'Введите имя')
             .max(50, 'Максимальная длина 50 символов')
-            .regex(ciryllicRegx, 'Должно начинаться с кириллицы А-Я')
-            .regex(ciryllicSymbRegx, 'Только кириллица А-Я, и "-"'),
+            .regex(CIRYLLIC_REGX, 'Должно начинаться с кириллицы А-Я')
+            .regex(CIRYLLIC_SYMB_REGX, 'Только кириллица А-Я, и "-"'),
         lastName: z
             .string()
             .min(1, 'Введите фамилию')
             .max(50, 'Максимальная длина 50 символов')
-            .regex(ciryllicRegx, 'Должно начинаться с кириллицы А-Я')
-            .regex(ciryllicSymbRegx, 'Только кириллица А-Я, и "-"'),
+            .regex(CIRYLLIC_REGX, 'Должно начинаться с кириллицы А-Я')
+            .regex(CIRYLLIC_SYMB_REGX, 'Только кириллица А-Я, и "-"'),
         email: z
             .string()
             .min(1, 'Введите e-mail')
@@ -49,13 +46,13 @@ const registrationSchema = z
             .min(1, 'Введите логин')
             .min(5, 'Не соответствует формату')
             .max(50, 'Максимальная длина 50 символов')
-            .regex(passwordRegx, 'Не соответствует формату'),
+            .regex(PASSWORD_REGX, 'Не соответствует формату'),
         password: z
             .string()
             .min(1, 'Введите пароль')
             .min(8, 'Не соответствует формату')
             .max(50, 'Максимальная длина 50 символов')
-            .regex(passwordRegx, 'Не соответствует формату'),
+            .regex(PASSWORD_REGX, 'Не соответствует формату'),
         confirmPassword: z.string(),
     })
     .refine((data) => data.password === data.confirmPassword, {
@@ -147,7 +144,12 @@ const Registration = () => {
                             <FormErrorMessage>{formState.errors.email?.message}</FormErrorMessage>
                         </FormControl>
 
-                        <Button width='full' onClick={handleNextStep} isDisabled={!isStepValid()}>
+                        <Button
+                            colorScheme='blackAlpha'
+                            width='full'
+                            onClick={handleNextStep}
+                            isDisabled={!isStepValid()}
+                        >
                             Дальше
                         </Button>
                     </VStack>
@@ -211,7 +213,12 @@ const Registration = () => {
                             </FormErrorMessage>
                         </FormControl>
 
-                        <Button type='submit' width='full' isDisabled={!isStepValid()}>
+                        <Button
+                            colorScheme='blackAlpha'
+                            type='submit'
+                            width='full'
+                            isDisabled={!isStepValid()}
+                        >
                             Зарегистрироваться
                         </Button>
                     </VStack>
