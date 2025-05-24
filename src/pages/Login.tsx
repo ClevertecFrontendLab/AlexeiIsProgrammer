@@ -8,6 +8,8 @@ import {
     Input,
     InputGroup,
     InputRightElement,
+    Link,
+    useDisclosure,
     VStack,
 } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,6 +17,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
+import EmailModal from '~/components/EmailModal';
+import WrongLoginModal from '~/components/WrongLoginModal';
 import { LoginFormData } from '~/types';
 
 const loginSchema = z.object({
@@ -23,6 +27,12 @@ const loginSchema = z.object({
 });
 
 const Login = () => {
+    const {
+        isOpen: isEmailModalOpen,
+        onOpen: onEmailModalOpen,
+        onClose: onEmailModalClose,
+    } = useDisclosure();
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const [showPassword, setShowPassword] = useState(false);
     const {
         register,
@@ -44,38 +54,60 @@ const Login = () => {
         );
     };
 
-    const onSubmit = (data: LoginFormData) => console.log(data);
+    const onSubmit = (data: LoginFormData) => {
+        onOpen();
+
+        console.log(data);
+    };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            <VStack spacing={4}>
-                <FormControl isInvalid={!!errors.login}>
-                    <FormLabel>Логин для входа на сайт</FormLabel>
-                    <Input {...register('login')} />
-                    <FormErrorMessage>{errors.login?.message}</FormErrorMessage>
-                </FormControl>
+        <>
+            <form onSubmit={handleSubmit(onSubmit)} data-test-id='sign-in-form'>
+                <VStack spacing={4}>
+                    <FormControl isInvalid={!!errors.login}>
+                        <FormLabel>Логин для входа на сайт</FormLabel>
+                        <Input data-test-id='login-input' {...register('login')} />
+                        <FormErrorMessage>{errors.login?.message}</FormErrorMessage>
+                    </FormControl>
 
-                <FormControl isInvalid={!!errors.password}>
-                    <FormLabel>Пароль</FormLabel>
-                    <InputGroup>
-                        <Input
-                            type={showPassword ? 'text' : 'password'}
-                            {...register('password')}
-                        />
-                        <InputRightElement>
-                            <Button variant='ghost' onClick={() => setShowPassword(!showPassword)}>
-                                {showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                            </Button>
-                        </InputRightElement>
-                    </InputGroup>
-                    <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
-                </FormControl>
+                    <FormControl isInvalid={!!errors.password}>
+                        <FormLabel>Пароль</FormLabel>
+                        <InputGroup>
+                            <Input
+                                data-test-id='password-input'
+                                type={showPassword ? 'text' : 'password'}
+                                {...register('password')}
+                            />
+                            <InputRightElement>
+                                <Button
+                                    data-test-id='password-visibility-button'
+                                    variant='ghost'
+                                    onClick={() => setShowPassword(!showPassword)}
+                                >
+                                    {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                                </Button>
+                            </InputRightElement>
+                        </InputGroup>
+                        <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
+                    </FormControl>
 
-                <Button type='submit' width='full' colorScheme='dark' isDisabled={!isFormValid()}>
-                    Войти
-                </Button>
-            </VStack>
-        </form>
+                    <Button
+                        data-test-id='submit-button'
+                        type='submit'
+                        width='full'
+                        colorScheme='blackAlpha'
+                        isDisabled={!isFormValid()}
+                    >
+                        Войти
+                    </Button>
+                    <Link onClick={onEmailModalOpen} data-test-id='forgot-password' color='black'>
+                        Забыли логин или пароль?
+                    </Link>
+                </VStack>
+            </form>
+            <EmailModal isOpen={isEmailModalOpen} onClose={onEmailModalClose} />
+            <WrongLoginModal isOpen={isOpen} onClose={onClose} onClick={handleSubmit(onSubmit)} />
+        </>
     );
 };
 

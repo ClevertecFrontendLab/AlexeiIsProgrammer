@@ -1,4 +1,5 @@
 import {
+    Button,
     Image,
     Modal,
     ModalBody,
@@ -10,19 +11,20 @@ import {
     Text,
 } from '@chakra-ui/react';
 
-import verification from '~/assets/verification.png';
+import coffee from '~/assets/coffee.png';
 
-type VerificationModalProps = {
+type WrongLoginModalProps = {
     isOpen: boolean;
     onClose: () => void;
+    onClick: () => void;
 };
 
-const VerificationModal = ({ isOpen, onClose }: VerificationModalProps) => (
+const WrongLoginModal = ({ isOpen, onClose, onClick }: WrongLoginModalProps) => (
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent data-test-id='sign-up-success-modal' maxW='396px'>
+        <ModalContent data-test-id='sign-in-error-modal' gap='20px' maxW='396px'>
             <ModalHeader display='flex' justifyContent='center'>
-                <Image src={verification} />
+                <Image src={coffee} />
             </ModalHeader>
             <ModalCloseButton
                 data-test-id='close-button'
@@ -41,23 +43,31 @@ const VerificationModal = ({ isOpen, onClose }: VerificationModalProps) => (
                     lineHeight='32px'
                     textAlign='center'
                 >
-                    Остался последний шаг. Нужно верифицировать ваш e-mail
+                    Вход не выполнен
                 </Text>
+
                 <Text color='blackAlpha.900' fontSize='16px' lineHeight='24px' textAlign='center'>
-                    Мы отправили вам на почту{' '}
-                    <b style={{ fontWeight: 600 }}>ekaterinabaker@gmail.ru</b> ссылку для
-                    верификации.
+                    Что-то пошло не так. Попробуйте еще раз
                 </Text>
+
+                <Button
+                    data-test-id='repeat-button'
+                    colorScheme='blackAlpha'
+                    type='button'
+                    onClick={onClick}
+                    width='full'
+                >
+                    Повторить
+                </Button>
             </ModalBody>
 
             <ModalFooter justifyContent='center'>
                 <Text color='blackAlpha.600' fontSize='12px' lineHeight='16px' textAlign='center'>
-                    Не пришло письмо? Проверьте папку Спам. По другим вопросам свяжитесь с
-                    поддержкой
+                    Не пришло письмо? Проверьте папку Спам.
                 </Text>
             </ModalFooter>
         </ModalContent>
     </Modal>
 );
 
-export default VerificationModal;
+export default WrongLoginModal;

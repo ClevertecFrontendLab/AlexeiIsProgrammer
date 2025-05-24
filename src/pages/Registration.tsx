@@ -114,17 +114,23 @@ const Registration = () => {
 
     return (
         <>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form data-test-id='sign-up-form' onSubmit={handleSubmit(onSubmit)}>
                 <Text fontSize='16px' textAlign='left'>
                     {step === 1 ? 'Шаг 1. Личная информация' : 'Шаг 2. Логин и пароль'}
                 </Text>
-                <Progress value={calculateProgress} mb={4} colorScheme='green' hasStripe />
+                <Progress
+                    data-test-id='sign-up-progress'
+                    value={calculateProgress}
+                    mb={4}
+                    colorScheme='green'
+                    hasStripe
+                />
 
                 {step === 1 && (
                     <VStack spacing={4}>
                         <FormControl isInvalid={!!formState.errors.firstName}>
                             <FormLabel>Ваше имя</FormLabel>
-                            <Input {...register('firstName')} />
+                            <Input data-test-id='first-name-input' {...register('firstName')} />
                             <FormErrorMessage>
                                 {formState.errors.firstName?.message}
                             </FormErrorMessage>
@@ -132,7 +138,7 @@ const Registration = () => {
 
                         <FormControl isInvalid={!!formState.errors.lastName}>
                             <FormLabel>Ваша фамилия</FormLabel>
-                            <Input {...register('lastName')} />
+                            <Input data-test-id='last-name-input' {...register('lastName')} />
                             <FormErrorMessage>
                                 {formState.errors.lastName?.message}
                             </FormErrorMessage>
@@ -140,11 +146,12 @@ const Registration = () => {
 
                         <FormControl isInvalid={!!formState.errors.email}>
                             <FormLabel>Ваше email</FormLabel>
-                            <Input type='email' {...register('email')} />
+                            <Input data-test-id='email-input' type='email' {...register('email')} />
                             <FormErrorMessage>{formState.errors.email?.message}</FormErrorMessage>
                         </FormControl>
 
                         <Button
+                            data-test-id='submit-button'
                             colorScheme='blackAlpha'
                             width='full'
                             onClick={handleNextStep}
@@ -159,7 +166,7 @@ const Registration = () => {
                     <VStack spacing={4}>
                         <FormControl isInvalid={!!formState.errors.login}>
                             <FormLabel>Логин входа на сайт</FormLabel>
-                            <Input {...register('login')} />
+                            <Input data-test-id='login-input' {...register('login')} />
                             <FormHelperText>
                                 Логин не менее 5 символов, только латиница
                             </FormHelperText>
@@ -170,6 +177,7 @@ const Registration = () => {
                             <FormLabel>Пароль</FormLabel>
                             <InputGroup>
                                 <Input
+                                    data-test-id='password-input'
                                     type={showPassword ? 'text' : 'password'}
                                     {...register('password')}
                                 />
@@ -195,6 +203,7 @@ const Registration = () => {
                             <FormLabel>Повторите пароль</FormLabel>
                             <InputGroup>
                                 <Input
+                                    data-test-id='confirm-password-input'
                                     type={showConfirmPassword ? 'text' : 'password'}
                                     {...register('confirmPassword')}
                                 />
@@ -216,6 +225,7 @@ const Registration = () => {
                         <Button
                             colorScheme='blackAlpha'
                             type='submit'
+                            data-test-id='submit-button'
                             width='full'
                             isDisabled={!isStepValid()}
                         >

@@ -20,7 +20,7 @@ type WrongVerificationModalProps = {
 const WrongVerificationModal = ({ isOpen, onClose }: WrongVerificationModalProps) => (
     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent maxW='396px'>
+        <ModalContent data-test-id='email-verification-failed-modal' maxW='396px'>
             <ModalHeader display='flex' justifyContent='center'>
                 <Image src={wrong} />
             </ModalHeader>
@@ -31,6 +31,7 @@ const WrongVerificationModal = ({ isOpen, onClose }: WrongVerificationModalProps
                 color='black'
                 w='24px'
                 h='24px'
+                data-test-id='close-button'
             />
             <ModalBody>
                 <Text

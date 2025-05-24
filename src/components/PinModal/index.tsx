@@ -29,11 +29,12 @@ const PinModal = ({ isOpen, onClose }: PinModalProps) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
-            <ModalContent maxW='396px'>
+            <ModalContent data-test-id='verification-code-modal' maxW='396px'>
                 <ModalHeader display='flex' justifyContent='center'>
                     <Image src={code} />
                 </ModalHeader>
                 <ModalCloseButton
+                    data-test-id='close-button'
                     borderRadius='50px'
                     border='1px solid black'
                     bg='white'
@@ -56,12 +57,12 @@ const PinModal = ({ isOpen, onClose }: PinModalProps) => {
 
                         <HStack justifyContent='center'>
                             <PinInput otp onComplete={onComplete}>
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
-                                <PinInputField />
+                                <PinInputField data-test-id='verification-code-input-1' />
+                                <PinInputField data-test-id='verification-code-input-2' />
+                                <PinInputField data-test-id='verification-code-input-3' />
+                                <PinInputField data-test-id='verification-code-input-4' />
+                                <PinInputField data-test-id='verification-code-input-5' />
+                                <PinInputField data-test-id='verification-code-input-6' />
                             </PinInput>
                         </HStack>
                     </VStack>

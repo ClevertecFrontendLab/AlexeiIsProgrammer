@@ -49,7 +49,7 @@ const EmailModal = ({ isOpen, onClose }: EmailModalProps) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
-            <ModalContent gap='20px' maxW='396px'>
+            <ModalContent data-test-id='sign-up-success-modal' gap='20px' maxW='396px'>
                 <ModalHeader display='flex' justifyContent='center'>
                     <Image src={coffee} />
                 </ModalHeader>
@@ -60,6 +60,7 @@ const EmailModal = ({ isOpen, onClose }: EmailModalProps) => {
                     color='black'
                     w='24px'
                     h='24px'
+                    data-test-id='close-button'
                 />
                 <ModalBody>
                     <Text
@@ -76,12 +77,18 @@ const EmailModal = ({ isOpen, onClose }: EmailModalProps) => {
                         <VStack spacing={4}>
                             <FormControl isInvalid={!!formState.errors.email}>
                                 <FormLabel>Ваш e-mail</FormLabel>
-                                <Input placeholder='e-mail' type='email' {...register('email')} />
+                                <Input
+                                    data-test-id='email-input'
+                                    placeholder='e-mail'
+                                    type='email'
+                                    {...register('email')}
+                                />
                                 <FormErrorMessage>
                                     {formState.errors.email?.message}
                                 </FormErrorMessage>
                             </FormControl>
                             <Button
+                                data-test-id='submit-button'
                                 type='submit'
                                 width='full'
                                 colorScheme='blackAlpha'

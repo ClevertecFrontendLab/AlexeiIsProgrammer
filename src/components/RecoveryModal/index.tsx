@@ -77,7 +77,7 @@ const RecoveryModal = ({ isOpen, onClose }: RecoveryModalProps) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
             <ModalOverlay />
-            <ModalContent gap='20px' maxW='396px'>
+            <ModalContent data-test-id='reset-credentials-modal' gap='20px' maxW='396px'>
                 <ModalHeader display='flex' justifyContent='center'>
                     <Text
                         fontWeight={700}
@@ -90,6 +90,7 @@ const RecoveryModal = ({ isOpen, onClose }: RecoveryModalProps) => {
                     </Text>
                 </ModalHeader>
                 <ModalCloseButton
+                    data-test-id='close-button'
                     borderRadius='50px'
                     border='1px solid black'
                     bg='white'
@@ -102,7 +103,7 @@ const RecoveryModal = ({ isOpen, onClose }: RecoveryModalProps) => {
                         <VStack spacing={4}>
                             <FormControl isInvalid={!!formState.errors.login}>
                                 <FormLabel>Логин для входа на сайт</FormLabel>
-                                <Input {...register('login')} />
+                                <Input data-test-id='login-input' {...register('login')} />
                                 <FormHelperText>
                                     Логин не менее 5 символов, только латиница
                                 </FormHelperText>
@@ -115,6 +116,7 @@ const RecoveryModal = ({ isOpen, onClose }: RecoveryModalProps) => {
                                 <FormLabel>Пароль</FormLabel>
                                 <InputGroup>
                                     <Input
+                                        data-test-id='password-input'
                                         type={showPassword ? 'text' : 'password'}
                                         {...register('password')}
                                     />
@@ -140,6 +142,7 @@ const RecoveryModal = ({ isOpen, onClose }: RecoveryModalProps) => {
                                 <FormLabel>Повторите пароль</FormLabel>
                                 <InputGroup>
                                     <Input
+                                        data-test-id='confirm-password-input'
                                         type={showConfirmPassword ? 'text' : 'password'}
                                         {...register('confirmPassword')}
                                     />
@@ -163,6 +166,7 @@ const RecoveryModal = ({ isOpen, onClose }: RecoveryModalProps) => {
                             </FormControl>
 
                             <Button
+                                data-test-id='submit-button'
                                 colorScheme='blackAlpha'
                                 type='submit'
                                 width='full'
