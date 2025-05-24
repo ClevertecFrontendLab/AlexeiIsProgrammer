@@ -127,7 +127,13 @@ const Item = memo(({ item, index, to }: ItemProps) => {
                             getRecipe(item._id)
                                 .unwrap()
                                 .then(() => navigate(to))
-                                .catch(toast);
+                                .catch(() =>
+                                    toast({
+                                        status: 'error',
+                                        title: 'Ошибка сервера',
+                                        description: 'Попробуйте поискать снова попозже',
+                                    }),
+                                );
                         }}
                         px='12px'
                         py='6px'

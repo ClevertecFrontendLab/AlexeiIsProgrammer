@@ -62,3 +62,28 @@ export type Recipe = {
 };
 
 export type OptionType = { label: string; value: string; isCustom?: boolean };
+
+export type RegistrationFormData = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    login: string;
+    password: string;
+    confirmPassword: string;
+};
+
+export type LoginFormData = {
+    login: string;
+    password: string;
+};
+
+export type EmailFormData = {
+    email: string;
+};
+
+export type RecoveryFormData = {
+    login: string;
+    password: string;
+    passwordConfirm: string;
+    email: string;
+};

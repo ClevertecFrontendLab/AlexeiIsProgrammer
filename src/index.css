@@ -8,3 +8,9 @@
     box-sizing: border-box;
     font-family: 'Inter 28pt', sans-serif;
 }
+
+html,
+body,
+#root {
+    height: 100%;
+}

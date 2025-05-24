@@ -66,7 +66,13 @@ const Slider = ({ title }: SliderProps) => {
                         `/${getCategoriesPath(slide.categoriesIds?.[0], categories).join('/')}/${slide._id}`,
                     ),
                 )
-                .catch(toast),
+                .catch(() =>
+                    toast({
+                        status: 'error',
+                        title: 'Ошибка сервера',
+                        description: 'Попробуйте поискать снова попозже',
+                    }),
+                ),
         [categories, getRecipe, navigate, toast],
     );
 
@@ -117,7 +123,6 @@ const Slider = ({ title }: SliderProps) => {
                             prevEl: prevRef.current,
                             nextEl: nextRef.current,
                         }}
-                        speed={0}
                         loop
                         onInit={(swiper: SwiperClass) => {
                             swiper.navigation.init();

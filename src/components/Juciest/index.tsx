@@ -52,7 +52,13 @@ const Juciest = () => {
             .then(() => {
                 navigate(`/${THE_JUICIEST}`);
             })
-            .catch(toast);
+            .catch(() =>
+                toast({
+                    status: 'error',
+                    title: 'Ошибка сервера',
+                    description: 'Попробуйте поискать снова попозже',
+                }),
+            );
     };
 
     return (

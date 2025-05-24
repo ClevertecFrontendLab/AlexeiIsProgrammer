@@ -51,7 +51,13 @@ const Fact = ({ recipe }: FactProps) => {
                                 `/${getCategoriesPath(recipe?.categoriesIds?.[0], categories).join('/')}/${recipe._id}`,
                             ),
                         )
-                        .catch(toast)
+                        .catch(() =>
+                            toast({
+                                status: 'error',
+                                title: 'Ошибка сервера',
+                                description: 'Попробуйте поискать снова попозже',
+                            }),
+                        )
                 }
             >
                 Готовить
