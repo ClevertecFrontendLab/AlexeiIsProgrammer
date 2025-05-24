@@ -30,64 +30,60 @@ const Router = () => {
             createBrowserRouter([
                 {
                     path: '/',
-                    element: <PrivateRoute />,
+                    element: (
+                        <PrivateRoute>
+                            <Layout key='layout'>
+                                <Outlet />
+                            </Layout>
+                        </PrivateRoute>
+                    ),
+                    errorElement: <Navigate to={NOT_FOUND} />,
                     children: [
                         {
-                            path: '/',
-                            element: (
-                                <Layout key='layout'>
-                                    <Outlet />
-                                </Layout>
-                            ),
-                            errorElement: <Navigate to={NOT_FOUND} />,
+                            path: MAIN,
+                            element: <App />,
                             children: [
                                 {
-                                    path: MAIN,
-                                    element: <App />,
+                                    path: CATEGORY,
+                                    element: <Tabbed />,
                                     children: [
                                         {
-                                            path: CATEGORY,
-                                            element: <Tabbed />,
-                                            children: [
-                                                {
-                                                    path: SUBCATEGORY,
-                                                    element: <Subcategory />,
-                                                },
-                                            ],
-                                        },
-                                        {
-                                            path: THE_JUICIEST,
-                                            element: <Juciest />,
+                                            path: SUBCATEGORY,
+                                            element: <Subcategory />,
                                         },
                                     ],
                                 },
                                 {
-                                    path: `${CATEGORY}/${SUBCATEGORY}/${RECIPE_ID}`,
-                                    element: <Recipe />,
+                                    path: THE_JUICIEST,
+                                    element: <Juciest />,
                                 },
                             ],
                         },
                         {
-                            path: VERIFICATION,
-                            element: <Auth />,
-                        },
-                        {
-                            path: REGISTRATION,
-                            element: <Auth />,
-                        },
-                        {
-                            path: LOGIN,
-                            element: <Auth />,
-                        },
-                        {
-                            path: NOT_FOUND,
-                            element: (
-                                <Layout key='layout'>
-                                    <Error />,
-                                </Layout>
-                            ),
+                            path: `${CATEGORY}/${SUBCATEGORY}/${RECIPE_ID}`,
+                            element: <Recipe />,
                         },
                     ],
+                },
+                {
+                    path: VERIFICATION,
+                    element: <Auth />,
+                },
+                {
+                    path: REGISTRATION,
+                    element: <Auth />,
+                },
+                {
+                    path: LOGIN,
+                    element: <Auth />,
+                },
+                {
+                    path: NOT_FOUND,
+                    element: (
+                        <Layout key='layout'>
+                            <Error />,
+                        </Layout>
+                    ),
                 },
             ] as AppRoute[]),
         [],

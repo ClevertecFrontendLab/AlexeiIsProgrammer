@@ -77,6 +77,16 @@ export const authApiSlice = apiSlice
                     name: EndpointNames.LOGIN,
                     body,
                 }),
+                transformResponse: (response: AuthResponse, meta) => {
+                    const token = meta?.response?.headers.get('Authentication-Access');
+                    console.log('token', token, meta);
+
+                    if (token) {
+                        localStorage.setItem('token', token);
+                    }
+                    return response;
+                },
+
                 invalidatesTags: [Tags.LOGIN],
             }),
             refresh: builder.query<AuthResponse, void>({

@@ -1,36 +1,29 @@
 import { useEffect, useState } from 'react';
-import { Navigate, Outlet, useNavigate } from 'react-router';
+import { Navigate } from 'react-router';
 
-import { useLazyCheckAuthQuery } from '~/query/services/auth';
+import CustomSpinner from '~/components/CustomSpinner';
 
 import { LOGIN } from './constants/routes';
 
-export const PrivateRoute = () => {
-    const [firstRequest, setFirstRequest] = useState<boolean>(false);
-    const [checkAuth] = useLazyCheckAuthQuery();
-    const navigate = useNavigate();
+type PrivateRouteProps = {
+    children: React.ReactNode;
+};
+
+export const PrivateRoute = ({ children }: PrivateRouteProps) => {
+    const [hasToken, setHasToken] = useState<null | boolean>(null);
 
     useEffect(() => {
-        if (!firstRequest) {
-            checkAuth()
-                .unwrap()
-                .then(() => {
-                    navigate('/');
-                })
-                .catch((err) => {
-                    if (err?.status === 403) {
-                        navigate(`/${LOGIN}`);
-                    }
-                })
-                .finally(() => {
-                    setFirstRequest(true);
-                });
-        }
-    }, [checkAuth, firstRequest, navigate]);
+        const token = localStorage.getItem('token');
+        setHasToken(Boolean(token));
+    }, [setHasToken]);
 
-    if (!firstRequest) {
-        return <Navigate to='/login' />;
+    if (hasToken === null) {
+        return <CustomSpinner spinnerOverflow />;
     }
 
-    return <Outlet />;
+    if (!hasToken) {
+        return <Navigate to={`/${LOGIN}`} />;
+    }
+
+    return children;
 };
